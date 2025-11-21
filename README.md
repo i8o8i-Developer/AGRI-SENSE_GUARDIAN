@@ -1277,8 +1277,8 @@ Limitations Under The License.
 **Anubhav Chaurasia (i8o8i)**
 
 - GitHub: [@i8o8i-Developer](https://github.com/i8o8i-Developer)
-- Email: [your-email@example.com](mailto:i8o8iworkstation@example.com)
-- LinkedIn: [Your LinkedIn Profile](https://www.linkedin.com/in/anubhav1608/)
+- Email: [i8o8iworkstation@outlook.com](mailto:i8o8iworkstation@outlook.com)
+- LinkedIn: [My LinkedIn Profile](https://www.linkedin.com/in/anubhav1608/)
 
 ---
 

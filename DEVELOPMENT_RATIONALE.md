@@ -10,16 +10,6 @@
 
 ---
 
-## 📋 Table Of Contents
-
-- [PascalCase Formatting Rationale](#pascalcase-formatting-rationale)
-- [Manual Development Philosophy](#manual-development-philosophy)
-- [Code Quality Standards](#code-quality-standards)
-- [Architecture Decision Records](#architecture-decision-records)
-- [Learning Journey](#learning-journey)
-- [Why Not AI-Generated Code](#why-not-ai-generated-code)
-
----
 
 ## PascalCase Formatting Rationale
 

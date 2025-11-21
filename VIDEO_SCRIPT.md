@@ -200,7 +200,7 @@
 - **Visual:** AgriSenseGuardian Logo
 - **Text Overlays:**
   - GitHub: github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN
-  - Email: your-email@example.com
+  - Email: i8o8iworkstation@outlook.com
   - QR Code For Easy Access
 - **Background Music:** Uplifting, Hopeful Instrumental
 
@@ -306,7 +306,7 @@
 > "⭐ Star On GitHub → github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN"
 
 **Secondary CTA (Description):**
-> "📧 Questions? Email: your-email@example.com"
+> "📧 Questions? Email : i8o8iworkstation@outlook.com"
 > "🤝 Contribute: See CONTRIBUTING.md"
 > "📚 Documentation: See README.md"
 
@@ -360,7 +360,7 @@ Built For Kaggle X Google Capstone Hackathon
 Track: Agents For Good (Sustainability)
 
 📧 CONTACT
-Email: your-email@example.com
+Email: @example.com
 LinkedIn: [Your Profile]
 
 #AI #AgTech #MultiAgentSystems #GoogleADK #A2A #Sustainability #AgentsForGood #IndianAgriculture #ClimateChange #MachineLearning
