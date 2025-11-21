@@ -177,13 +177,13 @@ async def Lifespan(App: FastAPI):
             await asyncio.sleep(5)
             
             # Perform Comprehensive Health Validation Of All A2A Agents
-            agent_health_dict = HealthServiceInstance.check_a2a_agents()
-            all_healthy = all(agent.port_open for agent in agent_health_dict.values())
-            if all_healthy:
-                Logger.info(f"✅ All A2A Agents Running: {list(agent_health_dict.keys())}")
+            AgentHealthDict = HealthServiceInstance.check_a2a_agents()
+            AllHealthy = all(agent.port_open for agent in AgentHealthDict.values())
+            if AllHealthy:
+                Logger.info(f"✅ All A2A Agents Running: {list(AgentHealthDict.keys())}")
             else:
-                failed = [name for name, agent in agent_health_dict.items() if not agent.port_open]
-                Logger.warning(f"⚠️ Some Agents Not Ready: {failed}")
+                Failed = [name for name, agent in AgentHealthDict.items() if not agent.port_open]
+                Logger.warning(f"⚠️ Some Agents Not Ready: {Failed}")
                 
         except Exception as E:
             Logger.error(f"❌ Failed To Start A2A Agents: {E}")
@@ -296,11 +296,11 @@ async def Readiness():
     
     # Check A2A Agent Health If Running
     if HealthServiceInstance and Settings.start_a2a_on_startup:
-        agent_health_dict = HealthServiceInstance.check_a2a_agents()
+        AgentHealthDict = HealthServiceInstance.check_a2a_agents()
         ReadinessData["A2AAgents"] = {
-            "AllHealthy": all(agent.port_open for agent in agent_health_dict.values()),
+            "AllHealthy": all(agent.port_open for agent in AgentHealthDict.values()),
             "Agents": {name: {"port_open": agent.port_open, "http_status": agent.http_status} 
-                      for name, agent in agent_health_dict.items()}
+                      for name, agent in AgentHealthDict.items()}
         }
     else:
         ReadinessData["A2AAgents"] = "NotEnabled"
@@ -350,8 +350,8 @@ async def Forecast(ForecastReq: ForecastRequest):
                     FarmerEmail=ForecastReq.FarmerEmail,
                     UserQuery=ForecastReq.UserQuery
                 )
-            except Exception as workflow_error:
-                Logger.error(f"❌ Workflow Execution Error: {workflow_error}", exc_info=True)
+            except Exception as WorkflowError:
+                Logger.error(f"❌ Workflow Execution Error: {WorkflowError}", exc_info=True)
                 raise
         
         # Check If Workflow Returned Error
@@ -399,11 +399,11 @@ async def AgentsStatus():
     
     # Augment With Detailed Health Diagnostics From Health Service
     if HealthServiceInstance:
-        agent_health_dict = HealthServiceInstance.check_a2a_agents()
+        AgentHealthDict = HealthServiceInstance.check_a2a_agents()
         BootstrapStatus["HealthCheck"] = {
-            "AllHealthy": all(agent.port_open for agent in agent_health_dict.values()),
+            "AllHealthy": all(agent.port_open for agent in AgentHealthDict.values()),
             "Agents": {name: {"port_open": agent.port_open, "http_status": agent.http_status} 
-                      for name, agent in agent_health_dict.items()}
+                      for name, agent in AgentHealthDict.items()}
         }
     
     return JSONResponse(content=BootstrapStatus)
@@ -456,7 +456,7 @@ async def StartTask(req: TaskStartRequest):
     if not OrchestratorInstance:
         raise HTTPException(status_code=503, detail="Orchestrator Agent Not Initialized")
 
-    mgr = get_task_manager()
+    Mgr = get_task_manager()
 
     async def runner(task_id: str):
         with record_agent_duration("OrchestratorWorkflow"), use_span("Task.Forecast"):
@@ -471,36 +471,36 @@ async def StartTask(req: TaskStartRequest):
                 TaskId=task_id
             )
 
-    task_id = await mgr.start(runner)
+    task_id = await Mgr.start(runner)
     return {"Status": "Accepted", "TaskId": task_id, "Message": "Task Started"}
 
 
 @App.post("/tasks/{task_id}/pause")
 async def PauseTask(task_id: str):
     """Pause A Long-Running Forecast Task For Later Resumption."""
-    mgr = get_task_manager()
-    return await mgr.pause(task_id)
+    Mgr = get_task_manager()
+    return await Mgr.pause(task_id)
 
 
 @App.post("/tasks/{task_id}/resume")
 async def ResumeTask(task_id: str):
     """Resume A Previously Paused Forecast Task."""
-    mgr = get_task_manager()
-    return await mgr.resume(task_id)
+    Mgr = get_task_manager()
+    return await Mgr.resume(task_id)
 
 
 @App.post("/tasks/{task_id}/cancel")
 async def CancelTask(task_id: str):
     """Cancel A Running Or Paused Forecast Task."""
-    mgr = get_task_manager()
-    return await mgr.cancel(task_id)
+    Mgr = get_task_manager()
+    return await Mgr.cancel(task_id)
 
 
 @App.get("/tasks/{task_id}/status")
 async def TaskStatus(task_id: str):
     """Retrieve Current Status And Progress Of A Specific Task."""
-    mgr = get_task_manager()
-    return mgr.status(task_id)
+    Mgr = get_task_manager()
+    return Mgr.status(task_id)
 
 
 # ===== EXCEPTION HANDLERS =====

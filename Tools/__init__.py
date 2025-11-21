@@ -6,6 +6,7 @@ from Tools.SatelliteTool import GetSatelliteData
 from Tools.SatelliteFetchTool import SatelliteFetchTool
 from Tools.CopernicusTool import CopernicusTool
 from Tools.EmailNotificationTool import EmailNotificationTool
+from Tools.SoilTestTool import SoilTestTool
 
 __all__ = [
     'WeatherTool',
@@ -13,4 +14,5 @@ __all__ = [
     'SatelliteFetchTool',
     'CopernicusTool',
     'EmailNotificationTool',
+    'SoilTestTool',
 ]

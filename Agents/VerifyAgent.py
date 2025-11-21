@@ -7,6 +7,7 @@ from google.adk.agents.readonly_context import ReadonlyContext
 from google.adk.tools.tool_context import ToolContext
 from google.genai import types
 from typing import Dict, Any, List
+from Tools.GoogleSearchTool import GoogleSearchTool
 
 
 class VerifyAgent:
@@ -268,3 +269,29 @@ Important Guidelines:
             'PerRiskVerification': per_risk,
             'VerifiedAt': '2025-11-18T00:00:00Z'
         }
+
+
+# ADK LlmAgent Wrapper With Real Tool Calling
+# Exposes An Agent The Orchestrator/Runner Can Use For Tool-Oriented Execution
+RootAgent = Agent(
+    model="gemini-2.5-flash-lite",
+    name="verify_agent",
+    description=(
+        "Risk Verification Specialist Using Multi-Source Cross-Validation"
+    ),
+    instruction=(
+        "You Are The VerifyAgent - Provide JSON Only, No Markdown Or Asterisks. \n"
+        "Cross-Validate Forecast Data With Web Search And Confidence Scoring. \n"
+        "Analyze Data Source Agreement, Evaluate Confidence Levels, And Integrate Open Web Signals. \n"
+        "Output keys: Status, AgentName, Location, OverallVerificationScore, VerificationStatus, DataSourceCount, SupportingEvidence, ConflictingEvidence, WebValidationResults, PerRiskVerification, Recommendation, Confidence, VerifiedAt. \n"
+        "Plain JSON Only."
+    ),
+    tools=[
+        GoogleSearchTool,
+    ],
+)
+
+__all__ = [
+    'VerifyAgent',
+    'RootAgent',
+]

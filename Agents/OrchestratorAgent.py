@@ -262,13 +262,13 @@ Important Guidelines:
             from Services.TaskManager import get_task_manager
             TaskMgr = get_task_manager()
 
-            iterations = 0
-            last_verification = None
-            last_forecast = None
-            last_action = None
+            Iterations = 0
+            LastVerification = None
+            LastForecast = None
+            LastAction = None
 
             while True:
-                iterations += 1
+                Iterations += 1
 
                 # Support Pause/Resume Points If Running As Long-Running Task
                 if TaskId:
@@ -284,7 +284,7 @@ Important Guidelines:
                         SessionState=self.SessionState
                     )
                 ForecastDuration = time.time() - ForecastStartTime
-                last_forecast = ForecastResults
+                LastForecast = ForecastResults
                 self.SessionState['ExecutionHistory'].append({
                     'Agent': 'ForecastAgent', 'Status': ForecastResults.get('Status', 'Unknown'), 'Duration': ForecastDuration,
                     'HorizonDays': DaysAhead
@@ -302,14 +302,14 @@ Important Guidelines:
                         SessionState=self.SessionState
                     )
                 VerifyDuration = time.time() - VerifyStartTime
-                last_verification = VerificationResults
+                LastVerification = VerificationResults
                 self.SessionState['ExecutionHistory'].append({
                     'Agent': 'VerifyAgent', 'Status': VerificationResults.get('Status', 'Unknown'), 'Duration': VerifyDuration,
                     'Confidence': VerificationResults.get('Confidence')
                 })
 
                 # Decide loop Break/Continue
-                if (VerificationResults.get('Confidence', 0) >= ConfidenceThreshold) or (iterations >= MaxIterations):
+                if (VerificationResults.get('Confidence', 0) >= ConfidenceThreshold) or (Iterations >= MaxIterations):
                     # Step 3: Planner Agent
                     if TaskId:
                         await TaskMgr.wait_if_paused(TaskId)
@@ -327,7 +327,7 @@ Important Guidelines:
                             SessionState=self.SessionState
                         )
                     PlannerDuration = time.time() - PlannerStartTime
-                    last_action = ActionPlanResults
+                    LastAction = ActionPlanResults
                     self.SessionState['ExecutionHistory'].append({
                         'Agent': 'PlannerAgent', 'Status': ActionPlanResults.get('Status', 'Unknown'), 'Duration': PlannerDuration
                     })
@@ -348,10 +348,10 @@ Important Guidelines:
             # ═══════════════════════════════════════════════════════════
             try:
                 # Store Risk Assessment History
-                if last_forecast:
+                if LastForecast:
                     await GlobalSessionManager.StoreRiskHistory(
                         SessionId=SessionId,
-                        RiskAssessment=last_forecast
+                        RiskAssessment=LastForecast
                     )
                 
                 # Store Farmer Query And Context
@@ -359,19 +359,19 @@ Important Guidelines:
                     SessionId=SessionId,
                     UpdateData={
                         'Query': UserQuery,
-                        'RiskAssessment': last_forecast,
-                        'Recommendation': last_action
+                        'RiskAssessment': LastForecast,
+                        'Recommendation': LastAction
                     }
                 )
                 
                 # Store Important Knowledge
-                if last_action:
+                if LastAction:
                     FarmerKnowledge = {
                         'Location': Location,
                         'Query': UserQuery,
-                        'RisksIdentified': last_forecast.get('Risks', []) if last_forecast else [],
-                        'ActionsRecommended': last_action.get('P1', []) if last_action else [],
-                        'VerificationScore': last_verification.get('OverallVerificationScore', 0) if last_verification else 0
+                        'RisksIdentified': LastForecast.get('Risks', []) if LastForecast else [],
+                        'ActionsRecommended': LastAction.get('P1', []) if LastAction else [],
+                        'VerificationScore': LastVerification.get('OverallVerificationScore', 0) if LastVerification else 0
                     }
                     await GlobalSessionManager.StoreFarmerKnowledge(
                         SessionId=SessionId,
@@ -392,13 +392,13 @@ Important Guidelines:
                 'SessionId': SessionId,
                 'UserQuery': UserQuery,
                 'Location': Location,
-                'ForecastResults': last_forecast,
-                'VerificationResults': last_verification,
-                'ActionPlan': last_action,
+                'ForecastResults': LastForecast,
+                'VerificationResults': LastVerification,
+                'ActionPlan': LastAction,
                 'ExecutionSummary': {
                     'TotalDuration': round(TotalDuration, 3),
                     'AgentExecutions': self.SessionState['ExecutionHistory'],
-                    'Iterations': iterations,
+                    'Iterations': Iterations,
                     'ConfidenceThreshold': ConfidenceThreshold
                 },
                 'Timestamp': '2025-11-17T12:00:00Z'

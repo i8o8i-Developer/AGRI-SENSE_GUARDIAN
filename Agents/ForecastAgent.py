@@ -9,6 +9,7 @@ from google.adk.agents.llm_agent import Agent
 from Tools.WeatherTool import WeatherTool
 from Tools.SatelliteTool import GetSatelliteData
 from Tools.CopernicusTool import CopernicusTool
+from Tools.SoilTestTool import SoilTestTool
 
 
 class ForecastAgent:
@@ -39,135 +40,276 @@ class ForecastAgent:
         """
         pass
     
-    def ComputeRiskFromSources(self, weather: Dict[str, Any], satellite: Dict[str, Any], copernicus: Dict[str, Any]) -> Dict[str, Any]:
+    def ComputeRiskFromSources(self, weather: Dict[str, Any], satellite: Dict[str, Any], copernicus: Dict[str, Any], soil: Dict[str, Any], location: str) -> Dict[str, Any]:
         """
         Fuse Multi-Source Environmental Data Into Comprehensive Agricultural Risk Assessments.
         
         This Method Implements Sophisticated Risk Analysis Algorithms That Combine
-        Weather Forecasts, Satellite Observations, And Climate Model Outputs To
-        Determine Specific Agricultural Risk Levels. Each Risk Category Is Evaluated
-        Based On Scientifically Grounded Thresholds And Multi-Source Validation.
+        Weather Forecasts, Satellite Observations, Climate Model Outputs, And Soil
+        Properties To Determine Specific Agricultural Risk Levels. Incorporates Local
+        Agricultural Patterns And Regional Variations For India-Specific Assessments.
         
         Args:
             weather: Real-Time Weather Data From Meteorological APIs
             satellite: Satellite-Derived Agroclimatology From NASA POWER
             copernicus: ESA Climate Data Including Soil Moisture And NDVI
+            soil: Soil Profile Data From ISRIC SoilGrids Including Texture, pH, Nutrients
+            location: Geographic Location String For Regional Pattern Adjustments
             
         Returns:
             Structured Risk Assessment With Categories, Levels, Confidence Scores,
             And Overall Risk Classification For Agricultural Decision Making
         """
         # Initialize Risk Levels With Conservative Baseline Assumptions
-        drought_level = 'Low'
-        flood_level = 'Low'
-        heat_level = 'Low'
-        disease_level = 'Low'
-        pest_level = 'Low'
-        soil_erosion_level = 'Low'
-        nutrient_leaching_level = 'Low'
-        cold_stress_level = 'Low'
-        vegetation_stress_level = 'Low'
+        DroughtLevel = 'Low'
+        FloodLevel = 'Low'
+        HeatLevel = 'Low'
+        DiseaseLevel = 'Low'
+        PestLevel = 'Low'
+        SoilErosionLevel = 'Low'
+        NutrientLeachingLevel = 'Low'
+        ColdStressLevel = 'Low'
+        VegetationStressLevel = 'Low'
 
         # Extract Weather Signals
         try:
-            precip_total = weather.get('Precipitation', {}).get('Total', 0)
-            precip_prob = weather.get('Precipitation', {}).get('Probability', 0)
-            t_max = weather.get('Temperature', {}).get('Max', 0)
-            humidity = weather.get('Humidity', {}).get('Average', weather.get('Humidity', {}).get('Mean', 0))
+            PrecipTotal = weather.get('Precipitation', {}).get('Total', 0)
+            PrecipProb = weather.get('Precipitation', {}).get('Probability', 0)
+            TMax = weather.get('Temperature', {}).get('Max', 0)
+            Humidity = weather.get('Humidity', {}).get('Average', weather.get('Humidity', {}).get('Mean', 0))
         except Exception:
-            precip_total = 0; precip_prob = 0; t_max = 0; humidity = 0
+            PrecipTotal = 0; PrecipProb = 0; TMax = 0; Humidity = 0
 
         # Extract Satellite (NASA) Signals
-        nasa_precip = satellite.get('Precipitation', {}).get('Total', 0)
-        nasa_temp_avg = satellite.get('Temperature', {}).get('Average', 0)
-        nasa_radiation = satellite.get('SolarRadiation', {}).get('Average', 0)
+        NasaPrecip = satellite.get('Precipitation', {}).get('Total', 0)
+        NasaTempAvg = satellite.get('Temperature', {}).get('Average', 0)
+        NasaRadiation = satellite.get('SolarRadiation', {}).get('Average', 0)
 
         # Extract Copernicus Signals
-        soil = copernicus.get('SoilMoisture', {}) if copernicus else {}
-        soil_level = soil.get('Level', None)
-        et = copernicus.get('Evapotranspiration', {}).get('Rate', None) if copernicus else None
-        ndvi = copernicus.get('VegetationHealth', {}).get('NDVI', None) if copernicus else None
+        CopernicusSoil = copernicus.get('SoilMoisture', {}) if copernicus else {}
+        SoilLevel = CopernicusSoil.get('Level', None)
+        Et = copernicus.get('Evapotranspiration', {}).get('Rate', None) if copernicus else None
+        Ndvi = copernicus.get('VegetationHealth', {}).get('NDVI', None) if copernicus else None
 
-        # Drought: low Precip + High ET + Low Soil Moisture
-        if soil_level is not None and soil_level < 30:
-            drought_level = 'High'
-        elif precip_total < 10 and nasa_precip < 10:
-            drought_level = 'Medium'
+        # Extract Soil Profile Signals
+        SoilProfile = soil.get('SoilProfile', {}) if soil else {}
+        SoilPh = SoilProfile.get('pH', None)
+        SoilTexture = SoilProfile.get('SoilTexture', '')
+        SoilClay = SoilProfile.get('ClayContent', None)
+        SoilSand = SoilProfile.get('SandContent', None)
+        SoilNitrogen = SoilProfile.get('TotalNitrogen', None)
+        SoilOrganicCarbon = SoilProfile.get('SoilOrganicCarbon', None)
 
-        if et is not None and et >= 6:
-            drought_level = 'High'
+        # Determine Regional Agricultural Patterns
+        RegionalAdjustments = self._GetRegionalAdjustments(location)
+
+        # Drought: Low Precip + High ET + Low Soil Moisture + Soil Type Factors
+        DroughtRisk = 0
+        if SoilLevel is not None and SoilLevel < 30:
+            DroughtRisk += 3
+        elif PrecipTotal < 10 and NasaPrecip < 10:
+            DroughtRisk += 2
+
+        if Et is not None and Et >= 6:
+            DroughtRisk += 2
+
+        # Soil Texture Affects Drought Risk
+        if SoilTexture:
+            if 'Sandy' in SoilTexture:
+                DroughtRisk += 1  # Sandy Soils Drain Faster, Higher Drought Risk
+            elif 'Clay' in SoilTexture:
+                DroughtRisk -= 1  # Clay Soils Retain Water Better
+
+        # Regional Adjustments
+        DroughtRisk += RegionalAdjustments.get('drought_modifier', 0)
+
+        if DroughtRisk >= 4:
+            DroughtLevel = 'High'
+        elif DroughtRisk >= 2:
+            DroughtLevel = 'Medium'
 
         # Flood: Very High Precip Totals/Probability
-        if precip_total is not None and precip_total > 200:
-            flood_level = 'High'
-        elif precip_total > 100 or precip_prob > 70:
-            flood_level = 'Medium'
+        if PrecipTotal is not None and PrecipTotal > 200:
+            FloodLevel = 'High'
+        elif PrecipTotal > 100 or PrecipProb > 70:
+            FloodLevel = 'Medium'
 
         # Soil Erosion: High Precip Intensity + Low Vegetation Cover (NDVI Low)
-        if precip_prob > 65 and ndvi is not None and ndvi < 0.5:
-            soil_erosion_level = 'Medium'
-        if precip_prob > 75 and ndvi is not None and ndvi < 0.45:
-            soil_erosion_level = 'High'
+        if PrecipProb > 65 and Ndvi is not None and Ndvi < 0.5:
+            SoilErosionLevel = 'Medium'
+        if PrecipProb > 75 and Ndvi is not None and Ndvi < 0.45:
+            SoilErosionLevel = 'High'
 
-        # Nutrient Leaching: Very high Precipitation + High Soil Moisture
-        if precip_total > 120 and soil_level is not None and soil_level > 60:
-            nutrient_leaching_level = 'Medium'
-        if precip_total > 180 and soil_level is not None and soil_level > 70:
-            nutrient_leaching_level = 'High'
+        # Nutrient Leaching: Very high Precipitation + High Soil Moisture + Soil Texture
+        LeachingRisk = 0
+        if PrecipTotal > 120 and SoilLevel is not None and SoilLevel > 60:
+            LeachingRisk += 2
+        if PrecipTotal > 180 and SoilLevel is not None and SoilLevel > 70:
+            LeachingRisk += 2
+
+        # Soil Texture Affects Leaching
+        if SoilTexture:
+            if 'Sandy' in SoilTexture:
+                LeachingRisk += 2  # Sandy Soils Leach Nutrients Easily
+            elif 'Clay' in SoilTexture:
+                LeachingRisk -= 1  # Clay Soils Retain Nutrients Better
+        if LeachingRisk >= 3:
+            NutrientLeachingLevel = 'High'
+        elif LeachingRisk >= 1:
+            NutrientLeachingLevel = 'Medium'
 
         # Heat Stress: High Max Temps
-        if t_max >= 40 or nasa_temp_avg >= 38:
-            heat_level = 'High'
-        elif t_max >= 35:
-            heat_level = 'Medium'
+        if TMax >= 40 or NasaTempAvg >= 38:
+            HeatLevel = 'High'
+        elif TMax >= 35:
+            HeatLevel = 'Medium'
 
         # Cold Stress: Unusually Low Max Temps or Avg Temps During Growing Period
-        if t_max <= 20 or nasa_temp_avg <= 18:
-            cold_stress_level = 'Medium'
-        if t_max <= 15 or nasa_temp_avg <= 15:
-            cold_stress_level = 'High'
+        if TMax <= 20 or NasaTempAvg <= 18:
+            ColdStressLevel = 'Medium'
+        if TMax <= 15 or NasaTempAvg <= 15:
+            ColdStressLevel = 'High'
 
-        # Disease: High Humidity + Moderate Temps; NDVI Decline Could Also Indicate
-        if humidity >= 80 and 20 <= nasa_temp_avg <= 35:
-            disease_level = 'High'
-        elif humidity >= 65:
-            disease_level = 'Medium'
+        # Disease: High Humidity + Moderate Temps + Soil pH Factors
+        DiseaseRisk = 0
+        if Humidity >= 80 and 20 <= NasaTempAvg <= 35:
+            DiseaseRisk += 3
+        elif Humidity >= 65:
+            DiseaseRisk += 2
+
+        # Soil pH Affects Disease Susceptibility
+        if SoilPh is not None:
+            if SoilPh < 5.5 or SoilPh > 8.0:
+                DiseaseRisk += 1  # Extreme pH Increases Disease Risk
+
+        if DiseaseRisk >= 3:
+            DiseaseLevel = 'High'
+        elif DiseaseRisk >= 1:
+            DiseaseLevel = 'Medium'
 
         # Pest: Heuristic From NDVI Moderate Drop Or Vegetation Cover Signals
-        if ndvi is not None and ndvi < 0.45:
-            pest_level = 'Medium'
+        if Ndvi is not None and Ndvi < 0.45:
+            PestLevel = 'Medium'
 
         # Vegetation Stress: Low NDVI + High ET Or High Temperature Extremes
-        if ndvi is not None and ndvi < 0.50 and (et and et > 5 or t_max > 37):
-            vegetation_stress_level = 'Medium'
-        if ndvi is not None and ndvi < 0.45 and (et and et > 6 or t_max > 39):
-            vegetation_stress_level = 'High'
+        if Ndvi is not None and Ndvi < 0.50 and (Et and Et > 5 or TMax > 37):
+            VegetationStressLevel = 'Medium'
+        if Ndvi is not None and Ndvi < 0.45 and (Et and Et > 6 or TMax > 39):
+            VegetationStressLevel = 'High'
 
         # Confidence From Number Of Sources Available
-        sources = 0
-        sources += 1 if weather else 0
-        sources += 1 if satellite else 0
-        sources += 1 if copernicus else 0
-        base_conf = {1: 65, 2: 78, 3: 88}.get(sources, 60)
+        Sources = 0
+        Sources += 1 if weather else 0
+        Sources += 1 if satellite else 0
+        Sources += 1 if copernicus else 0
+        Sources += 1 if soil else 0
+        BaseConf = {1: 65, 2: 75, 3: 85, 4: 95}.get(Sources, 60)
 
         return {
             'OverallRiskLevel': max([
-                drought_level, flood_level, heat_level, disease_level, pest_level,
-                soil_erosion_level, nutrient_leaching_level, cold_stress_level, vegetation_stress_level
+                DroughtLevel, FloodLevel, HeatLevel, DiseaseLevel, PestLevel,
+                SoilErosionLevel, NutrientLeachingLevel, ColdStressLevel, VegetationStressLevel
             ], key=['Low','Medium','High','Critical'].index),
             'RiskCategories': {
-                'DroughtRisk': {'Level': drought_level, 'Confidence': base_conf},
-                'FloodRisk': {'Level': flood_level, 'Confidence': base_conf},
-                'PestOutbreakRisk': {'Level': pest_level, 'Confidence': base_conf-5},
-                'DiseaseRisk': {'Level': disease_level, 'Confidence': base_conf-5},
-                'HeatStressRisk': {'Level': heat_level, 'Confidence': base_conf},
-                'SoilErosionRisk': {'Level': soil_erosion_level, 'Confidence': base_conf-5},
-                'NutrientLeachingRisk': {'Level': nutrient_leaching_level, 'Confidence': base_conf-5},
-                'ColdStressRisk': {'Level': cold_stress_level, 'Confidence': base_conf-5},
-                'VegetationStressRisk': {'Level': vegetation_stress_level, 'Confidence': base_conf-5}
+                'DroughtRisk': {'Level': DroughtLevel, 'Confidence': BaseConf},
+                'FloodRisk': {'Level': FloodLevel, 'Confidence': BaseConf},
+                'PestOutbreakRisk': {'Level': PestLevel, 'Confidence': BaseConf-5},
+                'DiseaseRisk': {'Level': DiseaseLevel, 'Confidence': BaseConf-5},
+                'HeatStressRisk': {'Level': HeatLevel, 'Confidence': BaseConf},
+                'SoilErosionRisk': {'Level': SoilErosionLevel, 'Confidence': BaseConf-5},
+                'NutrientLeachingRisk': {'Level': NutrientLeachingLevel, 'Confidence': BaseConf-5},
+                'ColdStressRisk': {'Level': ColdStressLevel, 'Confidence': BaseConf-5},
+                'VegetationStressRisk': {'Level': VegetationStressLevel, 'Confidence': BaseConf-5}
             }
         }
     
+    def _GetRegionalAdjustments(self, location: str) -> Dict[str, int]:
+        """
+        Determine Regional Agricultural Patterns And Risk Adjustments For Indian Locations.
+        
+        Based On Major Agricultural Zones In India, Adjust Risk Thresholds To Account For
+        Local Climate Patterns, Soil Types, And Historical Agricultural Challenges.
+        """
+        LocationLower = location.lower()
+        
+        # Default Adjustments
+        adjustments = {
+            'drought_modifier': 0,
+            'flood_modifier': 0,
+            'heat_modifier': 0,
+            'disease_modifier': 0,
+            'pest_modifier': 0,
+            'erosion_modifier': 0,
+            'leaching_modifier': 0,
+            'cold_modifier': 0,
+            'stress_modifier': 0
+        }
+        
+        # Northern India (Punjab, Haryana, Delhi) - Canal Irrigation, Wheat/Rice
+        if any(state in LocationLower for state in ['punjab', 'haryana', 'delhi', 'uttar pradesh', 'rajasthan']):
+            adjustments.update({
+                'drought_modifier': -1,  # Canal Systems Reduce Drought Risk
+                'flood_modifier': 1,    # Monsoon Flooding In Some Areas
+                'heat_modifier': 1,     # Hot Summers
+                'disease_modifier': 0,  # Balanced
+                'pest_modifier': 1      # Intensive Farming Increases Pest Pressure
+            })
+        
+        # Western India (Gujarat, Maharashtra) - Cotton, Sugarcane
+        elif any(state in LocationLower for state in ['gujarat', 'maharashtra', 'goa']):
+            adjustments.update({
+                'drought_modifier': 1,  # Arid Regions
+                'flood_modifier': 0,   # Coastal Areas
+                'heat_modifier': 2,    # Very Hot
+                'disease_modifier': 1, # Humid Coastal Areas
+                'erosion_modifier': 1  # Hilly Areas
+            })
+        
+        # Southern India (Karnataka, Tamil Nadu, Kerala) - Rice, Spices
+        elif any(state in LocationLower for state in ['karnataka', 'tamil nadu', 'kerala', 'andhra pradesh', 'telangana']):
+            adjustments.update({
+                'drought_modifier': 0,
+                'flood_modifier': 1,   # Monsoon Flooding
+                'heat_modifier': 1,    # Hot Climate
+                'disease_modifier': 2, # High Humidity Increases Disease
+                'pest_modifier': 1,    # Tropical Pests
+                'leaching_modifier': 1 # High Rainfall Causes Leaching
+            })
+        
+        # Eastern India (West Bengal, Odisha, Bihar) - Rice Dominant
+        elif any(state in LocationLower for state in ['west bengal', 'odisha', 'bihar', 'jharkhand']):
+            adjustments.update({
+                'drought_modifier': 0,
+                'flood_modifier': 2,   # Frequent Flooding
+                'heat_modifier': 1,
+                'disease_modifier': 2, # High Humidity
+                'erosion_modifier': 1, # River Systems
+                'leaching_modifier': 1
+            })
+        
+        # North-Eastern India - Diverse Crops, Hilly Terrain
+        elif any(state in LocationLower for state in ['assam', 'meghalaya', 'tripura', 'manipur', 'nagaland', 'arunachal pradesh', 'sikkim']):
+            adjustments.update({
+                'drought_modifier': 0,
+                'flood_modifier': 1,   # Monsoon Flooding
+                'heat_modifier': 0,
+                'disease_modifier': 1, # Humid Climate
+                'erosion_modifier': 2, # Hilly Terrain Increases Erosion
+                'cold_modifier': 1     # Higher Altitudes
+            })
+        
+        # Central India (Madhya Pradesh, Chhattisgarh) - Soybean, Wheat
+        elif any(state in LocationLower for state in ['madhya pradesh', 'chhattisgarh']):
+            adjustments.update({
+                'drought_modifier': 1,  # Semi-Arid
+                'flood_modifier': 0,
+                'heat_modifier': 1,    # Hot Climate
+                'disease_modifier': 0,
+                'erosion_modifier': 1
+            })
+        
+        return adjustments
+
     async def ExtractCleanLocation(self, location: str) -> str:
         """
         Extract Clean Geographic Identifier From Complex Location Strings.
@@ -181,16 +323,16 @@ class ForecastAgent:
         location = ' '.join(location.split())
         
         if ',' in location:
-            parts = [p.strip() for p in location.split(',')]
+            Parts = [p.strip() for p in location.split(',')]
             # Filter Out Generic Geographic Terms That Don't Help With Specific Location
-            ignore_terms = {'india'}
-            for part in parts:
-                if part.lower() not in ignore_terms and len(part) > 2:
+            IgnoreTerms = {'india'}
+            for part in Parts:
+                if part.lower() not in IgnoreTerms and len(part) > 2:
                     return part
         
-        words = location.split()
-        if words:
-            return words[0]
+        Words = location.split()
+        if Words:
+            return Words[0]
         
         return location
     
@@ -229,30 +371,37 @@ class ForecastAgent:
             SessionState = {}
         
         try:
-            clean_location = await self.ExtractCleanLocation(Location)
-            print(f"[ForecastAgent] Cleaned location: '{Location}' → '{clean_location}'")
+            CleanLocation = await self.ExtractCleanLocation(Location)
+            print(f"[ForecastAgent] Cleaned location: '{Location}' → '{CleanLocation}'")
         except:
-            clean_location = Location
+            CleanLocation = Location
         
         # Always Call Real Tools And Fuse Results
         try:            
-            weather = await WeatherTool(clean_location, min(max(DaysAhead, 1), 14), None)
-            satellite = await GetSatelliteData(clean_location, min(max(DaysAhead, 1), 30))
-            copernicus = await CopernicusTool(clean_location, min(max(DaysAhead, 1), 30), None)
+            Weather = await WeatherTool(CleanLocation, min(max(DaysAhead, 1), 14), None)
+            Satellite = await GetSatelliteData(CleanLocation, min(max(DaysAhead, 1), 30))
+            Copernicus = await CopernicusTool(CleanLocation, min(max(DaysAhead, 1), 30), None)
+            Soil = await SoilTestTool(CleanLocation, None)
 
-            risks = self.ComputeRiskFromSources(weather or {}, satellite or {}, copernicus or {})
+            # Extract soil variables for drivers
+            SoilProfile = Soil.get('SoilProfile', {}) if Soil else {}
+            SoilPh = SoilProfile.get('pH', None)
+            SoilTexture = SoilProfile.get('SoilTexture', '')
+            CopernicusSoil = Copernicus.get('SoilMoisture', {}) if Copernicus else {}
+
+            risks = self.ComputeRiskFromSources(Weather or {}, Satellite or {}, Copernicus or {}, Soil or {}, Location)
 
             # Assemble Drivers
-            drivers = {
-                'DroughtRisk': ['Low Precipitation Totals', 'High Evapotranspiration' if copernicus else 'Low Soil Moisture Signal'],
+            Drivers = {
+                'DroughtRisk': ['Low Precipitation Totals', 'High Evapotranspiration' if Copernicus else 'Low Soil Moisture Signal', f'{SoilTexture} Soil Texture' if SoilTexture else ''],
                 'FloodRisk': ['High Precipitation Totals Or Probability'],
-                'PestOutbreakRisk': ['Low NDVI Indicating Stress' if (copernicus and copernicus.get('VegetationHealth',{}).get('NDVI',1)<0.45) else 'Seasonal Baseline'],
-                'DiseaseRisk': ['High Humidity With Moderate Temperatures'],
+                'PestOutbreakRisk': ['Low NDVI Indicating Stress' if (Copernicus and Copernicus.get('VegetationHealth',{}).get('NDVI',1)<0.45) else 'Seasonal Baseline'],
+                'DiseaseRisk': ['High Humidity With Moderate Temperatures', f'Soil pH {SoilPh:.1f}' if SoilPh else ''],
                 'HeatStressRisk': ['High Max Temperature Forecast'],
-                'SoilErosionRisk': ['High Rainfall Probability', 'Low Vegetation Cover' if (copernicus and copernicus.get('VegetationHealth',{}).get('NDVI',1)<0.5) else 'Moderate Vegetation'],
-                'NutrientLeachingRisk': ['High Precipitation Totals', 'High Soil Moisture Levels' if (copernicus and copernicus.get('SoilMoisture',{}).get('Level',100)>60) else 'Moderate Moisture'],
+                'SoilErosionRisk': ['High Rainfall Probability', 'Low Vegetation Cover' if (Copernicus and Copernicus.get('VegetationHealth',{}).get('NDVI',1)<0.5) else 'Moderate Vegetation'],
+                'NutrientLeachingRisk': ['High Precipitation Totals', 'High Soil Moisture Levels' if (Copernicus and CopernicusSoil.get('Level',100)>60) else 'Moderate Moisture', f'{SoilTexture} Soil Type' if SoilTexture else ''],
                 'ColdStressRisk': ['Low Max Temperature', 'Low Avg Temperature'],
-                'VegetationStressRisk': ['Low NDVI', 'High ET Rate' if (copernicus and copernicus.get('Evapotranspiration',{}).get('Rate',0)>5) else 'Moderate ET']
+                'VegetationStressRisk': ['Low NDVI', 'High ET Rate' if (Copernicus and Copernicus.get('Evapotranspiration',{}).get('Rate',0)>5) else 'Moderate ET']
             }
 
             result = {
@@ -263,21 +412,22 @@ class ForecastAgent:
                 'ForecastHorizonDays': DaysAhead,
                 'OverallRiskLevel': risks['OverallRiskLevel'],
                 'RiskCategories': {
-                    'DroughtRisk': {**risks['RiskCategories']['DroughtRisk'], 'Drivers': drivers['DroughtRisk']},
-                    'FloodRisk': {**risks['RiskCategories']['FloodRisk'], 'Drivers': drivers['FloodRisk']},
-                    'PestOutbreakRisk': {**risks['RiskCategories']['PestOutbreakRisk'], 'Drivers': drivers['PestOutbreakRisk']},
-                    'DiseaseRisk': {**risks['RiskCategories']['DiseaseRisk'], 'Drivers': drivers['DiseaseRisk']},
-                    'HeatStressRisk': {**risks['RiskCategories']['HeatStressRisk'], 'Drivers': drivers['HeatStressRisk']},
-                    'SoilErosionRisk': {**risks['RiskCategories']['SoilErosionRisk'], 'Drivers': drivers['SoilErosionRisk']},
-                    'NutrientLeachingRisk': {**risks['RiskCategories']['NutrientLeachingRisk'], 'Drivers': drivers['NutrientLeachingRisk']},
-                    'ColdStressRisk': {**risks['RiskCategories']['ColdStressRisk'], 'Drivers': drivers['ColdStressRisk']},
-                    'VegetationStressRisk': {**risks['RiskCategories']['VegetationStressRisk'], 'Drivers': drivers['VegetationStressRisk']}
+                    'DroughtRisk': {**risks['RiskCategories']['DroughtRisk'], 'Drivers': Drivers['DroughtRisk']},
+                    'FloodRisk': {**risks['RiskCategories']['FloodRisk'], 'Drivers': Drivers['FloodRisk']},
+                    'PestOutbreakRisk': {**risks['RiskCategories']['PestOutbreakRisk'], 'Drivers': Drivers['PestOutbreakRisk']},
+                    'DiseaseRisk': {**risks['RiskCategories']['DiseaseRisk'], 'Drivers': Drivers['DiseaseRisk']},
+                    'HeatStressRisk': {**risks['RiskCategories']['HeatStressRisk'], 'Drivers': Drivers['HeatStressRisk']},
+                    'SoilErosionRisk': {**risks['RiskCategories']['SoilErosionRisk'], 'Drivers': Drivers['SoilErosionRisk']},
+                    'NutrientLeachingRisk': {**risks['RiskCategories']['NutrientLeachingRisk'], 'Drivers': Drivers['NutrientLeachingRisk']},
+                    'ColdStressRisk': {**risks['RiskCategories']['ColdStressRisk'], 'Drivers': Drivers['ColdStressRisk']},
+                    'VegetationStressRisk': {**risks['RiskCategories']['VegetationStressRisk'], 'Drivers': Drivers['VegetationStressRisk']}
                 },
                 'MonitoringFrequency': 'Weekly' if DaysAhead <= 30 else 'Twice Weekly',
                 'DataSources': [
-                    weather.get('DataSource', 'Open-Meteo') if isinstance(weather, dict) else 'WeatherTool',
-                    satellite.get('DataSource', 'NASA POWER') if isinstance(satellite, dict) else 'SatelliteTool',
-                    copernicus.get('DataSource', 'CopernicusCDS') if isinstance(copernicus, dict) else 'CopernicusTool'
+                    Weather.get('DataSource', 'Open-Meteo') if isinstance(Weather, dict) else 'WeatherTool',
+                    Satellite.get('DataSource', 'NASA POWER') if isinstance(Satellite, dict) else 'SatelliteTool',
+                    Copernicus.get('DataSource', 'CopernicusCDS') if isinstance(Copernicus, dict) else 'CopernicusTool',
+                    Soil.get('DataSource', 'ISRIC SoilGrids') if isinstance(Soil, dict) else 'SoilTestTool'
                 ],
                 'GeneratedAt': risks.get('Timestamp', '2025-11-17T12:00:00Z')
             }
@@ -297,7 +447,7 @@ class ForecastAgent:
 
 # ADK LlmAgent Wrapper With Real Tool Calling
 # Exposes An Agent The Orchestrator/Runner Can Use For Tool-Oriented Execution
-root_agent = Agent(
+RootAgent = Agent(
     model="gemini-2.0-flash",
     name="forecast_agent",
     description=(
@@ -305,10 +455,10 @@ root_agent = Agent(
     ),
     instruction=(
         "You Are The ForecastAgent - Provide JSON Only, No Markdown Or Asterisks. \n"
-        "Call Weather, Satellite, And Copernicus Tools; Fuse Signals Into Risk Categories. \n"
+        "Call Weather, Satellite, Copernicus, And Soil Tools; Fuse Signals Into Risk Categories. \n"
         "Output keys: Status, AgentName, Location, ForecastHorizonDays, OverallRiskLevel, RiskCategories, MonitoringFrequency, DataSources, GeneratedAt, UserQuery. \n"
         "RiskCategories Each Include Level, Confidence, Drivers (Array Of Driver Phrases), And Must Be Plain Text. \n"
-        "Confidence Based On Number Of Sources: 3=88, 2=78, 1=65. Deduct 5 If Signal Weak. \n"
+        "Confidence Based On Number Of Sources: 4=95, 3=85, 2=75, 1=65. Deduct 5 If Signal Weak. \n"
         "Use Indian Agricultural Context; Include Numeric Measurements With Units (%, mm, °C). \n"
         "Never Add Formatting Markers (*, **). Plain JSON Only."
     ),
@@ -316,10 +466,11 @@ root_agent = Agent(
         WeatherTool,
         GetSatelliteData,
         CopernicusTool,
+        SoilTestTool,
     ],
 )
 
 __all__ = [
     'ForecastAgent',
-    'root_agent',
+    'RootAgent',
 ]

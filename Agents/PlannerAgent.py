@@ -8,6 +8,7 @@ from google.adk.tools.tool_context import ToolContext
 from google.genai import types
 from typing import Dict, Any, List
 import sys
+from Tools.EmailNotificationTool import EmailNotificationTool
 import os
 sys.path.append('..')
 from Tools import EmailNotificationTool
@@ -576,3 +577,29 @@ AgriSense Guardian Team
             'UserQueryResponse': user_question_response,
             'GeneratedAt': '2025-11-18T00:00:00Z'
         }
+
+
+# ADK LlmAgent Wrapper With Real Tool Calling
+# Exposes An Agent The Orchestrator/Runner Can Use For Tool-Oriented Execution
+RootAgent = Agent(
+    model="gemini-2.5-flash-lite",
+    name="planner_agent",
+    description=(
+        "Action Planning Specialist For Agricultural Decision Support"
+    ),
+    instruction=(
+        "You Are The PlannerAgent - Provide JSON Only, No Markdown Or Asterisks. \n"
+        "Generate Prioritized Action Plans Based On Risk Data And User Queries. \n"
+        "Prioritize UserQuery If Present, Then Risk-Based Actions. \n"
+        "Output keys: Status, AgentName, Location, P1, P2, P3, NotificationSummary, EmailDeliveryStatus, AdvisoryResources, UserQuestion, ImmediateAction, ThisWeekAction, GeneratedAt. \n"
+        "Plain JSON Only."
+    ),
+    tools=[
+        EmailNotificationTool,
+    ],
+)
+
+__all__ = [
+    'PlannerAgent',
+    'RootAgent',
+]

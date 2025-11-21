@@ -896,6 +896,13 @@ body {
   gap: var(--Space2);
 }
 
+.ActionHeader{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--Space4);
+}
+
 .ActionList {
   list-style: none;
   display: grid;
@@ -903,24 +910,47 @@ body {
 }
 
 .ActionItem {
-  padding: var(--Space4);
+  padding: 20px 24px;
   background: var(--ColorSurface);
-  border-left: 3px solid var(--ColorPrimary);
-  border-radius: var(--RadiusSm);
-  transition: all var(--TransitionFast);
+  border-left: 4px solid var(--ColorPrimary);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.ActionItem::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .ActionItem:hover {
   transform: translateX(4px);
   background: var(--ColorCardHover);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ActionItem:hover::before {
+  opacity: 1;
 }
 
 .ActionItem.priority-high {
   border-left-color: var(--ColorDanger);
+  border-left-width: 5px;
 }
 
 .ActionItem.priority-medium {
   border-left-color: var(--ColorWarning);
+  border-left-width: 5px;
 }
 
 .ActionItem.priority-low {
@@ -935,24 +965,102 @@ body {
   margin-bottom: var(--Space3);
 }
 
+/* Markdown content inside action items */
+.ActionItem .markdown-content {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.ActionItem .markdown-content h1,
+.ActionItem .markdown-content h2,
+.ActionItem .markdown-content h3,
+.ActionItem .markdown-content h4 {
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+.ActionItem .markdown-content h1 { font-size: 1.4em; }
+.ActionItem .markdown-content h2 { font-size: 1.25em; }
+.ActionItem .markdown-content h3 { font-size: 1.1em; }
+.ActionItem .markdown-content h4 { font-size: 1em; }
+
+.ActionItem .markdown-content p {
+  margin-bottom: 0.75em;
+}
+
+.ActionItem .markdown-content ul,
+.ActionItem .markdown-content ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.ActionItem .markdown-content li {
+  margin-bottom: 0.25em;
+}
+
+.ActionItem .markdown-content strong {
+  color: var(--ColorPrimary);
+}
+
+.ActionMeta,
 .action-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--Space3);
-  margin-top: var(--Space3);
-  padding-top: var(--Space3);
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 16px;
   border-top: 1px solid var(--ColorBorder);
   font-size: 13px;
 }
 
+.ActionMeta .meta,
 .action-meta .meta {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  background: var(--ColorCard);
-  border-radius: var(--RadiusSm);
-  color: var(--ColorTextMuted);
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--ColorBorder);
+  border-radius: 6px;
+  color: var(--ColorText);
+  font-weight: 500;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.ActionMeta .meta:hover,
+.action-meta .meta:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--ColorBorderHover);
+  transform: translateY(-1px);
+}
+
+.ActionMeta .meta.dead,
+.action-meta .meta.dead {
+  border-color: rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+}
+
+.ActionMeta .meta.res,
+.action-meta .meta.res {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+}
+
+.ActionMeta .meta.cost,
+.action-meta .meta.cost {
+  border-color: rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.1);
+  color: #fbbf24;
+}
+
+.ActionMeta .meta.outcome,
+.action-meta .meta.outcome {
+  border-color: rgba(168, 85, 247, 0.4);
+  background: rgba(168, 85, 247, 0.1);
+  color: #c084fc;
   border: 1px solid var(--ColorBorder);
   white-space: nowrap;
 }
@@ -983,28 +1091,73 @@ body {
 
 /* ===== INFO BOX ===== */
 .InfoBox {
-  padding: var(--Space5);
-  border-radius: var(--RadiusLg);
+  padding: 0;
+  border-radius: 12px;
   margin-top: var(--Space4);
   margin-bottom: var(--Space4);
   background: var(--ColorCard);
   border: 2px solid var(--ColorBorder);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  line-height: 1.8;
-  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-.InfoBox strong {
-  font-size: 16px;
-  display: block;
-  margin-bottom: var(--Space3);
-  padding-bottom: var(--Space2);
+.InfoBox:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid var(--ColorBorder);
 }
 
-.InfoBox > div {
-  margin-top: var(--Space3);
-  padding-left: var(--Space2);
+.info-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.info-header strong {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.info-content {
+  padding: 20px 24px;
+}
+
+.info-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.info-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ColorTextMuted);
+  min-width: 80px;
+}
+
+.info-value {
+  font-size: 15px;
+  color: var(--ColorText);
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.info-message {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ColorTextMuted);
+  margin-top: 8px;
 }
 
 .InfoBox span {
@@ -1013,8 +1166,13 @@ body {
 }
 
 .InfoBox.success {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.15) 100%);
-  border-color: rgba(16, 185, 129, 0.4);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.03) 100%);
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+.InfoBox.success .info-header {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.08) 100%);
+  border-bottom-color: rgba(16, 185, 129, 0.3);
 }
 
 .InfoBox.success strong {
@@ -1022,8 +1180,13 @@ body {
 }
 
 .InfoBox.error {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.15) 100%);
-  border-color: rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.03) 100%);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.InfoBox.error .info-header {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%);
+  border-bottom-color: rgba(239, 68, 68, 0.3);
 }
 
 .InfoBox.error strong {
@@ -1031,8 +1194,13 @@ body {
 }
 
 .InfoBox.info {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.15) 100%);
-  border-color: rgba(59, 130, 246, 0.4);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0.03) 100%);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.InfoBox.info .info-header {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%);
+  border-bottom-color: rgba(59, 130, 246, 0.3);
 }
 
 .InfoBox.info strong {
@@ -1440,6 +1608,59 @@ body {
   .FooterDescription {
     max-width: 100%;
   }
+  
+  /* Mobile-optimized InfoBox */
+  .InfoBox {
+    border-radius: 8px;
+  }
+  
+  .info-header {
+    padding: 16px 20px;
+    gap: 10px;
+  }
+  
+  .info-icon {
+    font-size: 20px;
+  }
+  
+  .info-header strong {
+    font-size: 16px;
+  }
+  
+  .info-content {
+    padding: 16px 20px;
+  }
+  
+  .info-row {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
+  
+  .info-label {
+    min-width: auto;
+    font-size: 13px;
+  }
+  
+  .info-value {
+    font-size: 14px;
+  }
+  
+  /* Mobile-optimized ActionItem */
+  .ActionItem {
+    padding: 16px 18px;
+    border-radius: 8px;
+  }
+  
+  .ActionItem .markdown-content {
+    font-size: 14px;
+  }
+  
+  .ActionMeta .meta,
+  .action-meta .meta {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
 }
 
 /* ===== ANIMATIONS ===== */
@@ -1485,3 +1706,254 @@ body {
 .mt-6 { margin-top: var(--Space6); }
 .mb-4 { margin-bottom: var(--Space4); }
 .mb-6 { margin-bottom: var(--Space6); }
+
+/* ========================================
+   📝 MARKDOWN CONTENT STYLING
+   ======================================== */
+.markdown-content {
+  line-height: 1.7;
+  color: var(--ColorText);
+  text-align: left;
+  width: 100%;
+}
+
+/* Support For Centered And Right-Aligned Content */
+.markdown-content .text-center,
+.markdown-content [align="center"] {
+  text-align: center;
+}
+
+.markdown-content .text-right,
+.markdown-content [align="right"] {
+  text-align: right;
+}
+
+.markdown-content .text-left,
+.markdown-content [align="left"] {
+  text-align: left;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6 {
+  margin-top: 0.5em;
+  margin-bottom: 0.25em;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ColorText);
+  text-align: left;
+}
+
+.markdown-content h1 { font-size: 1.5em; border-bottom: 2px solid var(--ColorBorder); padding-bottom: 0.25em; }
+.markdown-content h2 { font-size: 1.35em; border-bottom: 1px solid var(--ColorBorder); padding-bottom: 0.25em; }
+.markdown-content h3 { font-size: 1.15em; }
+.markdown-content h4 { font-size: 1em; }
+.markdown-content h5 { font-size: 0.95em; }
+.markdown-content h6 { font-size: 0.9em; color: var(--ColorTextMuted); }
+
+.markdown-content p {
+  margin-bottom: 0.4em;
+  line-height: 1.55;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 0.4em 0;
+  padding-left: 1.8em;
+}
+
+.markdown-content li {
+  margin-bottom: 0.3em;
+  line-height: 1.6;
+  padding-left: 0.3em;
+}
+
+/* Nested lists - Proper Indentation For Sub-Bullets */
+.markdown-content li > ul,
+.markdown-content li > ol {
+  margin-top: 0.4em;
+  margin-bottom: 0.4em;
+  padding-left: 1.5em;
+}
+
+/* Better Spacing For Nested List Items */
+.markdown-content li > ul > li,
+.markdown-content li > ol > li {
+  margin-bottom: 0.35em;
+  line-height: 1.55;
+}
+
+/* Third level Nesting (If Needed) */
+.markdown-content li > ul > li > ul,
+.markdown-content li > ol > li > ol {
+  margin-top: 0.3em;
+  padding-left: 1.4em;
+}
+
+.markdown-content strong {
+  font-weight: 700;
+  color: var(--ColorText);
+}
+
+.markdown-content em {
+  font-style: italic;
+  color: var(--ColorTextMuted);
+}
+
+.markdown-content code {
+  background: var(--ColorCardHover);
+  border: 1px solid var(--ColorBorder);
+  border-radius: 4px;
+  padding: 0.2em 0.4em;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9em;
+  color: var(--ColorPrimary);
+}
+
+.markdown-content pre {
+  background: var(--ColorCardHover);
+  border: 1px solid var(--ColorBorder);
+  border-radius: 8px;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.markdown-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--ColorText);
+}
+
+.markdown-content blockquote {
+  border-left: 4px solid var(--ColorPrimary);
+  padding-left: 1em;
+  margin: 1em 0;
+  color: var(--ColorTextMuted);
+  font-style: italic;
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 0.95em;
+}
+
+.markdown-content table th,
+.markdown-content table td {
+  border: 1px solid var(--ColorBorder);
+  padding: 0.75em 1em;
+  text-align: left;
+}
+
+/* Support Markdown Table Alignment */
+.markdown-content table th[align="left"],
+.markdown-content table td[align="left"] {
+  text-align: left;
+}
+
+.markdown-content table th[align="center"],
+.markdown-content table td[align="center"] {
+  text-align: center;
+}
+
+.markdown-content table th[align="right"],
+.markdown-content table td[align="right"] {
+  text-align: right;
+}
+
+.markdown-content table th {
+  background: var(--ColorCardHover);
+  font-weight: 700;
+  color: var(--ColorText);
+}
+
+.markdown-content table tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.markdown-content a {
+  color: var(--ColorPrimary);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.markdown-content a:hover {
+  border-bottom-color: var(--ColorPrimary);
+}
+
+.markdown-content hr {
+  border: none;
+  border-top: 2px solid var(--ColorBorder);
+  margin: 2em 0;
+}
+
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1em 0;
+}
+
+/* List Styling Improvements */
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+/* Parent list Items - Disc Bullets */
+.markdown-content > ul > li,
+.markdown-content li > ul > li > ul > li {
+  list-style-type: disc;
+}
+
+/* First level Nested Items - Circle Bullets */
+.markdown-content li > ul > li {
+  list-style-type: circle;
+}
+
+/* Second level Nested Items - Square Bullets */
+.markdown-content li > ul > li > ul > li {
+  list-style-type: square;
+}
+
+.markdown-content li::marker {
+  color: var(--ColorPrimary);
+  font-weight: 600;
+}
+
+/* Code Block Syntax Highlighting */
+.markdown-content pre[class*="language-"] {
+  background: #1e1e1e;
+  color: #d4d4d4;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .markdown-content h1 { font-size: 1.75em; }
+  .markdown-content h2 { font-size: 1.4em; }
+  .markdown-content h3 { font-size: 1.2em; }
+  
+  .markdown-content ul,
+  .markdown-content ol {
+    padding-left: 1.5em;
+  }
+  
+  .markdown-content table {
+    font-size: 0.85em;
+  }
+  
+  .markdown-content table th,
+  .markdown-content table td {
+    padding: 0.5em 0.75em;
+  }
+}

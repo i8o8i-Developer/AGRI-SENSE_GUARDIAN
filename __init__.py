@@ -9,8 +9,11 @@ __description__ = "Multi-Agent Agricultural Decision Support System Using Google
 from .Agents import (
     OrchestratorAgent,
     ForecastAgent,
+    ForecastRootAgent,
     VerifyAgent,
-    PlannerAgent
+    VerifyRootAgent,
+    PlannerAgent,
+    PlannerRootAgent
 )
 
 from .Tools import (
@@ -19,6 +22,7 @@ from .Tools import (
     SatelliteFetchTool,
     CopernicusTool,
     EmailNotificationTool,
+    SoilTestTool,
 )
 
 from .Utils import SetupLogger, AgentTelemetry
@@ -27,14 +31,18 @@ __all__ = [
     # Agents
     'OrchestratorAgent',
     'ForecastAgent',
+    'ForecastRootAgent',
     'VerifyAgent',
+    'VerifyRootAgent',
     'PlannerAgent',
+    'PlannerRootAgent',
     # Tools
     'WeatherTool',
     'GetSatelliteData',
     'SatelliteFetchTool',
     'CopernicusTool',
     'EmailNotificationTool',
+    'SoilTestTool',
     # Utilities
     'SetupLogger',
     'AgentTelemetry'

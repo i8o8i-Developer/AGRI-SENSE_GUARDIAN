@@ -121,11 +121,11 @@ class HealthService:
         Returns:
             Dict[str, AgentHealth]: Dictionary Mapping Agent Names To Health Status
         """
-        results: Dict[str, AgentHealth] = {}
-        results["orchestrator"] = self._build_agent_health("orchestrator", self.ports.orchestrator)
-        results["forecast"] = self._build_agent_health("forecast", self.ports.forecast)
-        results["verify"] = self._build_agent_health("verify", self.ports.verify)
-        return results
+        Results: Dict[str, AgentHealth] = {}
+        Results["orchestrator"] = self._build_agent_health("orchestrator", self.ports.orchestrator)
+        Results["forecast"] = self._build_agent_health("forecast", self.ports.forecast)
+        Results["verify"] = self._build_agent_health("verify", self.ports.verify)
+        return Results
 
     def readiness(self) -> Dict[str, object]:
         """
@@ -141,18 +141,18 @@ class HealthService:
                 - host: Target Host Being Checked
                 - agents: Dictionary Of Individual Agent Health Statuses
         """
-        agent_health = self.check_a2a_agents()
-        all_healthy = all(agent.port_open for agent in agent_health.values())
+        AgentHealthResults = self.check_a2a_agents()
+        AllHealthy = all(agent.port_open for agent in AgentHealthResults.values())
         
         return {
-            "ready": all_healthy,
+            "ready": AllHealthy,
             "host": self.host,
             "agents": {
                 name: {
                     "port_open": agent.port_open,
                     "http_status": agent.http_status
                 }
-                for name, agent in agent_health.items()
+                for name, agent in AgentHealthResults.items()
             }
         }
 

@@ -621,31 +621,56 @@ function DisplayActionPlan(ActionPlan) {
       if (typeof Action !== 'string') {
         raw = Action.Action || Action.title || JSON.stringify(Action);
       }
-      // Transform Markdown Bullets/Bold Into Plain Text With line Breaks
-      let formatted = raw
-        .replace(/\r/g, '')
-        .replace(/\n\s*\*/g, '\n•')
-        .replace(/^\s*\*/g, '•')
-        .replace(/\*\*(.*?)\*\*/g, '$1')
-        .replace(/IMMEDIATE ACTION:/gi, 'Immediate Action:')
-        .replace(/THIS WEEK:/gi, 'This Week:');
-      // Preserve Newlines As <br>
-      formatted = formatted.split(/\n+/).map(l => l.trim()).filter(Boolean).join('<br>');
+      
+      // Render Markdown Instead Of Plain Text Conversion
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'markdown-content';
+      contentDiv.innerHTML = RenderMarkdown(raw);
+      Li.appendChild(contentDiv);
+      
       // Append Enrichment Metadata If Present
       if (typeof Action === 'object') {
         const metaParts = [];
         if (Action.Deadline) metaParts.push(`<span class="meta dead">🕒 ${Action.Deadline}</span>`);
         if (Action.Resources && Action.Resources.length) metaParts.push(`<span class="meta res">🔧 ${Action.Resources.join(', ')}</span>`);
-        if (Action.CostEstimateINR !== undefined) metaParts.push(`<span class="meta cost">💰 ₹${Action.CostEstimateINR}</span>`);
+        if (Action.CostEstimateINR !== undefined) metaParts.push(`<span class="meta cost">₹${Action.CostEstimateINR}</span>`);
         if (Action.ExpectedOutcome) metaParts.push(`<span class="meta outcome">🎯 ${Action.ExpectedOutcome}</span>`);
-        const metaBlock = metaParts.length ? `<div class="action-meta">${metaParts.join('')}</div>` : '';
-        Li.innerHTML = `<div class="action-desc">${formatted}</div>${metaBlock}`;
-      } else {
-        Li.innerHTML = formatted;
+        
+        if (metaParts.length) {
+          const MetaDiv = document.createElement('div');
+          MetaDiv.className = 'ActionMeta';
+          MetaDiv.innerHTML = metaParts.join(' ');
+          Li.appendChild(MetaDiv);
+        }
       }
       Container.appendChild(Li);
     });
   });
+}
+
+// ===== MARKDOWN RENDERING UTILITY =====
+function RenderMarkdown(text) {
+  if (!text) return '—';
+  
+  // Configure Marked Options For Better Rendering
+  if (typeof marked !== 'undefined') {
+    marked.setOptions({
+      breaks: true,
+      gfm: true,
+      headerIds: false,
+      mangle: false
+    });
+    
+    try {
+      return marked.parse(text);
+    } catch (e) {
+      console.error('Markdown Parsing Error:', e);
+      return text.replace(/\n/g, '<br>');
+    }
+  }
+  
+  // Fallback If Marked Is Not Loaded
+  return text.replace(/\n/g, '<br>');
 }
 
 // ===== QUESTION & ANSWER SECTION =====
@@ -659,7 +684,12 @@ function DisplayQuestionAnswer(ActionPlan) {
     return;
   }
   document.getElementById('FarmerQuestion').textContent = question || '—';
-  document.getElementById('UserQueryResponse').textContent = response || '—';
+  
+  // Render markdown for LLM response
+  const responseElement = document.getElementById('UserQueryResponse');
+  responseElement.innerHTML = RenderMarkdown(response);
+  responseElement.classList.add('markdown-content');
+  
   Box.style.display = 'block';
 }
 
@@ -675,25 +705,43 @@ function DisplayEmailStatus(Status) {
     const Box = document.createElement('div');
     Box.className = 'InfoBox success';
     Box.innerHTML = `
-      <strong>✅ Email Delivered</strong><br>
-      Sent To: ${Status.EmailRecipient || 'Provided Address'}<br>
-      ${Status.Message || 'Email Notification Sent Successfully'}
+      <div class="info-header">
+        <span class="info-icon">✅</span>
+        <strong>Email Delivered</strong>
+      </div>
+      <div class="info-content">
+        <div class="info-row">
+          <span class="info-label">Sent To:</span>
+          <span class="info-value">${Status.EmailRecipient || 'Provided Address'}</span>
+        </div>
+        <div class="info-message">${Status.Message || 'Email Notification Sent Successfully'}</div>
+      </div>
     `;
     Container.appendChild(Box);
   } else if (statusCode === 'skipped') {
     const Box = document.createElement('div');
     Box.className = 'InfoBox info';
     Box.innerHTML = `
-      <strong>ℹ️ Email Skipped</strong><br>
-      ${Status.Reason || 'No Email Address Provided'}
+      <div class="info-header">
+        <span class="info-icon">ℹ️</span>
+        <strong>Email Skipped</strong>
+      </div>
+      <div class="info-content">
+        <div class="info-message">${Status.Reason || 'No Email Address Provided'}</div>
+      </div>
     `;
     Container.appendChild(Box);
   } else if (statusCode === 'error') {
     const Box = document.createElement('div');
     Box.className = 'InfoBox error';
     Box.innerHTML = `
-      <strong>⚠️ Email Delivery Failed</strong><br>
-      ${Status.Message || 'Unable to send Email Notification. Please check your Email Address.'}
+      <div class="info-header">
+        <span class="info-icon">⚠️</span>
+        <strong>Email Delivery Failed</strong>
+      </div>
+      <div class="info-content">
+        <div class="info-message">${Status.Message || 'Unable To Send Email Notification. Please Check Your Email Address.'}</div>
+      </div>
     `;
     Container.appendChild(Box);
   }
