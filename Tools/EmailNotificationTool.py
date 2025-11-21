@@ -95,24 +95,110 @@ async def EmailNotificationTool(
         # Plain Text Version
         TextPart = MIMEText(MessageContent, 'plain', 'utf-8')
         
-        # HTML Version (Enhanced Formatting)
+        # HTML Version (Enhanced Formatting With Modern Design)
         HtmlContent = f"""
-        <html>
-            <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <div style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); padding: 20px; color: white;">
-                    <h1 style="margin: 0;">🌾 AgriSenseGuardian</h1>
-                    <p style="margin: 5px 0 0 0; opacity: 0.9;">Agricultural Decision Support System</p>
-                </div>
-                <div style="padding: 20px; background: #f5f5f5;">
-                    <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                        <pre style="white-space: pre-wrap; font-family: 'Courier New', monospace; line-height: 1.6;">{MessageContent}</pre>
-                    </div>
-                    <p style="text-align: center; color: #666; font-size: 12px; margin-top: 20px;">
-                        Powered By Google ADK & A2A Protocol | Message ID: {MessageId}
-                        Build With 💚 For Farmers Worldwide | From : Anubhav Chaurasia
-                    </p>
-                </div>
-            </body>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="color-scheme" content="light">
+            <meta name="supported-color-schemes" content="light">
+            <title>{Subject}</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f0f4f8; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f0f4f8; padding: 20px 0;">
+                <tr>
+                    <td align="center">
+                        <!-- Main Container -->
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                            
+                            <!-- Header Section -->
+                            <tr>
+                                <td style="background: linear-gradient(135deg, #4CAF50 0%, #388E3C 50%, #2E7D32 100%); padding: 40px 30px; text-align: center;">
+                                    <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700; letter-spacing: -0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                                        🌾 AgriSenseGuardian
+                                    </h1>
+                                    <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.95); font-size: 15px; font-weight: 400; letter-spacing: 0.3px;">
+                                        AI-Powered Agricultural Intelligence Platform
+                                    </p>
+                                </td>
+                            </tr>
+                            
+                            <!-- Subject Banner -->
+                            <tr>
+                                <td style="background: linear-gradient(90deg, #e8f5e9 0%, #c8e6c9 100%); padding: 15px 30px; border-bottom: 3px solid #4CAF50;">
+                                    <p style="margin: 0; color: #2E7D32; font-size: 16px; font-weight: 600; text-align: center;">
+                                        📬 {Subject}
+                                    </p>
+                                </td>
+                            </tr>
+                            
+                            <!-- Message Content -->
+                            <tr>
+                                <td style="padding: 30px;">
+                                    <div style="background: #fafafa; border-left: 4px solid #4CAF50; border-radius: 8px; padding: 25px; margin-bottom: 20px;">
+                                        <pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace; font-size: 14px; line-height: 1.7; color: #333333; margin: 0; overflow-x: auto;">{MessageContent}</pre>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- Action Footer -->
+                            <tr>
+                                <td style="background: linear-gradient(90deg, #f5f5f5 0%, #e8e8e8 100%); padding: 25px 30px; border-top: 1px solid #e0e0e0;">
+                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                                        <tr>
+                                            <td style="text-align: center; padding-bottom: 15px;">
+                                                <p style="margin: 0; color: #555555; font-size: 13px; font-weight: 500;">
+                                                    🤖 Powered By <strong style="color: #4CAF50;">Google ADK</strong> & <strong style="color: #2196F3;">A2A Protocol</strong>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: center; padding-bottom: 10px;">
+                                                <p style="margin: 0; color: #777777; font-size: 12px;">
+                                                    Message ID: <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px; font-family: monospace; color: #333333;">{MessageId}</code>
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: center; border-top: 1px solid #d0d0d0; padding-top: 15px;">
+                                                <p style="margin: 0; color: #888888; font-size: 11px; line-height: 1.5;">
+                                                    Built With 💚 For Farmers Worldwide<br>
+                                                    <strong style="color: #4CAF50;">Anubhav Chaurasia</strong> | Open-Source Agricultural AI
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: center; padding-top: 10px;">
+                                                <p style="margin: 0; color: #999999; font-size: 10px;">
+                                                    © 2025 AgriSenseGuardian | Apache 2.0 License
+                                                </p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            
+                        </table>
+                        
+                        <!-- Email Client Compatibility Footer -->
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width: 600px; margin-top: 15px;">
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">
+                                    <p style="margin: 0; color: #999999; font-size: 11px; line-height: 1.5;">
+                                        🌍 Supporting Sustainable Agriculture Through AI Technology<br>
+                                        <a href="https://github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN" style="color: #4CAF50; text-decoration: none; font-weight: 500;">View On GitHub</a> | 
+                                        <a href="https://github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN/tree/main/Docs" style="color: #2196F3; text-decoration: none; font-weight: 500;">Documentation</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                    </td>
+                </tr>
+            </table>
+        </body>
         </html>
         """
         HtmlPart = MIMEText(HtmlContent, 'html', 'utf-8')

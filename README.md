@@ -458,7 +458,7 @@ ERRORS = Counter("agent_errors_total", ["agent"])
 - ❌ `agent_errors_total` — Error Rate Per Agent
 - 🔄 `agent_iterations_total` — Loop Agent Retry Count
 
-**Grafana Dashboard Ready** — Import `docs/grafana-dashboard.json` For Pre-Built Visualizations
+**Grafana Dashboard Ready** — Import `Docs/Grafana-Dashboard.json` For Pre-Built Visualizations
 
 ---
 
@@ -620,24 +620,24 @@ Create A `.env` File In The Project Root:
 
 ```env
 # Google Gemini AI
-GOOGLE_API_KEY=your_gemini_api_key_here
+GOOGLE_API_KEY=Your_Gemini_Api_Key_Here
 
 # Weather Data
-OPENWEATHER_API_KEY=your_openweather_api_key
+OPENWEATHER_API_KEY=Your_OpenWeather_Api_Key_Here
 
 # Copernicus Climate Data (Optional)
-COPERNICUS_API_KEY=your_uid:your_api_key
+COPERNICUS_API_KEY=Your_UID:Your_API_Key
 
 # Email Notifications (Optional)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PASSWORD=your_app_password
-SENDER_EMAIL=your_email@gmail.com
+SMTP_USER=Your_Email@gmail.com
+SMTP_PASSWORD=Your_App_Password
+SENDER_EMAIL=Your_Email@gmail.com
 
 # Google Search (Optional)
-GOOGLE_SEARCH_API_KEY=your_google_search_api_key
-GOOGLE_SEARCH_ENGINE_ID=your_search_engine_id
+GOOGLE_SEARCH_API_KEY=Your_Google_Search_Api_Key
+GOOGLE_SEARCH_ENGINE_ID=Your_Search_Engine_ID
 ```
 
 **How To Get API Keys:**
@@ -1150,7 +1150,7 @@ tool_calls_total{tool="CopernicusTool"} 90
 
 ### **Grafana Dashboard**
 
-Import `docs/grafana-dashboard.json` For Pre-Built Visualizations:
+Import `Docs/Grafana-Dashboard.json` For Pre-Built Visualizations:
 
 - 📊 Agent Execution Time Trends
 - 📞 Tool Call Frequency
@@ -1190,7 +1190,7 @@ This Project Demonstrates Mastery Of **10+ Key ADK Concepts** From The Kaggle X 
 ✅ **Type Safety** — Pydantic Models For All Data  
 ✅ **Separation Of Concerns** — Clean Architecture  
 ✅ **Configuration Management** — Environment-Driven Settings  
-✅ **Testing** — Unit Tests For Tools (See `tests/`)  
+✅ **Testing** — Unit Tests For Tools (See `Tests/`)  
 
 ---
 
