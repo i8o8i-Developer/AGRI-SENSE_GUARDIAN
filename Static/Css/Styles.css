@@ -1,0 +1,1487 @@
+/* =============================================================================
+   🌾 AgriSenseGuardian — Ultra-Modern Professional UI
+   Design System: Clean, Bold, Responsive, Animated
+   Built To Impress Judges At First Glance
+   ============================================================================= */
+
+/* ===== ROOT VARIABLES ===== */
+:root {
+  /* Colors - Dark Theme Default */
+  --ColorBg: #0a0e1a;
+  --ColorSurface: #111827;
+  --ColorCard: #1a1f2e;
+  --ColorCardHover: #232938;
+  --ColorBorder: rgba(255, 255, 255, 0.08);
+  --ColorBorderHover: rgba(255, 255, 255, 0.15);
+  
+  --ColorText: #f1f5f9;
+  --ColorTextMuted: #94a3b8;
+  --ColorTextSubtle: #64748b;
+  
+  --ColorPrimary: #10b981;
+  --ColorPrimaryHover: #059669;
+  --ColorPrimaryLight: rgba(16, 185, 129, 0.1);
+  
+  --ColorAccent: #3b82f6;
+  --ColorAccentHover: #2563eb;
+  
+  --ColorWarning: #f59e0b;
+  --ColorDanger: #ef4444;
+  --ColorSuccess: #10b981;
+  
+  /* Gradients */
+  --GradientPrimary: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  --GradientHero: linear-gradient(180deg, #0a0e1a 0%, #111827 100%);
+  --GradientCard: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+  
+  /* Shadows */
+  --ShadowSm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --ShadowMd: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --ShadowLg: 0 10px 30px rgba(0, 0, 0, 0.5);
+  --ShadowXl: 0 20px 50px rgba(0, 0, 0, 0.6);
+  --ShadowGlow: 0 0 20px rgba(16, 185, 129, 0.3);
+  
+  /* Spacing */
+  --Space1: 4px;
+  --Space2: 8px;
+  --Space3: 12px;
+  --Space4: 16px;
+  --Space5: 20px;
+  --Space6: 24px;
+  --Space8: 32px;
+  --Space10: 40px;
+  --Space12: 48px;
+  --Space16: 64px;
+  
+  /* Border Radius */
+  --RadiusSm: 8px;
+  --RadiusMd: 12px;
+  --RadiusLg: 16px;
+  --RadiusXl: 20px;
+  --RadiusFull: 9999px;
+  
+  /* Typography */
+  --FontBody: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --FontMono: 'Fira Code', 'Courier New', monospace;
+  
+  /* Transitions */
+  --TransitionFast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --TransitionBase: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --TransitionSlow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Light Mode Override */
+body.light {
+  --ColorBg: #f8fafc;
+  --ColorSurface: #ffffff;
+  --ColorCard: #ffffff;
+  --ColorCardHover: #f8fafc;
+  --ColorBorder: rgba(0, 0, 0, 0.08);
+  --ColorBorderHover: rgba(0, 0, 0, 0.15);
+  
+  --ColorText: #0f172a;
+  --ColorTextMuted: #475569;
+  --ColorTextSubtle: #64748b;
+  
+  --GradientHero: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+  --GradientCard: linear-gradient(180deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.01) 100%);
+  
+  --ShadowSm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --ShadowMd: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --ShadowLg: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --ShadowXl: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== BASE RESET ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--FontBody);
+  background: var(--ColorBg);
+  color: var(--ColorText);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== HERO SECTION ===== */
+.Hero {
+  background: var(--GradientHero);
+  border-bottom: 1px solid var(--ColorBorder);
+  position: relative;
+  overflow: hidden;
+}
+
+.HeroContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--Space6) var(--Space4);
+  position: relative;
+  z-index: 2;
+}
+
+.HeroNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--Space12);
+}
+
+.Brand {
+  display: flex;
+  align-items: center;
+  gap: var(--Space3);
+}
+
+.BrandIcon {
+  width: 52px;
+  height: 52px;
+  background: var(--ColorBg);
+  border-radius: var(--RadiusMd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  box-shadow: var(--ShadowGlow);
+  transition: transform var(--TransitionBase);
+}
+
+.BrandIcon:hover {
+  transform: scale(1.05) rotate(5deg);
+}
+
+.BrandTitle {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.BrandSubtitle {
+  font-size: 0.875rem;
+  color: var(--ColorTextMuted);
+  font-weight: 500;
+}
+
+.HeroActions {
+  display: flex;
+  gap: var(--Space2);
+  align-items: center;
+}
+
+.LangBtn, .IconBtn {
+  padding: var(--Space2) var(--Space4);
+  border: 1px solid var(--ColorBorder);
+  background: var(--ColorCard);
+  color: var(--ColorText);
+  border-radius: var(--RadiusFull);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all var(--TransitionFast);
+  outline: none;
+}
+
+.LangBtn:hover, .IconBtn:hover {
+  border-color: var(--ColorPrimary);
+  background: var(--ColorPrimaryLight);
+  transform: translateY(-1px);
+}
+
+.LangBtn.active {
+  background: var(--GradientPrimary);
+  border-color: var(--ColorPrimary);
+  color: white;
+  box-shadow: var(--ShadowGlow);
+}
+
+.HeroContent {
+  text-align: center;
+  padding: var(--Space12) 0;
+}
+
+.HeroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--Space2);
+  padding: var(--Space2) var(--Space4);
+  background: var(--ColorPrimaryLight);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--RadiusFull);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ColorPrimary);
+  margin-bottom: var(--Space6);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.BadgeDot {
+  width: 6px;
+  height: 6px;
+  background: var(--ColorPrimary);
+  border-radius: 50%;
+  animation: blink 1.5s ease-in-out infinite;
+}
+
+.HeroTitle {
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: var(--Space6);
+  letter-spacing: -1px;
+}
+
+.GradientText {
+  background: var(--GradientPrimary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.HeroDescription {
+  font-size: 1.125rem;
+  color: var(--ColorTextMuted);
+  max-width: 600px;
+  margin: 0 auto var(--Space10);
+  line-height: 1.7;
+}
+
+.HeroStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--Space4);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.StatCard {
+  background: var(--GradientCard);
+  padding: var(--Space5);
+  border-radius: var(--RadiusLg);
+  border: 1px solid var(--ColorBorder);
+  text-align: center;
+  transition: all var(--TransitionBase);
+}
+
+.StatCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--ShadowMd);
+  border-color: var(--ColorBorderHover);
+}
+
+.StatIcon {
+  font-size: 2rem;
+  margin-bottom: var(--Space2);
+}
+
+.StatValue {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--ColorPrimary);
+  line-height: 1;
+}
+
+.StatLabel {
+  font-size: 0.875rem;
+  color: var(--ColorTextMuted);
+  margin-top: var(--Space1);
+}
+
+/* ===== MAIN CONTAINER ===== */
+.MainContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--Space10) var(--Space4);
+}
+
+.Section {
+  margin-bottom: var(--Space16);
+}
+
+.SectionGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: var(--Space6);
+}
+
+/* ===== CARDS ===== */
+.CardPrimary, .CardSecondary {
+  background: var(--GradientCard), var(--ColorCard);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusLg);
+  padding: var(--Space6);
+  box-shadow: var(--ShadowMd);
+  transition: all var(--TransitionBase);
+}
+
+.CardPrimary:hover, .CardSecondary:hover {
+  box-shadow: var(--ShadowLg);
+  border-color: var(--ColorBorderHover);
+}
+
+.CardHeader {
+  display: flex;
+  gap: var(--Space4);
+  margin-bottom: var(--Space6);
+  align-items: flex-start;
+}
+
+.CardIcon {
+  width: 48px;
+  height: 48px;
+  background: var(--ColorPrimaryLight);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--RadiusMd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.CardTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: var(--Space2);
+}
+
+.CardSubtitle {
+  font-size: 0.9375rem;
+  color: var(--ColorTextMuted);
+  line-height: 1.6;
+}
+
+/* ===== INFO STACK (RIGHT SIDEBAR) ===== */
+.InfoStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--Space4);
+}
+
+.InfoCard {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%), var(--ColorCard);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusLg);
+  padding: var(--Space5);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.InfoCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--GradientPrimary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.InfoCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.InfoCard:hover::before {
+  transform: scaleX(1);
+}
+
+.InfoIcon {
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+  border: 2px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--RadiusMd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  margin-bottom: var(--Space4);
+  transition: all 0.3s ease;
+}
+
+.InfoCard:hover .InfoIcon {
+  transform: scale(1.1) rotate(-5deg);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(59, 130, 246, 0.25) 100%);
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.InfoTitle {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin-bottom: var(--Space3);
+  color: var(--ColorText);
+  line-height: 1.3;
+}
+
+.InfoText {
+  font-size: 0.875rem;
+  color: var(--ColorTextMuted);
+  line-height: 1.6;
+}
+
+.HelpCard {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%), var(--ColorCard);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: var(--RadiusLg);
+  padding: var(--Space5);
+  display: flex;
+  align-items: center;
+  gap: var(--Space4);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.HelpCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+.HelpCard:hover {
+  transform: translateX(4px);
+  box-shadow: 0 8px 16px rgba(251, 191, 36, 0.2);
+  border-color: rgba(251, 191, 36, 0.5);
+}
+
+.HelpIcon {
+  width: 48px;
+  height: 48px;
+  background: rgba(251, 191, 36, 0.2);
+  border: 2px solid rgba(251, 191, 36, 0.4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.HelpTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fbbf24;
+  margin-bottom: var(--Space2);
+}
+
+.HelpText {
+  font-size: 0.875rem;
+  color: var(--ColorTextMuted);
+  line-height: 1.5;
+}
+
+.HelpText strong {
+  color: var(--ColorText);
+  font-weight: 700;
+}
+
+/* ===== FORMS ===== */
+.Form {
+  display: grid;
+  gap: var(--Space5);
+}
+
+.FormGroup {
+  display: grid;
+  gap: var(--Space2);
+}
+
+.FormLabel {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--ColorTextMuted);
+  display: flex;
+  align-items: center;
+  gap: var(--Space1);
+}
+
+.FormLabel .Required {
+  color: var(--ColorDanger);
+}
+
+.FormInput, .FormSelect, .FormTextarea {
+  width: 100%;
+  padding: var(--Space3) var(--Space4);
+  background: var(--ColorSurface);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusMd);
+  color: var(--ColorText);
+  font-family: var(--FontBody);
+  font-size: 0.9375rem;
+  transition: all var(--TransitionFast);
+  outline: none;
+}
+
+.FormInput:focus, .FormSelect:focus, .FormTextarea:focus {
+  border-color: var(--ColorPrimary);
+  box-shadow: 0 0 0 3px var(--ColorPrimaryLight);
+}
+
+.FormTextarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.FormHint {
+  font-size: 0.8125rem;
+  color: var(--ColorTextSubtle);
+}
+
+/* Quick Location Pills */
+.QuickLocations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--Space2);
+  margin-top: var(--Space2);
+}
+
+.QuickBtn {
+  padding: var(--Space2) var(--Space3);
+  background: var(--ColorSurface);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusFull);
+  color: whitesmoke;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--TransitionFast);
+  display: flex;
+  align-items: center;
+  gap: var(--Space1);
+}
+
+.QuickBtn:hover {
+  background: var(--ColorPrimaryLight);
+  border-color: var(--ColorPrimary);
+  transform: translateY(-1px);
+}
+
+/* ===== BUTTONS ===== */
+.BtnPrimary {
+  width: 100%;
+  padding: var(--Space4) var(--Space6);
+  background: var(--GradientPrimary);
+  border: none;
+  border-radius: var(--RadiusMd);
+  color: white;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--TransitionBase);
+  box-shadow: var(--ShadowGlow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--Space2);
+}
+
+.BtnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+}
+
+.BtnPrimary:active {
+  transform: translateY(0);
+}
+
+.BtnSecondary {
+  padding: var(--Space4) var(--Space6);
+  background: var(--ColorSurface);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusMd);
+  color: var(--ColorText);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--TransitionFast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--Space2);
+}
+
+.BtnSecondary:hover {
+  background: var(--ColorCardHover);
+  border-color: var(--ColorBorderHover);
+}
+
+.BtnSecondary.danger {
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #ef4444;
+}
+
+/* ===== LOADING STATE ===== */
+.Loading {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--Space16) var(--Space4);
+  text-align: center;
+}
+
+.Loading.active {
+  display: flex;
+}
+
+.Spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid var(--ColorBorder);
+  border-top-color: var(--ColorPrimary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: var(--Space6);
+}
+
+.LoadingTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: var(--Space3);
+}
+
+.LoadingStep {
+  font-size: 1rem;
+  color: var(--ColorTextMuted);
+  margin-top: var(--Space2);
+}
+
+/* ===== RESULTS ===== */
+.Results {
+  display: none;
+  gap: var(--Space6);
+}
+
+.Results.active {
+  display: grid;
+}
+
+.ResultsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: var(--GradientCard), var(--ColorCard);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusLg);
+  padding: var(--Space6);
+  margin-bottom: var(--Space6);
+}
+
+.ResultsTitle {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: var(--Space3);
+  display: flex;
+  align-items: center;
+  gap: var(--Space2);
+}
+
+.ResultsMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--Space4);
+  margin-top: var(--Space3);
+}
+
+.MetaItem {
+  display: flex;
+  align-items: center;
+  gap: var(--Space2);
+  color: var(--ColorTextMuted);
+  font-size: 0.875rem;
+}
+
+.MetaIcon {
+  font-size: 1rem;
+}
+
+.DataSourcesCard {
+  background: var(--ColorCard);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusLg);
+  padding: var(--Space5);
+  margin-bottom: var(--Space6);
+}
+
+.CardLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ColorTextMuted);
+  margin-bottom: var(--Space3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.DataChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--Space2);
+}
+
+.DataChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--Space2);
+  padding: var(--Space2) var(--Space3);
+  background: var(--ColorPrimaryLight);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--RadiusMd);
+  color: var(--ColorPrimary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.RiskSection {
+  margin-bottom: var(--Space8);
+}
+
+.SectionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: var(--Space4);
+  color: var(--ColorText);
+}
+
+.RiskGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--Space4);
+}
+
+.ActionSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--Space4);
+}
+
+/* Risk Overview Grid */
+.RiskOverview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--Space4);
+  margin-bottom: var(--Space6);
+}
+
+.RiskCard {
+  background: var(--GradientCard), var(--ColorCard);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusMd);
+  padding: var(--Space5);
+  transition: all var(--TransitionBase);
+}
+
+.RiskCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ShadowMd);
+}
+
+.RiskCard.high {
+  border-color: rgba(239, 68, 68, 0.3);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, transparent 100%), var(--ColorCard);
+}
+
+.RiskCard.medium {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, transparent 100%), var(--ColorCard);
+}
+
+.RiskCard.low {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%), var(--ColorCard);
+}
+
+.RiskCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--Space3);
+}
+
+.RiskName {
+  font-weight: 700;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: var(--Space2);
+}
+
+.RiskLevel {
+  padding: var(--Space1) var(--Space3);
+  border-radius: var(--RadiusFull);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.RiskLevel.high {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.RiskLevel.medium {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.RiskLevel.low {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.RiskConfidence {
+  font-size: 0.875rem;
+  color: var(--ColorTextMuted);
+  margin-top: var(--Space2);
+}
+
+/* Data Sources */
+.DataSources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--Space2);
+  margin-bottom: var(--Space6);
+}
+
+.DataChip {
+  padding: var(--Space2) var(--Space3);
+  background: var(--ColorSurface);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusFull);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--Space1);
+}
+
+/* Action Plan */
+.ActionSection {
+  background: var(--GradientCard), var(--ColorCard);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusLg);
+  padding: var(--Space6);
+  margin-bottom: var(--Space4);
+}
+
+.ActionSectionTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: var(--Space4);
+  display: flex;
+  align-items: center;
+  gap: var(--Space2);
+}
+
+.ActionList {
+  list-style: none;
+  display: grid;
+  gap: var(--Space3);
+}
+
+.ActionItem {
+  padding: var(--Space4);
+  background: var(--ColorSurface);
+  border-left: 3px solid var(--ColorPrimary);
+  border-radius: var(--RadiusSm);
+  transition: all var(--TransitionFast);
+}
+
+.ActionItem:hover {
+  transform: translateX(4px);
+  background: var(--ColorCardHover);
+}
+
+.ActionItem.priority-high {
+  border-left-color: var(--ColorDanger);
+}
+
+.ActionItem.priority-medium {
+  border-left-color: var(--ColorWarning);
+}
+
+.ActionItem.priority-low {
+  border-left-color: var(--ColorSuccess);
+}
+
+/* Action Item Inner Structure */
+.action-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ColorText);
+  margin-bottom: var(--Space3);
+}
+
+.action-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--Space3);
+  margin-top: var(--Space3);
+  padding-top: var(--Space3);
+  border-top: 1px solid var(--ColorBorder);
+  font-size: 13px;
+}
+
+.action-meta .meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--ColorCard);
+  border-radius: var(--RadiusSm);
+  color: var(--ColorTextMuted);
+  border: 1px solid var(--ColorBorder);
+  white-space: nowrap;
+}
+
+.action-meta .meta.dead {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #60a5fa;
+}
+
+.action-meta .meta.res {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: #34d399;
+}
+
+.action-meta .meta.cost {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+}
+
+.action-meta .meta.outcome {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: rgba(168, 85, 247, 0.3);
+  color: #c084fc;
+}
+
+/* ===== INFO BOX ===== */
+.InfoBox {
+  padding: var(--Space5);
+  border-radius: var(--RadiusLg);
+  margin-top: var(--Space4);
+  margin-bottom: var(--Space4);
+  background: var(--ColorCard);
+  border: 2px solid var(--ColorBorder);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+.InfoBox strong {
+  font-size: 16px;
+  display: block;
+  margin-bottom: var(--Space3);
+  padding-bottom: var(--Space2);
+  border-bottom: 1px solid var(--ColorBorder);
+}
+
+.InfoBox > div {
+  margin-top: var(--Space3);
+  padding-left: var(--Space2);
+}
+
+.InfoBox span {
+  color: var(--ColorText);
+  font-weight: 500;
+}
+
+.InfoBox.success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.15) 100%);
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.InfoBox.success strong {
+  color: #10b981;
+}
+
+.InfoBox.error {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.15) 100%);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.InfoBox.error strong {
+  color: #ef4444;
+}
+
+.InfoBox.info {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.15) 100%);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.InfoBox.info strong {
+  color: #3b82f6;
+}
+
+/* Notification Delivery Attempts Styling */
+.AttemptsHeader {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ColorText);
+  margin-top: var(--Space4);
+  margin-bottom: var(--Space2);
+}
+
+.AttemptsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--Space2);
+}
+
+.AttemptRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--Space2) var(--Space3);
+  background: var(--ColorCard);
+  border-radius: var(--RadiusSm);
+  font-size: 13px;
+}
+
+.AttemptProvider {
+  font-weight: 500;
+  color: var(--ColorText);
+}
+
+.AttemptStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: var(--RadiusSm);
+  font-size: 12px;
+}
+
+.AttemptStatus.success {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+
+.AttemptStatus.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+
+/* ===== FOOTER ===== */
+/* ===== FOOTER ===== */
+.Footer {
+  background: linear-gradient(180deg, var(--ColorSurface) 0%, var(--ColorBg) 100%);
+  border-top: 1px solid var(--ColorBorder);
+  margin-top: var(--Space10);
+}
+
+.FooterContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--Space10) var(--Space6);
+}
+
+.FooterTop {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: var(--Space10);
+  margin-bottom: var(--Space8);
+}
+
+.FooterBrand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--Space4);
+}
+
+.FooterLogo {
+  display: flex;
+  align-items: center;
+  gap: var(--Space4);
+  margin-bottom: var(--Space3);
+}
+
+.FooterLogoIcon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.FooterTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: var(--GradientPrimary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.FooterTagline {
+  font-size: 0.875rem;
+  color: var(--ColorTextMuted);
+  font-weight: 500;
+}
+
+.FooterDescription {
+  color: var(--ColorTextMuted);
+  line-height: 1.6;
+  font-size: 0.9375rem;
+  max-width: 500px;
+}
+
+.FooterTech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--Space2);
+  margin-top: var(--Space3);
+}
+
+.TechBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--Space1);
+  padding: var(--Space2) var(--Space3);
+  background: var(--ColorPrimaryLight);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--RadiusMd);
+  color: var(--ColorPrimary);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.FooterGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--Space6);
+}
+
+.FooterColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--Space3);
+}
+
+.FooterHeading {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--ColorText);
+  margin-bottom: var(--Space2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.FooterList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--Space2);
+}
+
+.FooterList li {
+  color: var(--ColorTextMuted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.FooterList li strong {
+  color: var(--ColorPrimary);
+  font-weight: 600;
+}
+
+.FooterList li small {
+  color: var(--ColorTextSubtle);
+  font-size: 0.75rem;
+}
+
+.FooterList a {
+  color: var(--ColorTextMuted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.FooterList a:hover {
+  color: var(--ColorPrimary);
+}
+
+.FooterDivider {
+  height: 1px;
+  background: var(--ColorBorder);
+  margin: var(--Space8) 0;
+}
+
+.FooterBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--Space4);
+}
+
+.FooterCopyright {
+  display: flex;
+  flex-direction: column;
+  gap: var(--Space2);
+}
+
+.FooterCopyright p {
+  margin: 0;
+  color: var(--ColorTextMuted);
+  font-size: 0.875rem;
+}
+
+.FooterCopyright strong {
+  color: var(--ColorText);
+  font-weight: 600;
+}
+
+.FooterEvent {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--Space2);
+  padding: var(--Space2) var(--Space3);
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: var(--RadiusMd);
+  color: #fbbf24;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.FooterSocial {
+  display: flex;
+  align-items: center;
+  gap: var(--Space4);
+}
+
+.SocialLinks {
+  display: flex;
+  align-items: center;
+  gap: var(--Space3);
+}
+
+.SocialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--ColorCard);
+  border: 1px solid var(--ColorBorder);
+  color: var(--ColorTextMuted);
+  transition: all 0.3s ease;
+}
+
+.SocialLink:hover {
+  background: var(--ColorPrimary);
+  border-color: var(--ColorPrimary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--ShadowGlow);
+}
+
+.StatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ColorSuccess);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.StatusText {
+  color: var(--ColorSuccess);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===== TASK PANEL ===== */
+.TaskPanel {
+  background: var(--GradientCard), var(--ColorCard);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusLg);
+  padding: var(--Space5);
+}
+
+.TaskHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--Space4);
+}
+
+.TaskMeta {
+  display: flex;
+  gap: var(--Space2);
+  color: var(--ColorTextMuted);
+  font-size: 0.875rem;
+}
+
+.TaskControls {
+  display: flex;
+  gap: var(--Space2);
+}
+
+.TaskLog {
+  background: var(--ColorSurface);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusMd);
+  padding: var(--Space3);
+  min-height: 60px;
+  font-family: var(--FontMono);
+  font-size: 0.85rem;
+  color: var(--ColorTextMuted);
+}
+
+.TaskLogLine { margin-bottom: 6px; }
+
+/* ===== Advanced Options Toggle ===== */
+.AdvancedOptions {
+  margin-top: var(--Space4);
+  background: var(--ColorSurface);
+  border: 1px solid var(--ColorBorder);
+  border-radius: var(--RadiusMd);
+  padding: var(--Space3);
+}
+
+.AdvancedSummary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ColorTextMuted);
+  font-size: 0.875rem;
+  user-select: none;
+}
+
+.AdvancedSummary:hover {
+  color: var(--ColorPrimary);
+}
+
+.AdvancedOptions[open] .AdvancedSummary {
+  margin-bottom: var(--Space3);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .SectionGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .HeroTitle {
+    font-size: 2.5rem;
+  }
+  
+  .HeroStats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--Space3);
+  }
+  
+  .FooterTop {
+    grid-template-columns: 1fr;
+    gap: var(--Space6);
+  }
+  
+  .FooterGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .HeroTitle {
+    font-size: 2rem;
+  }
+  
+  .HeroDescription {
+    font-size: 1rem;
+  }
+  
+  .HeroStats {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+  }
+  
+  .RiskOverview {
+    grid-template-columns: 1fr;
+  }
+  
+  .FooterGrid {
+    grid-template-columns: 1fr;
+    gap: var(--Space4);
+  }
+  
+  .FooterBottom {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .FooterDescription {
+    max-width: 100%;
+  }
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fadeIn {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* ===== UTILITY CLASSES ===== */
+.Hidden {
+  display: none !important;
+}
+
+.TextCenter {
+  text-align: center;
+}
+
+.mt-4 { margin-top: var(--Space4); }
+.mt-6 { margin-top: var(--Space6); }
+.mb-4 { margin-bottom: var(--Space4); }
+.mb-6 { margin-bottom: var(--Space6); }

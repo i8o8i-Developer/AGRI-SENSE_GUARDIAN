@@ -1,0 +1,73 @@
+# AgriSenseGuardian - Python Dependencies
+# REAL A2A + ADK + MCP IMPLEMENTATION WITH FARMER-FOCUSED APIS
+
+# Core ADK And Gemini Dependencies
+google-adk
+google-genai
+google-generativeai
+
+# Google API Client - REQUIRED FOR REAL GOOGLE SEARCH
+google-api-python-client
+
+# A2A Protocol Support - REQUIRED FOR REAL A2A
+python-a2a
+
+# FastAPI And Web Framework
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-multipart
+
+# HTTP Clients - REQUIRED FOR REAL API CALLS (NASA POWER, Open-Meteo, OpenStreetMap)
+aiohttp
+httpx
+requests
+
+# Environment And Configuration
+python-dotenv
+
+# Async Support
+asyncio
+
+# Logging And Observability
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-exporter-otlp
+prometheus-client
+
+# Data Processing For Agricultural Data
+pandas
+numpy
+Pillow
+
+# Geospatial Libraries - For OpenStreetMap And Location Services
+geopy
+folium
+
+# Weather And Climate APIs
+# Open-Meteo (Free, No API Key Required)
+# NASA POWER (Free, No API Key Required)
+# OpenWeatherMap (Free Tier: 1000 calls/day)
+
+# Email Support (SMTP)
+email-validator
+
+# Code Quality And Testing
+black
+flake8
+mypy
+pytest
+pytest-asyncio
+pytest-mock
+pytest-cov
+
+# Documentation
+mkdocs
+mkdocs-material>=9.5.0
+
+# Copernicus Climate Data Store API (for satellite soil moisture & vegetation data)
+cdsapi
+xarray
+netCDF4
+cfgrib  # Optional: For GRIB Format Support

@@ -1,0 +1,186 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "AgriSenseGuardian"
+version = "1.0.0"
+description = "AI-Powered Agricultural Decision Support System Using Multi-Agent Architecture"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Anubhav Chaurasia", email = "i8o8iworkstation@outlook.com"},
+]
+maintainers = [
+    {name = "Anubhav Chaurasia", email = "i8o8iworkstation@outlook.com"},
+]
+keywords = ["agriculture", "ai", "multi-agent", "fastapi", "google-adk", "a2a"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+]
+dependencies = [
+    # Core ADK And Gemini Dependencies
+    "google-adk",
+    "google-genai",
+    "google-generativeai",
+
+    # Google API Client - REQUIRED FOR REAL GOOGLE SEARCH
+    "google-api-python-client",
+
+    # A2A Protocol Support - REQUIRED FOR REAL A2A
+    "python-a2a",
+
+    # FastAPI And Web Framework
+    "fastapi",
+    "uvicorn[standard]",
+    "pydantic",
+    "pydantic-settings",
+    "python-multipart",
+
+    # HTTP Clients - REQUIRED FOR REAL API CALLS (NASA POWER, Open-Meteo, OpenStreetMap)
+    "aiohttp",
+    "httpx",
+    "requests",
+
+    # Environment And Configuration
+    "python-dotenv",
+
+    # Async Support
+    "asyncio",
+
+    # Logging And Observability
+    "opentelemetry-api",
+    "opentelemetry-sdk",
+    "opentelemetry-exporter-otlp",
+    "prometheus-client",
+
+    # Data Processing For Agricultural Data
+    "pandas",
+    "numpy",
+    "Pillow",
+
+    # Geospatial Libraries - For OpenStreetMap And Location Services
+    "geopy",
+    "folium",
+
+    # Weather And Climate APIs
+    # Open-Meteo (Free, No API Key Required)
+    # NASA POWER (Free, No API Key Required)
+    # OpenWeatherMap (Free Tier: 1000 calls/day)
+
+    # Email Support (SMTP)
+    "email-validator",
+
+    # Copernicus Climate Data Store API (For Satellite Soil Moisture & Vegetation Data)
+    "cdsapi",
+    "xarray",
+    "netCDF4",
+    "cfgrib",  # Optional: For GRIB Format Support
+]
+
+[project.optional-dependencies]
+dev = [
+    # Code Quality And Testing
+    "black",
+    "flake8",
+    "mypy",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-mock",
+    "pytest-cov",
+]
+docs = [
+    # Documentation
+    "mkdocs",
+    "mkdocs-material>=9.5.0",
+]
+
+[project.scripts]
+agri-sense-guardian = "Main:main"
+
+[project.urls]
+Homepage = "https://github.com/i8o8i-Developer/AgriSenseGuardian"
+Documentation = "https://github.com/i8o8i-Developer/AgriSenseGuardian#readme"
+Repository = "https://github.com/i8o8i-Developer/AgriSenseGuardian.git"
+Issues = "https://github.com/i8o8i-Developer/AgriSenseGuardian/issues"
+Changelog = "https://github.com/i8o8i-Developer/AgriSenseGuardian/blob/main/CHANGELOG.md"
+[tool.setuptools]
+packages = ["Agents", "Config", "Reference", "Services", "Static", "Tools", "Utils"]
+
+[tool.setuptools.package-dir]
+"" = "."
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --cov=AgriSenseGuardian --cov-report=html --cov-report=term-missing"
+testpaths = [
+    "tests",
+]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+
+[tool.coverage.run]
+source = ["Agents", "Config", "Services", "Tools", "Utils"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]

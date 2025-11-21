@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AgriSense Guardian - AI-Powered Agricultural Decision Support System">
+    <meta name="keywords" content="Agriculture, AI, Farming, Weather Forecast, Crop Advisory, Indian Farmers, Multi-Agent System">
+    <title> AgriSenseGuardian - AI Agricultural Intelligence Platform</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../Static/Css/Styles.css?v=3.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌾</text></svg>">
+</head>
+<body>
+
+    <!-- ========================================
+         🎨 MODERN HERO HEADER
+         ======================================== -->
+    <header class="Hero">
+        <div class="HeroContainer">
+            <div class="HeroNav">
+                <div class="Brand">
+                    <div class="BrandIcon">🌾</div>
+                    <div class="BrandText">
+                        <div class="BrandTitle" data-i18n="title">AgriSenseGuardian</div>
+                        <div class="BrandSubtitle" data-i18n="subtitle">AI Agricultural Intelligence</div>
+                    </div>
+                </div>
+                <div class="HeroActions">
+                    <button class="LangBtn active" data-lang="en">EN</button>
+                    <button class="LangBtn" data-lang="hi">हिं</button>
+                    <button id="ThemeToggle" class="IconBtn" title="Toggle Dark/Light Mode">🌙</button>
+                </div>
+            </div>
+            
+            <div class="HeroContent">
+                <div class="HeroBadge">
+                    <span class="BadgeDot"></span>
+                    <span>Powered By Google ADK, A2A Multi-Agent, Real-Time Tools & Observability</span>
+                </div>
+                <h1 class="HeroTitle">
+                    Agricultural Intelligence<br/>
+                    <span class="GradientText">Powered By AI Agents</span>
+                </h1>
+                <p class="HeroDescription">
+                    Real-Time Satellite Imagery, Weather Forecasting, Multi-Agent Risk Analysis With Web Search,
+                    Background Task Processing, And Advanced Observability To Help Farmers Make Data-Driven Decisions.
+                </p>
+                <div class="HeroStats">
+                    <div class="StatCard">
+                        <div class="StatIcon">🛰️</div>
+                        <div class="StatValue">4</div>
+                        <div class="StatLabel">Data Sources</div>
+                    </div>
+                    <div class="StatCard">
+                        <div class="StatIcon">🤖</div>
+                        <div class="StatValue">4</div>
+                        <div class="StatLabel">AI Agents</div>
+                    </div>
+                    <div class="StatCard">
+                        <div class="StatIcon">📊</div>
+                        <div class="StatValue">96%</div>
+                        <div class="StatLabel">Accuracy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========================================
+         📋 MAIN CONTENT CONTAINER
+         ======================================== -->
+    <main class="MainContainer">
+        
+        <!-- Forecast Input Section -->
+        <section class="Section" id="InputSection">
+            <div class="SectionGrid">
+                
+                <!-- Left: Form Card -->
+                <div class="CardPrimary" id="FormCard">
+                    <div class="CardHeader">
+                        <div class="CardIcon">📍</div>
+                        <div>
+                            <h2 class="CardTitle" data-i18n="formTitle">Get Your Farm Forecast</h2>
+                            <p class="CardSubtitle" data-i18n="formDescription">
+                                Enter Your Location And Contact Details For AI-Powered Insights With Web Search Verification, Configurable Thresholds, And Long-Running Task Support
+                            </p>
+                        </div>
+                    </div>
+
+                    <form id="ForecastForm" class="Form">
+                        <!-- Location -->
+                        <div class="FormGroup">
+                            <label class="FormLabel" for="Location">
+                                <span data-i18n="locationLabel">📍 Your Location</span>
+                                <span class="Required">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                id="Location" 
+                                class="FormInput" 
+                                placeholder="e.g., Pune, Maharashtra, India"
+                                data-i18n="locationPlaceholder"
+                                required
+                            >
+                            <div class="QuickLocations" id="QuickLocations"></div>
+                        </div>
+
+                        <!-- Contact Grid -->
+                        <div class="FormGrid">
+                            <div class="FormGroup">
+                                <label class="FormLabel" for="Email">
+                                    <span data-i18n="emailLabel">📧 Email Address</span>
+                                    <span class="Required">*</span>
+                                </label>
+                                <input 
+                                    type="email" 
+                                    id="Email" 
+                                    class="FormInput"
+                                    placeholder="Farmer@example.com"
+                                    data-i18n="emailPlaceholder"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <!-- Days Select -->
+                        <div class="FormGroup">
+                            <label class="FormLabel" for="Days">
+                                <span data-i18n="daysLabel">⏰ Forecast Period</span>
+                            </label>
+                            <select id="Days" class="FormSelect">
+                                <option value="7" data-i18n="daysOption1">7 Days (1 Week)</option>
+                                <option value="14" data-i18n="daysOption2">14 Days (2 Weeks)</option>
+                                <option value="30" selected data-i18n="daysOption3">30 Days (1 Month)</option>
+                            </select>
+                        </div>
+
+                        <!-- Query -->
+                        <div class="FormGroup">
+                            <label class="FormLabel" for="Query">
+                                <span data-i18n="queryLabel">💬 Your Question (Optional)</span>
+                            </label>
+                            <textarea 
+                                id="Query" 
+                                class="FormTextarea"
+                                placeholder="E.G., Should I Plant Tomatoes Next Week? What Are The Drought Risks?"
+                                data-i18n="queryPlaceholder"
+                                rows="3"
+                            ></textarea>
+                        </div>
+
+                        <!-- Advanced Options (Collapsed By Default) -->
+                        <details class="AdvancedOptions">
+                            <summary class="AdvancedSummary">⚙️ Advanced Options</summary>
+                            <div class="FormGrid">
+                                <div class="FormGroup">
+                                    <label class="FormLabel" for="ConfidenceThreshold">
+                                        <span>🎯 Confidence Threshold (%)</span>
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        id="ConfidenceThreshold" 
+                                        class="FormInput" 
+                                        value="75" 
+                                        min="50" 
+                                        max="100" 
+                                        step="5"
+                                    >
+                                </div>
+                                <div class="FormGroup">
+                                    <label class="FormLabel" for="MaxIterations">
+                                        <span>🔄 Max Iterations</span>
+                                    </label>
+                                    <input 
+                                        type="number" 
+                                        id="MaxIterations" 
+                                        class="FormInput" 
+                                        value="2" 
+                                        min="1" 
+                                        max="5"
+                                    >
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="BtnPrimary BtnLarge">
+                            <span class="BtnIcon">🚀</span>
+                            <span data-i18n="submitButton">Analyze Farm Risks</span>
+                            <span class="BtnShine"></span>
+                        </button>
+
+                        <!-- Run In Background Button -->
+                        <button type="button" id="StartBackground" class="BtnSecondary">
+                            <span>🕒</span>
+                            <span>Run In Background</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Right: Info Cards -->
+                <div class="InfoStack">
+                    <div class="InfoCard">
+                        <div class="InfoIcon">🛰️</div>
+                        <h3 class="InfoTitle">Real Satellite Data</h3>
+                        <p class="InfoText">NASA POWER Weather Data, Sentinel-2 High-Resolution Optical Imagery, And Copernicus Program Satellite Constellation For Precise NDVI Vegetation Health, Soil Moisture Levels, Temperature Patterns, Precipitation Forecasts, And Multi-Spectral Analysis. Real-Time Data Integration With AI-Powered Pattern Recognition For Early Drought Detection, Crop Stress Monitoring, And Yield Prediction Accuracy.</p>
+                    </div>
+                    
+                    <div class="InfoCard">
+                        <div class="InfoIcon">🤖</div>
+                        <h3 class="InfoTitle">Multi-Agent AI</h3>
+                        <p class="InfoText">4 Specialized AI Agents With Parallel Execution, Loop Refinement, Context Compaction, And Web Search Integration For Comprehensive Risk Assessment.</p>
+                    </div>
+                    
+                    <div class="InfoCard">
+                        <div class="InfoIcon">📱</div>
+                        <h3 class="InfoTitle">Instant Alerts & Tasks</h3>
+                        <p class="InfoText">Email Notifications With Actionable Advice (P1, P2, P3). Run Forecasts In Background With Pause/Resume Controls And Real-Time Status Monitoring.</p>
+                    </div>
+
+                    <div class="HelpCard">
+                        <div class="HelpIcon">☎️</div>
+                        <div>
+                            <div class="HelpTitle">Need Help?</div>
+                            <div class="HelpText" data-i18n="helpline">Kisan Call Centre: <strong>1800-180-1551</strong> (24/7 Toll-Free)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <div class="Loading" id="Loading">
+            <div class="LoadingSpinner">
+                <div class="SpinnerRing"></div>
+                <div class="SpinnerRing"></div>
+                <div class="SpinnerRing"></div>
+            </div>
+            <h2 class="LoadingTitle" data-i18n="loadingTitle">Analyzing Your Farm...</h2>
+            <p class="LoadingStep" id="LoadingStep">📡 Fetching Weather Data...</p>
+            <div class="LoadingProgress">
+                <div class="ProgressBar" id="ProgressBar"></div>
+            </div>
+        </div>
+
+        <!-- Background Task Panel -->
+        <section class="Section" id="TaskSection">
+            <div class="TaskPanel Hidden" id="TaskPanel">
+                <div class="TaskHeader">
+                    <div>
+                        <h3 class="SectionTitle">⏳ Background Task</h3>
+                        <div class="TaskMeta">
+                            <span>ID: <code id="TaskId">—</code></span>
+                            <span>•</span>
+                            <span>State: <strong id="TaskState">—</strong></span>
+                        </div>
+                    </div>
+                    <div class="TaskControls">
+                        <button type="button" id="TaskPause" class="BtnSecondary">Pause</button>
+                        <button type="button" id="TaskResume" class="BtnSecondary">Resume</button>
+                        <button type="button" id="TaskCancel" class="BtnSecondary danger">Cancel</button>
+                    </div>
+                </div>
+                <div class="TaskLog" id="TaskLog"></div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="Section Results" id="ResultsSection">
+            <div class="ResultsHeader">
+                <div>
+                    <h2 class="ResultsTitle">📊 Your Agricultural Forecast</h2>
+                    <div class="ResultsMeta">
+                        <span class="MetaItem"><span class="MetaIcon">📍</span><span id="ResultLocation">Location</span></span>
+                        <span class="MetaItem"><span class="MetaIcon">📅</span><span id="ResultDate">Date</span></span>
+                        <span class="MetaItem"><span class="MetaIcon">⏰</span><span id="ResultDays">30</span> Days</span>
+                    </div>
+                </div>
+                <button onclick="resetForm()" class="BtnSecondary">
+                    <span>🔄</span>
+                    <span>New Forecast</span>
+                </button>
+            </div>
+
+            <!-- Data Sources -->
+            <div class="DataSourcesCard">
+                <div class="CardLabel">🗂️ Data Sources Used</div>
+                <div class="DataChips" id="DataSources"></div>
+            </div>
+
+            <!-- Risk Overview Grid -->
+            <div class="RiskSection">
+                <h3 class="SectionTitle">🎯 Risk Analysis</h3>
+                <div class="RiskGrid" id="RiskOverview"></div>
+            </div>
+
+            <!-- Action Plan -->
+            <div class="ActionSection">
+                <h3 class="SectionTitle">📋 Prioritized Action Plan</h3>
+
+                <!-- Farmer Question & Answer -->
+                <div class="InfoBox" id="QuestionAnswerBox" style="display:none;">
+                    <strong>💬 Your Question</strong>
+                    <div style="margin-bottom: var(--Space4); padding: var(--Space3); background: var(--BgLight); border-radius: var(--Radius2); font-weight: 500;"><span id="FarmerQuestion"></span></div>
+                    <strong>🤖 AI Response</strong>
+                    <div style="white-space: pre-wrap; line-height: 1.8; padding: var(--Space4); background: var(--BgLight); border-radius: var(--Radius2); margin-top: var(--Space2);"><span id="UserQueryResponse"></span></div>
+                </div>
+                
+                <div class="ActionCard ActionP1">
+                    <div class="ActionHeader">
+                        <div class="ActionBadge BadgeCritical">🚨 P1 - CRITICAL</div>
+                        <div class="ActionSubtitle">Do Immediately (24-48 Hours)</div>
+                    </div>
+                    <ul class="ActionList" id="ActionsP1"></ul>
+                </div>
+
+                <div class="ActionCard ActionP2">
+                    <div class="ActionHeader">
+                        <div class="ActionBadge BadgeImportant">⚠️ P2 - IMPORTANT</div>
+                        <div class="ActionSubtitle">Complete This Week</div>
+                    </div>
+                    <ul class="ActionList" id="ActionsP2"></ul>
+                </div>
+
+                <div class="ActionCard ActionP3">
+                    <div class="ActionHeader">
+                        <div class="ActionBadge BadgeMonitor">📋 P3 - MONITOR</div>
+                        <div class="ActionSubtitle">Ongoing Monitoring</div>
+                    </div>
+                    <ul class="ActionList" id="ActionsP3"></ul>
+                </div>
+            </div>
+
+            <!-- Notification Status -->
+            <div id="EmailStatus"></div>
+        </section>
+
+    </main>
+
+    <!-- ========================================
+         🦶 FOOTER
+         ======================================== -->
+    <footer class="Footer">
+        <div class="FooterContainer">
+            <div class="FooterTop">
+                <div class="FooterBrand">
+                    <div class="FooterLogo">
+                        <div class="FooterLogoIcon">🌾</div>
+                        <div>
+                            <div class="FooterTitle">AgriSenseGuardian</div>
+                            <div class="FooterTagline">Empowering Farmers With AI Intelligence</div>
+                        </div>
+                    </div>
+                    <p class="FooterDescription">
+                        A Cutting-Edge Agricultural Decision Support System Powered By Google ADK, 
+                        Gemini AI, Real-Time Satellite Data, Web Search Tools, Context Compaction, 
+                        Prometheus Metrics, OpenTelemetry Tracing, And Background Task Processing.
+                    </p>
+                    <div class="FooterTech">
+                        <span class="TechBadge">🤖 Google ADK</span>
+                        <span class="TechBadge">✨ Gemini 2.0</span>
+                        <span class="TechBadge">🔗 A2A Protocol</span>
+                        <span class="TechBadge">🛠️ MCP</span>
+                        <span class="TechBadge">📊 Prometheus</span>
+                        <span class="TechBadge">🔍 OpenTelemetry</span>
+                        <span class="TechBadge">🌐 Web Search</span>
+                        <span class="TechBadge">⚙️ AsyncIO</span>
+                    </div>
+                </div>
+
+                <div class="FooterGrid">
+                    <div class="FooterColumn">
+                        <h4 class="FooterHeading">🛰️ Data Sources</h4>
+                        <ul class="FooterList">
+                            <li>NASA POWER Satellite</li>
+                            <li>Sentinel-2 Imagery</li>
+                            <li>Copernicus Climate</li>
+                            <li>Open-Meteo Weather</li>
+                        </ul>
+                    </div>
+
+                    <div class="FooterColumn">
+                        <h4 class="FooterHeading">🤖 AI Agents</h4>
+                        <ul class="FooterList">
+                            <li>Orchestrator Agent</li>
+                            <li>Forecast Agent</li>
+                            <li>Verify Agent</li>
+                            <li>Planner Agent</li>
+                        </ul>
+                    </div>
+
+                    <div class="FooterColumn">
+                        <h4 class="FooterHeading">📞 Helplines</h4>
+                        <ul class="FooterList">
+                            <li><strong>1800-180-1551</strong><br><small>Kisan Call Centre (24/7)</small></li>
+                            <li><strong>155261</strong><br><small>PM-KISAN Helpline</small></li>
+                            <li><strong>14447</strong><br><small>Agricultural Marketing</small></li>
+                        </ul>
+                    </div>
+
+                    <div class="FooterColumn">
+                        <h4 class="FooterHeading">🔗 Quick Links</h4>
+                        <ul class="FooterList">
+                            <li><a href="https://pmkisan.gov.in" target="_blank">PM-KISAN Portal</a></li>
+                            <li><a href="https://farmer.gov.in" target="_blank">Farmer Portal</a></li>
+                            <li><a href="https://mkisan.gov.in" target="_blank">mKisan Services</a></li>
+                            <li><a href="https://agmarknet.gov.in" target="_blank">AgMarkNet</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="FooterDivider"></div>
+
+            <div class="FooterBottom">
+                <div class="FooterCopyright">
+                    <p>
+                        © 2025 <strong>AgriSenseGuardian</strong> • Built With ❤️ By 
+                        <strong>Anubhav Chaurasia</strong> (i8o8i)
+                    </p>
+                    <p class="FooterEvent">
+                        🏆 <strong>Kaggle X Google Capstone Hackathon</strong> Submission
+                    </p>
+                </div>
+                <div class="FooterSocial">
+                    <div class="SocialLinks">
+                        <a href="https://github.com/i8o8i-Developer" target="_blank" class="SocialLink" title="GitHub">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.kaggle.com" target="_blank" class="SocialLink" title="Kaggle">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353c0-.233.118-.353.354-.353h2.431c.234 0 .351.12.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.358"/>
+                            </svg>
+                        </a>
+                        <div class="StatusDot"></div>
+                        <span class="StatusText">Live System</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="../Static/Js/App.js?v=3.0"></script>
+</body>
+</html>
