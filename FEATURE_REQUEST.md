@@ -258,10 +258,17 @@ Before Submitting Your Feature Request, Please Ensure:
 ## 📚 Additional Resources
 
 - **[README.md](README.md)** — Project Overview
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** — Contribution Guidelines *(Future)*
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — Contribution Guidelines
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** — Technical Architecture
+- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** — Installation Guide
+- **[DEVELOPMENT_RATIONALE.md](DEVELOPMENT_RATIONALE.md)** — Design Decisions
 - **[CHANGELOG.md](CHANGELOG.md)** — Version History & Roadmap
+- **[LICENSE](LICENSE)** — Apache 2.0 License
 - **[Docs/INDEX.md](Docs/INDEX.md)** — Complete Documentation Index
+- **[Docs/INNOVATION_HIGHLIGHTS.md](Docs/INNOVATION_HIGHLIGHTS.md)** — Novel Innovations
+- **[Docs/TECHNICAL_DEEP_DIVE.md](Docs/TECHNICAL_DEEP_DIVE.md)** — Advanced Implementation
+- **[Docs/SOCIAL_IMPACT_ASSESSMENT.md](Docs/SOCIAL_IMPACT_ASSESSMENT.md)** — UN SDG Alignment
+- **[Docs/DEPLOYMENT_GUIDE.md](Docs/DEPLOYMENT_GUIDE.md)** — Cloud Deployment
 
 ---
 

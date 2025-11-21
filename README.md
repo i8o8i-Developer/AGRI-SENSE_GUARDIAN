@@ -1263,6 +1263,33 @@ Limitations Under The License.
 
 ---
 
+## 📚 Complete Documentation
+
+### **Getting Started**
+- **[README.md](README.md)** — This File (Project Overview & Quick Start)
+- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** — Detailed Installation Guide For All Platforms
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — Technical System Architecture & Design
+- **[VIDEO_SCRIPT.md](VIDEO_SCRIPT.md)** — 3-Minute Demo Script For Presentations
+
+### **Development**
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — How To Contribute (Code, Docs, Ideas)
+- **[FEATURE_REQUEST.md](FEATURE_REQUEST.md)** — Feature Request Template
+- **[DEVELOPMENT_RATIONALE.md](DEVELOPMENT_RATIONALE.md)** — Why We Made Each Design Decision
+- **[CHANGELOG.md](CHANGELOG.md)** — Version History & Release Notes
+
+### **Advanced Topics**
+- **[Docs/INNOVATION_HIGHLIGHTS.md](Docs/INNOVATION_HIGHLIGHTS.md)** — 6 Novel Innovations Explained
+- **[Docs/TECHNICAL_DEEP_DIVE.md](Docs/TECHNICAL_DEEP_DIVE.md)** — Advanced Architecture & Algorithms
+- **[Docs/SOCIAL_IMPACT_ASSESSMENT.md](Docs/SOCIAL_IMPACT_ASSESSMENT.md)** — UN SDG Alignment & Impact Metrics
+- **[Docs/DEPLOYMENT_GUIDE.md](Docs/DEPLOYMENT_GUIDE.md)** — Production Deployment (GCP, AWS, Azure)
+- **[Docs/JUDGE_EVALUATION_GUIDE.md](Docs/JUDGE_EVALUATION_GUIDE.md)** — Hackathon Evaluation Reference
+- **[Docs/INDEX.md](Docs/INDEX.md)** — Complete Documentation Index
+
+### **Legal & Licensing**
+- **[LICENSE](LICENSE)** — Apache 2.0 Open-Source License
+
+---
+
 ## 🙏 Acknowledgments
 
 - **Google ADK Team** — For The Excellent Agent Development Framework
