@@ -1463,7 +1463,7 @@ AgriSenseGuardian's Architecture Demonstrates:
 
 **📚 Related Documentation**
 
-[README.md](README.md) | [VIDEO_SCRIPT.md](VIDEO_SCRIPT.md) | [CHANGELOG.md](CHANGELOG.md) | [SETUP_GUIDE.md](SETUP_GUIDE.md)
+[README.md](../README.md) | [CHANGELOG.md](../CHANGELOG.md) | [SETUP_GUIDE.md](../Setup/SETUP_GUIDE.md)
 
 ---
 

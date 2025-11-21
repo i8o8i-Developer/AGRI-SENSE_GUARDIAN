@@ -755,6 +755,6 @@ jobs:
 
 **📚 Related Documentation**
 
-[README.md](../README.md) | [ARCHITECTURE.md](../ARCHITECTURE.md) | [SETUP_GUIDE.md](../SETUP_GUIDE.md)
+[README.md](../README.md) | [ARCHITECTURE.md](ARCHITECTURE.md) | [SETUP_GUIDE.md](../Setup/SETUP_GUIDE.md)
 
 </div>

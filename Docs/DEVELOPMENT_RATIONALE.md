@@ -647,6 +647,6 @@ This Isn't Just A Hackathon Project — It's A Demonstration Of:
 
 **📚 Related Documentation**
 
-[README.md](README.md) | [ARCHITECTURE.md](ARCHITECTURE.md) | [CHANGELOG.md](CHANGELOG.md) | [SETUP_GUIDE.md](SETUP_GUIDE.md)
+[README.md](../README.md) | [ARCHITECTURE.md](ARCHITECTURE.md) | [CHANGELOG.md](../CHANGELOG.md) | [SETUP_GUIDE.md](../Setup/SETUP_GUIDE.md)
 
 </div>

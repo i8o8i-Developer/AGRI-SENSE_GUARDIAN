@@ -491,7 +491,7 @@ We Welcome Contributions! Please See [CONTRIBUTING.md](CONTRIBUTING.md) For Guid
    - Logs/Screenshots
 
 ### **How To Suggest Features**
-1. Open A [Feature Request](https://github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN/issues/new?template=Feature_Request.md)
+1. Open A [Feature Request](https://github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN/issues/new?template=FEATURE_REQUEST.md)
 2. Describe The Problem It Solves
 3. Explain The Proposed Solution
 4. Provide Examples Or Mockups
@@ -542,6 +542,6 @@ See [LICENSE](LICENSE) For Full Text.
 
 **📚 Related Documentation**
 
-[README.md](README.md) | [ARCHITECTURE.md](ARCHITECTURE.md) | [VIDEO_SCRIPT.md](VIDEO_SCRIPT.md) | [SETUP_GUIDE.md](SETUP_GUIDE.md)
+[README.md](README.md) | [ARCHITECTURE.md](Docs/ARCHITECTURE.md) | [SETUP_GUIDE.md](Setup/SETUP_GUIDE.md)
 
 </div>

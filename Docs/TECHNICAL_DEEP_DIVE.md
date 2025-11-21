@@ -724,6 +724,6 @@ class AdaptiveLearningEngine:
 
 **📚 Related Documentation**
 
-[README.md](../README.md) | [ARCHITECTURE.md](../ARCHITECTURE.md) | [INNOVATION_HIGHLIGHTS.md](INNOVATION_HIGHLIGHTS.md)
+[README.md](../README.md) | [ARCHITECTURE.md](ARCHITECTURE.md) | [INNOVATION_HIGHLIGHTS.md](INNOVATION_HIGHLIGHTS.md)
 
 </div>

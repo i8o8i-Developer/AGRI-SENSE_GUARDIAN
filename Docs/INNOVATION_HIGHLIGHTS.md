@@ -493,6 +493,6 @@ Cloud Cost Per 1M Requests:  ~$50 (Gemini API Dominant)
 
 **📚 Related Documentation**
 
-[README.md](../README.md) | [ARCHITECTURE.md](../ARCHITECTURE.md) | [VIDEO_SCRIPT.md](../VIDEO_SCRIPT.md) | [CHANGELOG.md](../CHANGELOG.md)
+[README.md](../README.md) | [ARCHITECTURE.md](ARCHITECTURE.md) | [CHANGELOG.md](../CHANGELOG.md)
 
 </div>

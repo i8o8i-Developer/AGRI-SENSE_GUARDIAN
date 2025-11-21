@@ -1,4 +1,4 @@
-# 🌾 AgriSenseGuardian — AI-Powered Agricultural Intelligence Platform
+# 🌾 Multi-Agent : AI-Powered Agricultural Intelligence Platform For Indians ❤️
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![Google ADK](https://img.shields.io/badge/Google_ADK-Agent_Framework-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://github.com/google/generative-ai-python)
@@ -7,27 +7,9 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue?style=for-the-badge)](LICENSE)
 [![Hackathon](https://img.shields.io/badge/Kaggle_x_Google-Capstone-FFA500?style=for-the-badge&logo=kaggle&logoColor=white)](https://www.kaggle.com/)
 
-```
-╔═══════════════════════════════════════════════════════════════════════════════════╗
-║                                                                                   ║
-║       █████╗  ██████╗ ██████╗ ██╗███████╗███████╗███╗   ██╗███████╗███████╗       ║
-║      ██╔══██╗██╔════╝ ██╔══██╗██║██╔════╝██╔════╝████╗  ██║██╔════╝██╔════╝       ║
-║      ███████║██║  ███╗██████╔╝██║███████╗█████╗  ██╔██╗ ██║███████╗█████╗         ║
-║      ██╔══██║██║   ██║██╔══██╗██║╚════██║██╔══╝  ██║╚██╗██║╚════██║██╔══╝         ║
-║      ██║  ██║╚██████╔╝██║  ██║██║███████║███████╗██║ ╚████║███████║███████╗       ║
-║      ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═╝  ╚═══╝╚══════╝╚══════╝       ║
-║                                                                                   ║
-║        ██████╗ ██╗   ██╗ █████╗ ██████╗ ██████╗ ██╗ █████╗ ███╗   ██╗             ║
-║       ██╔════╝ ██║   ██║██╔══██╗██╔══██╗██╔══██╗██║██╔══██╗████╗  ██║             ║
-║       ██║  ███╗██║   ██║███████║██████╔╝██║  ██║██║███████║██╔██╗ ██║             ║
-║       ██║   ██║██║   ██║██╔══██║██╔══██╗██║  ██║██║██╔══██║██║╚██╗██║             ║
-║       ╚██████╔╝╚██████╔╝██║  ██║██║  ██║██████╔╝██║██║  ██║██║ ╚████║             ║
-║        ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝             ║
-║                                                                                   ║
-║              🌍 Protecting Indian Farms Through Intelligent AI 🌾                ║
-║                                                                                   ║
-╚═══════════════════════════════════════════════════════════════════════════════════╝
-```
+---
+
+![AgriSenseGuardian Banner](Images/Agri-Sense%20Banner.jpg)
 
 ---
 
@@ -149,6 +131,8 @@ AgriSenseGuardian Uses A **Sophisticated Multi-Agent Architecture** Where Specia
 ### **System Architecture Diagram**
 
 ```
+
+
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                         🌐 WEB UI LAYER (FastAPI)                           │
 │                    Port 8000 — User Interface & REST API                    │
@@ -157,7 +141,7 @@ AgriSenseGuardian Uses A **Sophisticated Multi-Agent Architecture** Where Specia
                                    ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                    🧠 ORCHESTRATION LAYER (A2A Protocol)                    │
-│                                                                             │
+│   ┌─────────────────────────────────────────────────────────────────────┐   │
 │   │  OrchestratorAgent (Port 9000)                                      │   │
 │   │  • Session Management (InMemorySessionService)                      │   │
 │   │  • Memory Bank (Long-Term Learning)                                 │   │
@@ -459,6 +443,19 @@ ERRORS = Counter("agent_errors_total", ["agent"])
 - 🔄 `agent_iterations_total` — Loop Agent Retry Count
 
 **Grafana Dashboard Ready** — Import `Docs/Grafana-Dashboard.json` For Pre-Built Visualizations
+
+---
+
+## 📸 Screenshots
+
+### **Hero Section**
+![Hero Section](Images/HeroSection.png)
+
+### **Work Section**
+![Work Section](Images/WorkSection.png)
+
+### **Footer Section**
+![Footer Section](Images/FooterSection.png)
 
 ---
 
@@ -1267,14 +1264,13 @@ Limitations Under The License.
 
 ### **Getting Started**
 - **[README.md](README.md)** — This File (Project Overview & Quick Start)
-- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** — Detailed Installation Guide For All Platforms
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** — Technical System Architecture & Design
-- **[VIDEO_SCRIPT.md](VIDEO_SCRIPT.md)** — 3-Minute Demo Script For Presentations
+- **[SETUP_GUIDE.md](Setup/SETUP_GUIDE.md)** — Detailed Installation Guide For All Platforms
+- **[ARCHITECTURE.md](Docs/ARCHITECTURE.md)** — Technical System Architecture & Design
 
 ### **Development**
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** — How To Contribute (Code, Docs, Ideas)
 - **[FEATURE_REQUEST.md](FEATURE_REQUEST.md)** — Feature Request Template
-- **[DEVELOPMENT_RATIONALE.md](DEVELOPMENT_RATIONALE.md)** — Why We Made Each Design Decision
+- **[DEVELOPMENT_RATIONALE.md](Docs/DEVELOPMENT_RATIONALE.md)** — Why We Made Each Design Decision
 - **[CHANGELOG.md](CHANGELOG.md)** — Version History & Release Notes
 
 ### **Advanced Topics**

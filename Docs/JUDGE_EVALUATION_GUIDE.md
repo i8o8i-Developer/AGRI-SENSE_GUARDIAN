@@ -150,7 +150,7 @@ Data Access Layer (Tools → APIs)
 External APIs (NASA, ESA, OpenWeatherMap)
 ```
 
-**Evidence:** [ARCHITECTURE.md](../ARCHITECTURE.md) (Full System Architecture)
+**Evidence:** [ARCHITECTURE.md](ARCHITECTURE.md) (Full System Architecture)
 
 **Suggested Judge Score:** 10/10 (Textbook-Quality Architecture)
 
@@ -304,7 +304,7 @@ if Confidence < 0.7:
     # Loop Back For More Data
 ```
 
-**Evidence:** [DEVELOPMENT_RATIONALE.md](../DEVELOPMENT_RATIONALE.md)
+**Evidence:** [DEVELOPMENT_RATIONALE.md](DEVELOPMENT_RATIONALE.md)
 
 **Suggested Judge Score:** 10/10 (Clear Learning Demonstration)
 
@@ -444,7 +444,7 @@ if Confidence < 0.7:
 ✅ **Business Value:** ₹18,500 Crore Government Savings  
 ✅ **Integration:** PMFBY, e-NAM Government Schemes  
 
-**Evidence:** [ARCHITECTURE.md](../ARCHITECTURE.md)
+**Evidence:** [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ---
 

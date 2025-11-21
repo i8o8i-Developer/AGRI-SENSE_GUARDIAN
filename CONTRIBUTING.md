@@ -117,8 +117,8 @@ Documentation Is As Important As Code!
 
 **Documentation Files:**
 - [README.md](README.md) — Project Overview
-- [ARCHITECTURE.md](ARCHITECTURE.md) — Technical Architecture
-- [SETUP_GUIDE.md](SETUP_GUIDE.md) — Installation Guide
+- [ARCHITECTURE.md](Docs/ARCHITECTURE.md) — Technical Architecture
+- [SETUP_GUIDE.md](Setup/SETUP_GUIDE.md) — Installation Guide
 - [Docs/](Docs/) — Advanced Documentation
 
 **How To Contribute:**
@@ -236,7 +236,7 @@ git checkout -b fix/forecast-agent-validation
 ### **Step 2: Make Changes**
 
 **Follow Coding Standards:**
-- ✅ Use **PascalCase** For All Naming (See [DEVELOPMENT_RATIONALE.md](DEVELOPMENT_RATIONALE.md))
+- ✅ Use **PascalCase** For All Naming (See [DEVELOPMENT_RATIONALE.md](Docs/DEVELOPMENT_RATIONALE.md))
 - ✅ Add Docstrings To All Functions/Classes
 - ✅ Include Type Hints For Parameters/Returns
 - ✅ Add Inline Comments For Complex Logic
@@ -410,7 +410,7 @@ def fetch_weather_data(location: str, days_ahead: int) -> dict:
     return weather_data
 ```
 
-**Why PascalCase?** See [DEVELOPMENT_RATIONALE.md](DEVELOPMENT_RATIONALE.md)
+**Why PascalCase?** See [DEVELOPMENT_RATIONALE.md](Docs/DEVELOPMENT_RATIONALE.md)
 
 ---
 
@@ -609,10 +609,10 @@ We Recognize:
 ## 📚 Additional Resources
 
 - **[README.md](README.md)** — Project Overview
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** — Technical Architecture
-- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** — Installation Guide
-- **[DEVELOPMENT_RATIONALE.md](DEVELOPMENT_RATIONALE.md)** — Design Decisions
-- **[FEATURE_REQUEST.md](FEATURE_REQUEST.md)** — Feature Request Template
+- **[ARCHITECTURE.md](Docs/ARCHITECTURE.md)** — Technical Architecture
+- **[SETUP_GUIDE.md](Setup/SETUP_GUIDE.md)** — Installation Guide
+- **[DEVELOPMENT_RATIONALE.md](Docs/DEVELOPMENT_RATIONALE.md)** — Design Decisions
+- **[FEATURE_REQUEST.md](Docs/FEATURE_REQUEST.md)** — Feature Request Template
 - **[LICENSE](LICENSE)** — Apache 2.0 License
 - **[Docs/INDEX.md](Docs/INDEX.md)** — Documentation Index
 

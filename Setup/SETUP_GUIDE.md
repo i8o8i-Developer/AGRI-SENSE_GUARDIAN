@@ -796,15 +796,14 @@ Logger.addHandler(FileHandler)
 
 1. **Test The Application** — Submit A Few Forecast Requests
 2. **Read The Documentation:**
-   - [README.md](README.md) — Project Overview
-   - [ARCHITECTURE.md](ARCHITECTURE.md) — Technical Deep Dive
-   - [VIDEO_SCRIPT.md](VIDEO_SCRIPT.md) — Demo Script
+   - [README.md](../README.md) — Project Overview
+   - [ARCHITECTURE.md](../Docs/ARCHITECTURE.md) — Technical Deep Dive
 3. **Explore The Code:**
    - `Agents/` — Multi-Agent System
    - `Tools/` — Data Collection Tools
    - `Services/` — Session, Task, Health Services
 4. **Contribute:**
-   - See [CONTRIBUTING.md](CONTRIBUTING.md) For Guidelines
+   - See [CONTRIBUTING.md](../CONTRIBUTING.md) For Guidelines
 5. **Star The Repository** ⭐ If You Find This Useful!
 
 ---

@@ -23,11 +23,10 @@ AgriSenseGuardian Has **10 Comprehensive Documentation Files** Covering Every As
 | **Document** | **Size** | **Purpose** | **Audience** | **Quick Link** |
 |--------------|----------|-------------|--------------|----------------|
 | **README.md** | 14.5 KB | Project Overview, Quick Start, Features | Everyone | [View](../README.md) |
-| **ARCHITECTURE.md** | 19.0 KB | System Architecture, A2A Protocol, Data Flow | Developers, Architects | [View](../ARCHITECTURE.md) |
-| **VIDEO_SCRIPT.md** | 9.4 KB | 3-Minute Demo Script For NotebookLM | Judges, Presenters | [View](../VIDEO_SCRIPT.md) |
+| **ARCHITECTURE.md** | 19.0 KB | System Architecture, A2A Protocol, Data Flow | Developers, Architects | [View](ARCHITECTURE.md) |
 | **CHANGELOG.md** | 11.9 KB | Version History, Development Timeline | Contributors, Maintainers | [View](../CHANGELOG.md) |
-| **DEVELOPMENT_RATIONALE.md** | 14.3 KB | Design Decisions, PascalCase Justification | Technical Judges | [View](../DEVELOPMENT_RATIONALE.md) |
-| **SETUP_GUIDE.md** | 12.8 KB | Installation Guide, API Keys, Troubleshooting | New Users, Developers | [View](../SETUP_GUIDE.md) |
+| **DEVELOPMENT_RATIONALE.md** | 14.3 KB | Design Decisions, PascalCase Justification | Technical Judges | [View](DEVELOPMENT_RATIONALE.md) |
+| **SETUP_GUIDE.md** | 12.8 KB | Installation Guide, API Keys, Troubleshooting | New Users, Developers | [View](../Setup/SETUP_GUIDE.md) |
 
 ### **Advanced Documentation (Docs/ Folder)**
 
