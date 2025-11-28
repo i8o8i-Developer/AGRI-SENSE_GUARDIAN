@@ -97,6 +97,7 @@ body.light {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  margin-bottom: 15px;
 }
 
 html {
@@ -759,10 +760,16 @@ body {
 }
 
 .SectionTitle {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: var(--Space4);
+  margin-bottom: var(--Space6);
+  margin-top: var(--Space6);
   color: var(--ColorText);
+  display: flex;
+  align-items: center;
+  gap: var(--Space2);
+  padding-bottom: var(--Space3);
+  border-bottom: 2px solid var(--ColorBorder);
 }
 
 .RiskGrid {
@@ -884,7 +891,77 @@ body {
   border: 1px solid var(--ColorBorder);
   border-radius: var(--RadiusLg);
   padding: var(--Space6);
-  margin-bottom: var(--Space4);
+  margin-bottom: var(--Space6);
+}
+
+/* Action Cards - Missing styles */
+.ActionCard {
+  background: var(--ColorCard);
+  border: 2px solid var(--ColorBorder);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.ActionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.ActionCard.ActionP1 {
+  border-color: var(--ColorDanger);
+  background: linear-gradient(135deg, var(--ColorCard) 0%, rgba(239, 68, 68, 0.05) 100%);
+}
+
+.ActionCard.ActionP2 {
+  border-color: var(--ColorWarning);
+  background: linear-gradient(135deg, var(--ColorCard) 0%, rgba(245, 158, 11, 0.05) 100%);
+}
+
+.ActionCard.ActionP3 {
+  border-color: var(--ColorSuccess);
+  background: linear-gradient(135deg, var(--ColorCard) 0%, rgba(34, 197, 94, 0.05) 100%);
+}
+
+/* Action Badges */
+.ActionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.BadgeCritical {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.BadgeImportant {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.BadgeMonitor {
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+/* Action Subtitle */
+.ActionSubtitle {
+  font-size: 14px;
+  color: var(--ColorTextMuted);
+  font-weight: 500;
+  margin-top: 4px;
 }
 
 .ActionSectionTitle {
@@ -900,21 +977,26 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--Space4);
+  margin-bottom: var(--Space5);
+  padding-bottom: var(--Space3);
+  border-bottom: 1px solid var(--ColorBorder);
 }
 
 .ActionList {
   list-style: none;
   display: grid;
-  gap: var(--Space3);
+  gap: var(--Space4);
+  margin-top: var(--Space4);
+  padding: 0;
 }
 
 .ActionItem {
-  padding: 20px 24px;
+  padding: 24px 28px;
   background: var(--ColorSurface);
-  border-left: 4px solid var(--ColorPrimary);
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid var(--ColorPrimary);
+  border-radius: 12px;
+  border: 1px solid var(--ColorBorder);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
@@ -971,6 +1053,30 @@ body {
   line-height: 1.7;
 }
 
+.ActionItem .action-content {
+  margin-bottom: 0.5em;
+}
+
+.ActionItem .action-content p {
+  margin-bottom: 0.5em;
+}
+
+.ActionItem .action-content ul,
+.ActionItem .action-content ol {
+  margin: 0.5em 0;
+  padding-left: 1.5em;
+}
+
+.ActionItem .action-content li {
+  margin-bottom: 0.3em;
+  line-height: 1.6;
+}
+
+.ActionItem .action-content strong {
+  color: var(--ColorPrimary);
+  font-weight: 600;
+}
+
 .ActionItem .markdown-content h1,
 .ActionItem .markdown-content h2,
 .ActionItem .markdown-content h3,
@@ -1006,10 +1112,10 @@ body {
 .action-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--ColorBorder);
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-size: 13px;
 }
 
@@ -1049,12 +1155,7 @@ body {
   color: #34d399;
 }
 
-.ActionMeta .meta.cost,
-.action-meta .meta.cost {
-  border-color: rgba(245, 158, 11, 0.4);
-  background: rgba(245, 158, 11, 0.1);
-  color: #fbbf24;
-}
+/* Removed cost styling since pricing is no longer displayed */
 
 .ActionMeta .meta.outcome,
 .action-meta .meta.outcome {
@@ -1091,13 +1192,13 @@ body {
 
 /* ===== INFO BOX ===== */
 .InfoBox {
-  padding: 0;
-  border-radius: 12px;
-  margin-top: var(--Space4);
-  margin-bottom: var(--Space4);
+  padding: 15px;
+  border-radius: 16px;
+  margin-top: var(--Space6);
+  margin-bottom: var(--Space6);
   background: var(--ColorCard);
   border: 2px solid var(--ColorBorder);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: all 0.3s ease;
 }
@@ -1110,8 +1211,8 @@ body {
 .info-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 20px 24px;
+  gap: 16px;
+  padding: 24px 28px;
   background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid var(--ColorBorder);
 }
@@ -1129,7 +1230,18 @@ body {
 }
 
 .info-content {
-  padding: 20px 24px;
+  padding: 24px 28px;
+}
+
+/* Better spacing within InfoBox */
+.InfoBox > strong {
+  display: block;
+  padding: 20px 28px 12px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ColorText);
+  margin: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .info-row {
@@ -1711,10 +1823,35 @@ body {
    📝 MARKDOWN CONTENT STYLING
    ======================================== */
 .markdown-content {
-  line-height: 1.7;
+  line-height: 1.8;
   color: var(--ColorText);
   text-align: left;
   width: 100%;
+  font-size: 15px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Question and AI Response Specific Styling */
+.question-display {
+  margin-bottom: var(--Space5);
+  padding: var(--Space5);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  font-weight: 500;
+  border-left: 5px solid var(--ColorPrimary);
+  border: 1px solid var(--ColorBorder);
+}
+
+.ai-response-display {
+  margin-top: var(--Space3);
+  padding: var(--Space5);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border-left: 5px solid var(--ColorSecondary);
+  border: 1px solid var(--ColorBorder);
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 /* Support For Centered And Right-Aligned Content */
@@ -1766,31 +1903,55 @@ body {
 }
 
 .markdown-content li {
-  margin-bottom: 0.3em;
-  line-height: 1.6;
+  margin-bottom: 0.4em;
+  line-height: 1.7;
   padding-left: 0.3em;
+  position: relative;
+}
+
+/* Better Bullet Styling */
+.markdown-content ul li::marker {
+  content: "• ";
+  color: var(--ColorPrimary);
+  font-weight: 600;
+}
+
+.markdown-content ol li::marker {
+  color: var(--ColorPrimary);
+  font-weight: 600;
 }
 
 /* Nested lists - Proper Indentation For Sub-Bullets */
 .markdown-content li > ul,
 .markdown-content li > ol {
-  margin-top: 0.4em;
-  margin-bottom: 0.4em;
-  padding-left: 1.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  padding-left: 1.8em;
 }
 
 /* Better Spacing For Nested List Items */
 .markdown-content li > ul > li,
 .markdown-content li > ol > li {
-  margin-bottom: 0.35em;
-  line-height: 1.55;
+  margin-bottom: 0.4em;
+  line-height: 1.65;
+}
+
+/* Sub-Bullet Styling */
+.markdown-content li > ul > li::marker {
+  content: "◦ ";
+  color: var(--ColorSecondary);
 }
 
 /* Third level Nesting (If Needed) */
 .markdown-content li > ul > li > ul,
 .markdown-content li > ol > li > ol {
-  margin-top: 0.3em;
-  padding-left: 1.4em;
+  margin-top: 0.4em;
+  padding-left: 1.6em;
+}
+
+.markdown-content li > ul > li > ul > li::marker {
+  content: "▪ ";
+  color: var(--ColorTextMuted);
 }
 
 .markdown-content strong {
@@ -1937,9 +2098,74 @@ body {
   color: #d4d4d4;
 }
 
+/* Enhanced Content Handling */
+.markdown-content {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.markdown-content * {
+  max-width: 100%;
+}
+
+/* Better Spacing For Inline Elements */
+.markdown-content strong + em,
+.markdown-content em + strong {
+  margin-left: 0.2em;
+}
+
+/* Handle Mixed Content Better */
+.markdown-content p:empty {
+  display: none;
+}
+
+.markdown-content ul:empty,
+.markdown-content ol:empty {
+  display: none;
+}
+
+/* Better Handling Of Nested Content */
+.markdown-content li p {
+  margin-bottom: 0.3em;
+}
+
+.markdown-content li p:last-child {
+  margin-bottom: 0;
+}
+
 /* Responsive Adjustments */
 @media (max-width: 768px) {
+  .markdown-content { font-size: 14px; }
   .markdown-content h1 { font-size: 1.75em; }
+  
+  /* Mobile-Friendly Padding Adjustments */
+  .ActionCard {
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .ActionItem {
+    padding: 16px 20px;
+  }
+  
+  .InfoBox .info-header {
+    padding: 16px 20px;
+  }
+  
+  .InfoBox .info-content {
+    padding: 16px 20px;
+  }
+  
+  .question-display,
+  .ai-response-display {
+    padding: var(--Space4);
+  }
+  
+  .SectionTitle {
+    font-size: 1.25rem;
+    margin-bottom: var(--Space4);
+    margin-top: var(--Space4);
+  }
   .markdown-content h2 { font-size: 1.4em; }
   .markdown-content h3 { font-size: 1.2em; }
   

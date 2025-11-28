@@ -133,14 +133,14 @@ Required Steps:
    - Provide Region-Specific Advice (North India, South India, etc.)
    - Reference Local Agricultural Extension Services
 
-Output Format (Plain Text-Friendly For UI Rendering – NO Markdown *, **):
+Output Format (Markdown-Friendly For UI Rendering):
 Return Structured JSON With These Keys:
 - UserQuestion: Original Farmer Question
-- ImmediateAction: Direct Immediate Steps (Plain Sentences, newline separated)
-- ThisWeekAction: Follow-Up Steps For This Week (newline separated)
-- P1: Critical Actions (Each A Plain Sentence; include all drivers)
-- P2: Important Actions (Plain Sentences)
-- P3: Monitoring Actions (Plain Sentences)
+- ImmediateAction: Direct Immediate Steps (Markdown Formatted With Bullets)
+- ThisWeekAction: Follow-Up Steps For This Week (Markdown Formatted With Bullets)
+- P1: Critical Actions (Markdown Formatted With Bullets And **Bold** Emphasis)
+- P2: Important Actions (Markdown Formatted With Bullets)
+- P3: Monitoring Actions (Markdown Formatted With Bullets)
 - NotificationSummary: Concise Summary For Email Notifications
 - EmailDeliveryStatus: Provider Attempts And Final Status
 - AdvisoryResources: Array Of Local Resource Link Strings
@@ -155,8 +155,9 @@ Important Guidelines:
 - Reference Real Data Metrics (Soil Moisture %, Temperature, ET Rates)
 - Consider Farmer's Location And Local Agricultural Context
 - Provide Both Immediate Actions And Long-Term Planning
- - DO NOT Use Asterisks Or Markdown Bold/Italics; Use Plain Text Only
- - Separate Multiple Steps With Newline Characters
+ - USE Markdown Formatting For Better Readability (**bold**, Bullets, Etc.)
+ - Structure Content With Proper Bullet Points And Emphasis
+ - Separate Multiple Steps With Proper Markdown List Formatting
 """
     
     async def GeneratePlan(
@@ -356,11 +357,18 @@ A Farmer Asked: '{user_query}'
 Provide Comprehensive, Practical Guidance Using The Real-Time Information Above.
 Include Specific Prices, Varieties, And Timelines When Available From The Search Results.
 
-Format Your Response Clearly With:
-IMMEDIATE ACTION: <specific steps to take now>
-THIS WEEK: <follow-up actions and planning>
+Format Your Response Clearly With Markdown:
+**IMMEDIATE ACTION:**
+- Specific step 1
+- Specific step 2
+- etc.
 
-Keep Language Clear And Actionable For A Farmer."""
+**THIS WEEK:**
+- Follow-up action 1 
+- Follow-up action 2
+- etc.
+
+Use bullet points, **bold text** for emphasis, and clear structure for better readability."""
                 
                 response = client.models.generate_content(
                     model='gemini-2.5-flash-lite',
@@ -379,22 +387,19 @@ Keep Language Clear And Actionable For A Farmer."""
                     this_week_action = m_week.group(1).strip()
                 if not immediate_action:
                     immediate_action = llm_answer[:220]
-                # Sanitize Markdown Bullets/Bold For UI Plain Text
-                def _clean(txt: str) -> str:
+                # Light sanitization while preserving markdown structure
+                def _clean_preserve_markdown(txt: str) -> str:
                     if not txt:
                         return txt
-                    # Remove **bold**
-                    cleaned = re.sub(r'\*\*(.*?)\*\*', r'\1', txt)
-                    # Replace leading Bullets * or - With •
-                    cleaned = re.sub(r'^[\*\-]\s*', '• ', cleaned, flags=re.MULTILINE)
-                    # Remove Stray Asterisk Pairs
-                    cleaned = re.sub(r'\s\*\s', ' ', cleaned)
-                    # Collapse Multiple Spaces
-                    cleaned = re.sub(r' {2,}', ' ', cleaned)
-                    return cleaned.strip()
-                immediate_action = _clean(immediate_action)
-                this_week_action = _clean(this_week_action)
-                user_question_response = _clean(user_question_response)
+                    # Only remove excessive whitespace and normalize line breaks
+                    cleaned = re.sub(r'\n\s*\n\s*\n+', '\n\n', txt)  # Collapse multiple newlines
+                    cleaned = re.sub(r'[ \t]+', ' ', cleaned)  # Collapse multiple spaces/tabs
+                    cleaned = cleaned.strip()
+                    return cleaned
+                    
+                immediate_action = _clean_preserve_markdown(immediate_action)
+                this_week_action = _clean_preserve_markdown(this_week_action)
+                user_question_response = _clean_preserve_markdown(user_question_response)
             except Exception as e:
                 print(f"[PlannerAgent LLM ERROR] {e}")
                 immediate_action = "Check With Local Agricultural Extension Office For Specific Guidance"
@@ -409,19 +414,22 @@ Keep Language Clear And Actionable For A Farmer."""
             level = risk_data.get('Level', 'Low')
             confidence = risk_data.get('Confidence', 0)
             drivers = risk_data.get('Drivers', [])
-            drivers_text = '; '.join(drivers) if drivers else 'Monitor Conditions'
-            pretty_name = _prettify_risk_name(risk_name)
+            
+            # Generate Dynamic, User-Friendly Action Description Using LLM
+            dynamic_action = await self._generate_dynamic_action_description(
+                risk_name, level, drivers, Location
+            )
+            
             # Enriched Action Object With Structured Fields
             action_obj = {
-                'Action': f"{pretty_name} – {drivers_text}",
+                'Action': dynamic_action,
                 'PrioritySource': risk_name,
                 'RiskLevel': level,
                 'Confidence': confidence,
                 'Drivers': drivers,
                 'Deadline': '24-48h' if level in ['High','Critical'] else ('7 days' if level == 'Medium' else 'Continuous'),
                 'Resources': _infer_resources_from_drivers(drivers),
-                'CostEstimateINR': _estimate_cost_from_action(drivers, level),
-                'ExpectedOutcome': _expected_outcome(level, pretty_name)
+                'ExpectedOutcome': _generate_expected_outcome(level, risk_name, drivers)
             }
             if level in ['High', 'Critical']:
                 P1Actions.append(action_obj)
@@ -434,65 +442,60 @@ Keep Language Clear And Actionable For A Farmer."""
         if not P3Actions:
             P3Actions = [
                 {
-                    'Action': 'Monitor Daily Weather Forecasts',
+                    'Action': '🌤️ **Monitor Daily Weather** - Keep Track Of Weather Changes To Plan Farm Activities Effectively',
                     'PrioritySource': 'SystemDefault',
                     'RiskLevel': 'Low',
                     'Confidence': 0,
                     'Drivers': [],
                     'Deadline': 'Continuous',
-                    'Resources': ['General Farm Tools'],
-                    'CostEstimateINR': 100,
-                    'ExpectedOutcome': 'Maintain Stable Weather Monitoring'
+                    'Resources': ['Weather Apps', 'Local News'],
+                    'ExpectedOutcome': 'Stay Prepared For Weather Changes'
                 },
                 {
-                    'Action': 'Check Soil Moisture Regularly',
+                    'Action': '💧 **Check Soil Moisture** - Test Soil Wetness Regularly To Ensure Optimal Crop Growth Conditions',
                     'PrioritySource': 'SystemDefault',
                     'RiskLevel': 'Low',
                     'Confidence': 0,
                     'Drivers': [],
                     'Deadline': 'Continuous',
-                    'Resources': ['Soil Testing Kit'],
-                    'CostEstimateINR': 100,
-                    'ExpectedOutcome': 'Maintain Stable Soil Moisture Awareness'
+                    'Resources': ['Simple Soil Test', 'Visual Inspection'],
+                    'ExpectedOutcome': 'Maintain healthy soil conditions'
                 },
                 {
-                    'Action': 'Inspect Crops For Pest/Disease Signs',
+                    'Action': '🔍 **Inspect Crops Daily** - Look For Signs Of Pests, Diseases, Or Nutrient Deficiencies In Your Crops',
                     'PrioritySource': 'SystemDefault',
                     'RiskLevel': 'Low',
                     'Confidence': 0,
                     'Drivers': [],
                     'Deadline': 'Continuous',
-                    'Resources': ['Pest Monitoring Kit'],
-                    'CostEstimateINR': 100,
-                    'ExpectedOutcome': 'Early Detection Of Pest/Disease Signs'
+                    'Resources': ['Visual Inspection', 'Local Agricultural Guide'],
+                    'ExpectedOutcome': 'Early Detection Prevents Major Crop Losses'
                 }
             ]
         
         if not P1Actions:
             P1Actions = [
                 {
-                    'Action': 'No Critical Actions Required At This Time',
+                    'Action': '✅ **Excellent! No Critical Issues** - Your Crops Are In Good Condition Right Now',
                     'PrioritySource': 'SystemDefault',
                     'RiskLevel': 'Low',
                     'Confidence': 0,
                     'Drivers': [],
-                    'Deadline': 'Continuous',
-                    'Resources': ['General Farm Tools'],
-                    'CostEstimateINR': 0,
-                    'ExpectedOutcome': 'No Immediate Mitigation Required'
+                    'Deadline': 'Current',
+                    'Resources': ['Continue Regular Care'],
+                    'ExpectedOutcome': 'Maintain Current Healthy Crop Status'
                 }
             ]
         if not P2Actions:
             P2Actions = [
                 {
-                    'Action': 'Continue Normal Farm Operations',
+                    'Action': '🌱 **Continue Your Great Work** - Keep Following Your Current Farming Practices This Week',
                     'PrioritySource': 'SystemDefault',
                     'RiskLevel': 'Low',
                     'Confidence': 0,
                     'Drivers': [],
-                    'Deadline': '7 days',
-                    'Resources': ['General Farm Tools'],
-                    'CostEstimateINR': 100,
+                    'Deadline': '7 Days',
+                    'Resources': ['Current Farming Tools'],
                     'ExpectedOutcome': 'Normal Operations Maintained'
                 }
             ]
@@ -535,22 +538,22 @@ Keep Language Clear And Actionable For A Farmer."""
 
                 email_body = f"""Hello Farmer,
 
-Here Is Your Prioritized Action Plan For {Location}:
+                Here Is Your Prioritized Action Plan For {Location}:
 
-📌 PRIORITY 1 - CRITICAL (Next 24-48 Hours):
-{p1_text}
+                📌 PRIORITY 1 - CRITICAL (Next 24-48 Hours):
+                {p1_text}
 
-⚠️ PRIORITY 2 - IMPORTANT (This Week):
-{p2_text}
+                ⚠️ PRIORITY 2 - IMPORTANT (This Week):
+                {p2_text}
 
-📋 PRIORITY 3 - ROUTINE (Ongoing):
-{p3_text}
+                📋 PRIORITY 3 - ROUTINE (Ongoing):
+                {p3_text}
 
-Stay Informed And Protect Your Farm!
+                Stay Informed And Protect Your Farm!
 
-Best Regards,
-AgriSense Guardian Team
-"""
+                Best Regards,
+                AgriSense Guardian Team
+                """
                 email_result = await EmailNotificationTool(recipient, subject, email_body, None)
                 email_status = {
                     'Status': 'Success' if email_result.get('Status') == 'Success' else 'Error',
@@ -577,6 +580,98 @@ AgriSense Guardian Team
             'UserQueryResponse': user_question_response,
             'GeneratedAt': '2025-11-18T00:00:00Z'
         }
+    
+    async def _generate_dynamic_action_description(self, risk_name: str, level: str, drivers: list, location: str) -> str:
+        """Generate User-Friendly, Dynamic Action Descriptions Using LLM"""
+        try:
+            import google.generativeai as genai
+            from Config.Settings import Settings
+            
+            # Configure The API Key If Available
+            if hasattr(Settings, 'google_gemini_api_key') and Settings.google_gemini_api_key:
+                genai.configure(api_key=Settings.google_gemini_api_key)
+            
+            drivers_text = ', '.join(drivers) if drivers else 'general conditions'
+            urgency_emoji = "🚨" if level in ['High', 'Critical'] else ("⚠️" if level == 'Medium' else "📋")
+            
+            prompt = f"""
+            Generate A Single, Clear, Farmer-Friendly Action Description For This Agricultural Risk:
+
+            Risk: {risk_name}
+            Severity: {level} 
+            Causes: {drivers_text}
+            Location: {location}
+
+            Requirements :
+            - Start With Appropriate Emoji ({urgency_emoji})
+            - Use **bold** For Key Action Words
+            - Write In Simple, Clear Language Farmers Can Understand
+            - Be Specific And Actionable
+            - Maximum 60 Words
+            - Focus On WHAT To Do, Not Technical Explanations
+
+            Example Format: "🚨 **Protect Crops From Cold** - Cover Sensitive Plants With Cloth Or Plastic Sheets Tonight To Prevent Frost Damage"
+
+            Generate ONE Action Description Only :"""
+
+            # Use The Correct API Structure
+            model = genai.GenerativeModel('gemini-pro')
+            response = model.generate_content(
+                prompt,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=0.3,
+                    max_output_tokens=150
+                )
+            )
+            
+            result = response.text.strip()
+            # Clean Up Any Extra Formatting
+            result = result.replace('"', '').replace("'", "").strip()
+            return result if result else f"{urgency_emoji} **Monitor {risk_name.lower()}** - Take Appropriate Action Based On Current Conditions"
+            
+        except Exception as e:
+            print(f"[Dynamic Action Generation Error] {e}")
+            # Enhanced Fallback With Better Risk-Specific Descriptions
+            urgency_emoji = "🚨" if level in ['High', 'Critical'] else ("⚠️" if level == 'Medium' else "📋")
+            
+            # Create Better Fallback Descriptions Based On Risk Type
+            risk_actions = {
+            'Cold Stress': f"{urgency_emoji} **Protect Crops From Cold Stress** - Cover Sensitive Plants With Blankets Or Plastic Sheets, Especially During Night Hours",
+            'Heat Stress': f"{urgency_emoji} **Shield Crops From Excessive Heat** - Increase Irrigation Frequency And Provide Shade Cover During Peak Sun Hours", 
+            'Drought': f"{urgency_emoji} **Conserve Water Effectively** - Apply Organic Mulch Around Plants And Switch To Drip Irrigation To Reduce Water Loss",
+            'Flood': f"{urgency_emoji} **Improve Field Drainage** - Create Temporary Drainage Channels And Raise Crop Beds To Prevent Waterlogging Damage",
+            'Pest Risk': f"{urgency_emoji} **Monitor For Pest Activity** - Inspect Crops Daily For Signs Of Insects And Apply Neem Oil Or Organic Pesticides",
+            'Disease Risk': f"{urgency_emoji} **Prevent Disease Spread** - Remove Any Infected Plant Material And Ensure Proper Air Circulation Between Crops",
+            'Nutrient Deficiency': f"{urgency_emoji} **Address Soil Nutrition** - Apply Balanced Fertilizer And Consider Soil Testing To Identify Specific Nutrient Needs",
+            'Wind Damage': f"{urgency_emoji} **Protect From Strong Winds** - Install Windbreaks Using Cloth Or Natural Barriers To Shield Young Plants"
+            }
+            return risk_actions.get(risk_name, f"{urgency_emoji} **Address {risk_name.lower()}** - Take Appropriate Preventive Measures")
+
+
+def _generate_expected_outcome(level: str, risk_name: str, drivers: list) -> str:
+    """Generate Meaningful Expected Outcomes Instead Of Generic Text"""
+    outcomes_map = {
+        'High': {
+            'Cold Stress': 'Prevent Frost Damage And Crop Loss',
+            'Heat Stress': 'Protect Crops From Heat Damage', 
+            'Drought': 'Maintain Adequate Soil Moisture',
+            'Flood': 'Prevent Waterlogging And Root Rot',
+            'default': 'Mitigate Immediate Crop Risks'
+        },
+        'Medium': {
+            'Cold Stress': 'Reduce Cold Stress Impact On Crops',
+            'Heat Stress': 'Maintain Optimal Growing Conditions',
+            'Drought': 'Improve Water Efficiency',
+            'Flood': 'Manage Excess Water Effectively',
+            'default': 'Improve Crop Resilience'
+        },
+        'Low': {
+            'default': 'Maintain Healthy Crop Conditions'
+        }
+    }
+    
+    level_outcomes = outcomes_map.get(level, outcomes_map['Low'])
+    return level_outcomes.get(risk_name, level_outcomes['default'])
 
 
 # ADK LlmAgent Wrapper With Real Tool Calling

@@ -622,18 +622,26 @@ function DisplayActionPlan(ActionPlan) {
         raw = Action.Action || Action.title || JSON.stringify(Action);
       }
       
-      // Render Markdown Instead Of Plain Text Conversion
+      // Render Markdown With Enhanced Error Handling
       const contentDiv = document.createElement('div');
-      contentDiv.className = 'markdown-content';
-      contentDiv.innerHTML = RenderMarkdown(raw);
+      contentDiv.className = 'markdown-content action-content';
+      
+      try {
+        const renderedContent = RenderMarkdown(raw);
+        contentDiv.innerHTML = renderedContent;
+      } catch (e) {
+        console.error('Error Rendering Action Markdown:', e);
+        contentDiv.textContent = raw;
+      }
+      
       Li.appendChild(contentDiv);
       
-      // Append Enrichment Metadata If Present
+      // Append Enrichment Metadata If Present (Without Pricing)
       if (typeof Action === 'object') {
         const metaParts = [];
         if (Action.Deadline) metaParts.push(`<span class="meta dead">🕒 ${Action.Deadline}</span>`);
         if (Action.Resources && Action.Resources.length) metaParts.push(`<span class="meta res">🔧 ${Action.Resources.join(', ')}</span>`);
-        if (Action.CostEstimateINR !== undefined) metaParts.push(`<span class="meta cost">₹${Action.CostEstimateINR}</span>`);
+        // Removed Cost Display To Eliminate Pricing Badges
         if (Action.ExpectedOutcome) metaParts.push(`<span class="meta outcome">🎯 ${Action.ExpectedOutcome}</span>`);
         
         if (metaParts.length) {
@@ -652,43 +660,207 @@ function DisplayActionPlan(ActionPlan) {
 function RenderMarkdown(text) {
   if (!text) return '—';
   
+  console.log('RenderMarkdown - Input Text:', text.substring(0, 200) + '...');
+  
+  // Clean And Prepare Text First
+  let cleanText = text.trim();
+  
   // Configure Marked Options For Better Rendering
-  if (typeof marked !== 'undefined') {
-    marked.setOptions({
-      breaks: true,
-      gfm: true,
-      headerIds: false,
-      mangle: false
-    });
-    
+  if (typeof marked !== 'undefined' && marked.parse) {
     try {
-      return marked.parse(text);
+      marked.setOptions({
+        breaks: true,
+        gfm: true,
+        headerIds: false,
+        mangle: false,
+        sanitize: false,
+        smartLists: true,
+        smartypants: false,
+        pedantic: false
+      });
+      
+      console.log('Using Marked.js For Parsing');
+      
+      // Pre-Process Text To Handle Common Formatting Issues
+      cleanText = PreProcessMarkdown(cleanText);
+      console.log('After PreProcessing:', cleanText.substring(0, 200) + '...');
+      
+      const html = marked.parse(cleanText);
+      console.log('Marked.js Output:', html.substring(0, 200) + '...');
+      
+      const sanitized = SanitizeHtml(html);
+      console.log('Final Sanitized:', sanitized.substring(0, 200) + '...');
+      
+      return sanitized;
     } catch (e) {
       console.error('Markdown Parsing Error:', e);
-      return text.replace(/\n/g, '<br>');
+      console.log('Falling back to manual formatting for:', cleanText.substring(0, 100));
+      return FallbackTextFormat(cleanText);
     }
   }
   
-  // Fallback If Marked Is Not Loaded
-  return text.replace(/\n/g, '<br>');
+  console.log('Marked.js Not Available, Using Fallback');
+  // Enhanced Fallback If Marked Is Not Loaded
+  const fallbackResult = FallbackTextFormat(cleanText);
+  console.log('Fallback Result:', fallbackResult.substring(0, 200) + '...');
+  return fallbackResult;
+}
+
+// ===== MARKDOWN PRE-PROCESSING =====
+function PreProcessMarkdown(text) {
+  // Fix Common Bullet Point Issues
+  text = text.replace(/^•\s+/gm, '* ');
+  text = text.replace(/^-\s+/gm, '* ');
+  
+  // Convert Colons To Proper Headers
+  text = text.replace(/^([A-Z][A-Z\s]+):$/gm, '### $1');
+  text = text.replace(/^\*\*([^*]+):\*\*$/gm, '### $1');
+  
+  // Fix Nested Bullet Points (Common In Agricultural Content)
+  text = text.replace(/^\s+([•\-*])\s+/gm, '  * ');
+  
+  // Fix Line Breaks And Spacing
+  text = text.replace(/\n\s*\n\s*\n/g, '\n\n');
+  
+  // Ensure Proper Spacing Around Headers
+  text = text.replace(/(#{1,6}\s[^\n]+)\n(?!\n)/g, '$1\n\n');
+  
+  // Fix Bold Text Formatting
+  text = text.replace(/\*\*([^*\n]+)\*\*/g, '**$1**');
+  
+  // Fix Italic Text Formatting  
+  text = text.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '*$1*');
+  
+  // Ensure Proper List Formatting
+  text = text.replace(/^(\d+)[.):]?\s+/gm, '$1. ');
+  
+  // Fix Spacing Around Lists
+  text = text.replace(/(\n\* [^\n]+)\n(?!\* |\n)/g, '$1\n\n');
+  
+  return text;
+}
+
+// ===== HTML SANITIZATION =====
+function SanitizeHtml(html) {
+  // Remove Dangerous Attributes And Scripts While Preserving Formatting
+  html = html.replace(/<script[^>]*>.*?<\/script>/gi, '');
+  html = html.replace(/javascript:/gi, '');
+  html = html.replace(/on\w+=\"[^\"]*\"/gi, '');
+  
+  // Fix Common Rendering Issues
+  html = html.replace(/<p><\/p>/g, ''); // Remove Empty Paragraphs
+  html = html.replace(/(<li[^>]*>)\s*<p>/gi, '$1'); // Remove P Tags Inside Li
+  html = html.replace(/<\/p>\s*(<\/li>)/gi, '$1'); // Remove P Closing Tags Before Li Closing
+  
+  // Preserve Line Breaks In Agricultural Content
+  html = html.replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '<br>'); // Normalize Multiple Breaks
+  
+  // Clean Up Extra Whitespace But Preserve Structure
+  html = html.replace(/\\n\\s*\\n/g, '\\n'); // Remove Excessive Newlines
+  html = html.replace(/\\s{2,}/g, ' '); // Normalize Spaces
+  
+  return html.trim();
+}
+
+// ===== FALLBACK TEXT FORMATTING =====
+function FallbackTextFormat(text) {
+  // Convert Basic Markdown To HTML
+  let html = text;
+  
+  // Convert section headers (like "IMMEDIATE ACTION:")
+  html = html.replace(/^([A-Z][A-Z\s]+):$/gm, '<h3>$1</h3>');
+  html = html.replace(/^\*\*([^*]+):\*\*$/gm, '<h3>$1</h3>');
+  
+  // Bold Text
+  html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+  
+  // Italic Text
+  html = html.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>');
+  
+  // Headers
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  
+  // Handle bullet points and nested lists
+  const lines = html.split('\n');
+  let inList = false;
+  let processedLines = [];
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    
+    // Check if this is a bullet point
+    if (/^\s*[•\-*]\s+/.test(line)) {
+      if (!inList) {
+        processedLines.push('<ul>');
+        inList = true;
+      }
+      const content = line.replace(/^\s*[•\-*]\s+/, '');
+      processedLines.push(`<li>${content}</li>`);
+    } else if (/^\s*\d+[.):]?\s+/.test(line)) {
+      if (!inList) {
+        processedLines.push('<ol>');
+        inList = true;
+      }
+      const content = line.replace(/^\s*\d+[.):]?\s+/, '');
+      processedLines.push(`<li>${content}</li>`);
+    } else {
+      if (inList && line.trim() === '') {
+        // Keep list open for next item
+        processedLines.push('');
+      } else if (inList && line.trim() !== '') {
+        processedLines.push('</ul>');
+        inList = false;
+        processedLines.push(line);
+      } else {
+        processedLines.push(line);
+      }
+    }
+  }
+  
+  // Close any open list
+  if (inList) {
+    processedLines.push('</ul>');
+  }
+  
+  html = processedLines.join('\n');
+  
+  // Convert line breaks to <br> for non-HTML content
+  html = html.replace(/\n(?![\s]*<[^\/])/g, '<br>');
+  
+  return html;
 }
 
 // ===== QUESTION & ANSWER SECTION =====
 function DisplayQuestionAnswer(ActionPlan) {
   const Box = document.getElementById('QuestionAnswerBox');
   if (!Box) return;
+  
   const question = ActionPlan.UserQuestion || '';
   const response = ActionPlan.UserQueryResponse || '';
+  
+  console.log('DisplayQuestionAnswer - Raw response:', response);
+  
   if (!question && !response) {
     Box.style.display = 'none';
     return;
   }
-  document.getElementById('FarmerQuestion').textContent = question || '—';
   
-  // Render markdown for LLM response
+  // Display Question With Proper Formatting
+  const questionEl = document.getElementById('FarmerQuestion');
+  questionEl.textContent = question || '—';
+  
+  // Render Markdown For LLM Response With Enhanced Formatting
   const responseElement = document.getElementById('UserQueryResponse');
-  responseElement.innerHTML = RenderMarkdown(response);
-  responseElement.classList.add('markdown-content');
+  if (response) {
+    const renderedHtml = RenderMarkdown(response);
+    console.log('DisplayQuestionAnswer - Rendered HTML:', renderedHtml);
+    responseElement.innerHTML = renderedHtml;
+    responseElement.classList.add('markdown-content');
+  } else {
+    responseElement.textContent = '—';
+  }
   
   Box.style.display = 'block';
 }

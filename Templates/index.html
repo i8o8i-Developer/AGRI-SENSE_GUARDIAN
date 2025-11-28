@@ -310,9 +310,13 @@
                 <!-- Farmer Question & Answer -->
                 <div class="InfoBox" id="QuestionAnswerBox" style="display:none;">
                     <strong>💬 Your Question</strong>
-                    <div style="margin-bottom: var(--Space4); padding: var(--Space3); background: var(--BgLight); border-radius: var(--Radius2); font-weight: 500;"><span id="FarmerQuestion"></span></div>
+                    <div class="question-display">
+                        <span id="FarmerQuestion"></span>
+                    </div>
                     <strong>🤖 AI Response</strong>
-                    <div style="white-space: pre-wrap; line-height: 1.8; padding: var(--Space4); background: var(--BgLight); border-radius: var(--Radius2); margin-top: var(--Space2);"><span id="UserQueryResponse"></span></div>
+                    <div class="ai-response-display">
+                        <div id="UserQueryResponse" class="markdown-content"></div>
+                    </div>
                 </div>
                 
                 <div class="ActionCard ActionP1">

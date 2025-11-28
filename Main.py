@@ -257,7 +257,6 @@ async def Index(Request: Request):
     """
     return Templates.TemplateResponse("index.html", {"request": Request})
 
-
 @App.get("/health")
 async def Health():
     """
