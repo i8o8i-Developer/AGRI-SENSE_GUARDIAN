@@ -52,7 +52,7 @@ docker build -t agrisense-guardian:latest .
    ```
 
 2. **Edit The `.env` File With Your Actual API Keys:**
-   Replace the placeholder values in `.env` with your real credentials:
+   Replace The Placeholder Values In `.env` With Your Real Credentials:
 
 ```env
 # ══════════════════════════════════════════════════════════════════════════════
@@ -171,11 +171,11 @@ CORS_ORIGINS=*
 ```
 
 **⚠️ Important Environment Notes:**
-- **Never Commit `.env`** - The `.env` file contains sensitive API keys and should never be committed to version control
-- **Use `.env.example` as Template** - The `.env.example` file shows all available configuration options with placeholder values
-- **Cloud Deployments** - All cloud deployment commands reference your local `.env` file or use environment variable substitution
-- **Docker Integration** - The Dockerfile and docker-compose configurations are designed to work with your `.env` file automatically
-- **Local Development** - The application automatically loads environment variables from `.env` using python-dotenv
+- **Never Commit `.env`** - The `.env` File Contains Sensitive API Keys And Should Never Be Committed To Version Control
+- **Use `.env.example` As Template** - The `.env.example` File Shows All Available Configuration Options With Placeholder Values
+- **Cloud Deployments** - All Cloud Deployment Commands Reference Your Local `.env` File Or Use Environment Variable Substitution
+- **Docker Integration** - The Dockerfile And docker-compose Configurations Are Designed To Work With Your `.env` File Automatically
+- **Local Development** - The Application Automatically Loads Environment Variables From `.env` Using python-dotenv
 
 ### **3. Run Container**
 
@@ -229,21 +229,21 @@ open http://localhost:8000
 
 **Source Code Acquisition:**
 - **GitHub Repository**: https://github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN
-- **Method 1**: Clone repository locally → Build → Push to cloud
-- **Method 2**: Direct build from GitHub (Cloud Build integration)
-- **Method 3**: Fork repository → Deploy from your fork
+- **Method 1**: Clone Repository Locally → Build → Push To Cloud
+- **Method 2**: Direct Build From GitHub (Cloud Build Integration)
+- **Method 3**: Fork Repository → Deploy From Your Fork
 
 **Required Files:**
-- `Dockerfile` (Multi-stage production build) ✅ Included
-- `.dockerignore` (Build optimization) ✅ Included  
-- `Requirements.txt` (Python dependencies) ✅ Included
-- `.env.example` (Environment template) ✅ Included
+- `Dockerfile` (Multi-Stage Production Build) ✅ Included
+- `.dockerignore` (Build Optimization) ✅ Included  
+- `Requirements.txt` (Python Dependencies) ✅ Included
+- `.env.example` (Environment Template) ✅ Included
 
 **Build Process:**
 1. **Clone** → `git clone https://github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN.git`
-2. **Configure** → Copy `.env.example` to `.env` and add your API keys
+2. **Configure** → Copy `.env.example` To `.env` And Add Your API Keys
 3. **Build** → `docker build -t agrisense-guardian .`
-4. **Deploy** → Push to cloud container registry and deploy
+4. **Deploy** → Push To Cloud Container Registry And Deploy
 
 ---
 
@@ -262,19 +262,19 @@ gcloud services enable run.googleapis.com cloudbuild.googleapis.com
 
 # 3. Create .env File With Your API Keys
 cp .env.example .env
-# Edit .env file and replace placeholder values with your actual API keys:
-# - GOOGLE_API_KEY=your_actual_google_api_key
-# - OPENWEATHER_API_KEY=your_actual_openweather_key
-# - COPERNICUS_API_KEY=your_uid:your_api_key
-# - SMTP_USER=your_email@gmail.com
-# - SMTP_PASSWORD=your_app_password
-# (See .env.example for complete list of configurable variables)
+# Edit .env File And Replace Placeholder Values With Your Actual API Keys:
+# - GOOGLE_API_KEY=Your_Actual_Google_Api_Key
+# - OPENWEATHER_API_KEY=Your_Actual_Openweather_Key
+# - COPERNICUS_API_KEY=Your_Uid:Your_Api_Key
+# - SMTP_USER=Your_Email@gmail.com
+# - SMTP_PASSWORD=Your_App_Password
+# (See .env.example For Complete List Of Configurable Variables)
 ```
 
 #### **Deploy To Cloud Run**
 ```bash
 # Direct Build From Source (Recommended)
-# This builds from your local source code directory
+# This Builds From Your Local Source Code Directory
 gcloud builds submit --tag gcr.io/PROJECT_ID/agrisense-guardian .
 
 # Deploy To Cloud Run
@@ -295,7 +295,7 @@ gcloud run deploy agrisense-guardian \
 **Method 1: Deploy With Environment File (Recommended)**
 ```bash
 # Deploy Cloud Run With Environment Variables From .env File
-# Note: Ensure your .env file is configured locally first
+# Note: Ensure Your .env File Is Configured Locally First
 gcloud run deploy agrisense-guardian \
   --image gcr.io/PROJECT_ID/agrisense-guardian \
   --platform managed \
@@ -336,19 +336,19 @@ cd AGRI-SENSE_GUARDIAN
 
 # 2. Set Up AWS CLI
 aws configure
-# Enter your AWS Access Key ID, Secret Access Key, Region
+# Enter Your AWS Access Key ID, Secret Access Key, Region
 
 # 3. Create ECR Repository For Container Images
 aws ecr create-repository --repository-name agrisense-guardian --region us-east-1
 
 # 4. Build And Push Docker Image To ECR
-# Get ECR login token
+# Get ECR login Token
 aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
 
-# Build image from source
+# Build Image From Source
 docker build -t agrisense-guardian .
 
-# Tag and push to ECR
+# Tag And Push To ECR
 docker tag agrisense-guardian:latest ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/agrisense-guardian:latest
 docker push ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/agrisense-guardian:latest
 ```
@@ -461,7 +461,7 @@ aws ssm put-parameter \
   --description "Sender Email Address"
 ```
 
-**Note:** Replace `region` and `account` with your actual AWS region and account ID in the task definition ARNs above.
+**Note:** Replace `region` And `account` With Your Actual AWS Region And Account ID In The Task Definition ARNs Above.
 
 ### **Azure Container Instances**
 
@@ -482,13 +482,13 @@ az group create --name agrisense-rg --location eastus
 az acr create --resource-group agrisense-rg --name agrisenseregistry --sku Basic --admin-enabled true
 
 # 5. Build And Push Image To ACR
-# Login to ACR
+# Login To ACR
 az acr login --name agrisenseregistry
 
-# Build and push from source
+# Build And Push From Source
 az acr build --registry agrisenseregistry --image agrisense-guardian:latest .
 
-# Or build locally and push
+# Or Build Locally And Push
 # docker build -t agrisense-guardian .
 # docker tag agrisense-guardian agrisenseregistry.azurecr.io/agrisense-guardian:latest
 # docker push agrisenseregistry.azurecr.io/agrisense-guardian:latest
