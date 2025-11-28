@@ -10,9 +10,9 @@
 
 ## 🎯 Documentation Overview
 
-AgriSenseGuardian Has **10 Comprehensive Documentation Files** Covering Every Aspect Of The Project — From High-Level Vision To Low-Level Implementation Details. This Index Helps You Navigate To The Right Document For Your Needs.
+AgriSenseGuardian Has **11 Comprehensive Documentation Files** Covering Every Aspect Of The Project — From High-Level Vision To Low-Level Implementation Details. This Index Helps You Navigate To The Right Document For Your Needs.
 
-**Total Documentation: 170+ KB, 25,000+ Words**
+**Total Documentation: 185+ KB, 27,000+ Words**
 
 ---
 
@@ -37,6 +37,7 @@ AgriSenseGuardian Has **10 Comprehensive Documentation Files** Covering Every As
 | **SOCIAL_IMPACT_ASSESSMENT.md** | 24.1 KB | UN SDG Alignment, Impact Metrics, Case Studies | Impact Evaluators | [View](SOCIAL_IMPACT_ASSESSMENT.md) |
 | **JUDGE_EVALUATION_GUIDE.md** | 20.3 KB | Evaluation Criteria Mapping, Score Calculator | Hackathon Judges | [View](JUDGE_EVALUATION_GUIDE.md) |
 | **DEPLOYMENT_GUIDE.md** | 18.7 KB | Cloud Deployment, Docker, Kubernetes, CI/CD | DevOps Engineers | [View](DEPLOYMENT_GUIDE.md) |
+| **WEB_UI_ARCHITECTURE.md** | 15.8 KB | Markdown Rendering, CSS Styling, Browser Compatibility | Frontend Developers | [View](WEB_UI_ARCHITECTURE.md) |
 | **INDEX.md** | (This File) | Documentation Navigation | All Readers | [View](INDEX.md) |
 
 ---
@@ -208,13 +209,13 @@ AgriSenseGuardian Has **10 Comprehensive Documentation Files** Covering Every As
 ### **Coverage Metrics**
 
 ```
-Total Documentation Files:     12 (6 Root + 6 Docs/)
-Total Size:                    170+ KB
-Total Word Count:              25,000+ Words
-Total Code Examples:           150+ Snippets
-Total Diagrams:                40+ (Mermaid, ASCII Art)
-Total Tables:                  80+ Comparison/Data Tables
-Total Links:                   200+ Cross-References
+Total Documentation Files:     13 (6 Root + 7 Docs/)
+Total Size:                    185+ KB
+Total Word Count:              27,000+ Words
+Total Code Examples:           160+ Snippets
+Total Diagrams:                45+ (Mermaid, ASCII Art)
+Total Tables:                  85+ Comparison/Data Tables
+Total Links:                   220+ Cross-References
 ```
 
 ### **Quality Metrics**
@@ -250,6 +251,9 @@ Visual Appeal:                 Professional (Badges, Emojis, Diagrams)
 | Performance Benchmarks | [TECHNICAL_DEEP_DIVE.md](TECHNICAL_DEEP_DIVE.md) | Performance Optimization |
 | Case Studies | [SOCIAL_IMPACT_ASSESSMENT.md](SOCIAL_IMPACT_ASSESSMENT.md) | Case Studies |
 | Evaluation Criteria | [JUDGE_EVALUATION_GUIDE.md](JUDGE_EVALUATION_GUIDE.md) | Section 1-6 |
+| Markdown Rendering | [WEB_UI_ARCHITECTURE.md](WEB_UI_ARCHITECTURE.md) | Rendering Pipeline |
+| CSS Styling | [WEB_UI_ARCHITECTURE.md](WEB_UI_ARCHITECTURE.md) | Nested List Cascade |
+| Browser Compatibility | [WEB_UI_ARCHITECTURE.md](WEB_UI_ARCHITECTURE.md) | Browser Support |
 
 ---
 

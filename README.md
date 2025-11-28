@@ -864,6 +864,12 @@ http://127.0.0.1:8000
 
 You Should See The AgriSenseGuardian Web Interface!
 
+**📝 Enhanced Markdown Rendering (v2.1.1):**
+- ✅ **Proper Nested Lists** — Hierarchical Bullet Symbols (● → ○ → ■)
+- ✅ **Smart Indentation** — Automatic Parent-Child Detection
+- ✅ **Color Coding** — Green For Parents, Light Green For Children
+- ✅ **Professional Formatting** — GitHub/Notion-Quality Markdown Display
+
 ---
 
 ## 🐳 Docker Deployment
@@ -1641,6 +1647,7 @@ Limitations Under The License.
 - **[Docs/TECHNICAL_DEEP_DIVE.md](Docs/TECHNICAL_DEEP_DIVE.md)** — Advanced Architecture & Algorithms
 - **[Docs/SOCIAL_IMPACT_ASSESSMENT.md](Docs/SOCIAL_IMPACT_ASSESSMENT.md)** — UN SDG Alignment & Impact Metrics
 - **[Docs/DEPLOYMENT_GUIDE.md](Docs/DEPLOYMENT_GUIDE.md)** — Production Deployment (GCP, AWS, Azure)
+- **[Docs/WEB_UI_ARCHITECTURE.md](Docs/WEB_UI_ARCHITECTURE.md)** — Markdown Rendering & Frontend Architecture (v2.1.1)
 - **[Docs/JUDGE_EVALUATION_GUIDE.md](Docs/JUDGE_EVALUATION_GUIDE.md)** — Hackathon Evaluation Reference
 - **[Docs/INDEX.md](Docs/INDEX.md)** — Complete Documentation Index
 

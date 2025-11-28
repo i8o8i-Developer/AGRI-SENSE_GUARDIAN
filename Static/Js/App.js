@@ -719,43 +719,54 @@ function RenderMarkdown(text) {
 function EnsureNestedIndentation(text) {
   const lines = text.split('\n');
   const result = [];
-  let inNestedContext = false;
+  let lastWasParent = false;
   
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const trimmed = line.trim();
     
+    // Check If This Is A Bullet Point
     if (/^[\*\-•]\s+/.test(trimmed)) {
-      if (i > 0) {
-        const prevTrimmed = lines[i - 1].trim();
-        if (/^[\*\-•]\s+.*:$/.test(prevTrimmed)) {
-          if (!line.startsWith('    ')) {
-            result.push('    ' + trimmed);
-            inNestedContext = true;
-            continue;
-          }
-        }
-      }
+      // Count Leading Spaces In Original line
+      const leadingSpaces = line.match(/^\s*/)[0].length;
       
-      if (inNestedContext && !line.startsWith('    ') && !line.startsWith('*')) {
-        result.push('    ' + trimmed);
+      // Check If This Bullet Ends With Colon (Parent Item) - Must Check FIRST
+      if (/^[\*\-•]\s+.*:$/.test(trimmed)) {
+        lastWasParent = true;
+        result.push(trimmed);
         continue;
       }
       
-      if (/^[\*\-•]\s+.*:$/.test(trimmed)) {
-        inNestedContext = true;
+      // If We're In Nested Context (After A Parent), Make This Nested
+      if (lastWasParent) {
+        if (leadingSpaces < 4) {
+          result.push('    ' + trimmed);
+          continue;
+        }
+      }
+      
+      // If Already Has 4+ Spaces, Keep It
+      if (leadingSpaces >= 4) {
         result.push(line);
         continue;
       }
       
-      if (!line.startsWith('    ')) {
-        inNestedContext = false;
+      // If Has 1-3 Spaces, Could Be Intended As Nested (Keep As Nested If Following Parent)
+      if (leadingSpaces > 0 && leadingSpaces < 4 && lastWasParent) {
+        result.push('    ' + trimmed);
+        continue;
       }
-    } else if (trimmed === '') {
-      inNestedContext = false;
+      
+      // Otherwise It's A Root-Level Item - Reset Parent Context
+      lastWasParent = false;
+      result.push(line);
+    } else {
+      // Non-Bullet Line - Reset Context On Blank Lines
+      if (trimmed === '') {
+        lastWasParent = false;
+      }
+      result.push(line);
     }
-    
-    result.push(line);
   }
   
   return result.join('\n');
