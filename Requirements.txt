@@ -52,6 +52,7 @@ folium
 
 # Email Support (SMTP)
 email-validator
+markdown
 
 # Code Quality And Testing
 black

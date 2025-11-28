@@ -91,6 +91,12 @@ let TaskPollInterval = null;
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🌾 AgriSenseGuardian Initialized');
+  console.log('🔍 Checking Marked.js Availability:', typeof marked !== 'undefined');
+  if (typeof marked !== 'undefined') {
+    console.log('✅ Marked.js Is Loaded And Ready');
+  } else {
+    console.error('❌ Marked.js Is NOT Loaded - Markdown Rendering Will Use Fallback');
+  }
   InitializeUI();
   SetupEventListeners();
   PopulateQuickLocations();
@@ -656,194 +662,199 @@ function DisplayActionPlan(ActionPlan) {
   });
 }
 
-// ===== MARKDOWN RENDERING UTILITY =====
+// ===== MARKDOWN RENDERING - CLEAN REWRITE =====
 function RenderMarkdown(text) {
   if (!text) return '—';
   
-  console.log('RenderMarkdown - Input Text:', text.substring(0, 200) + '...');
+  console.log('🔍 RenderMarkdown Called');
+  console.log('📦 Marked Available:', typeof marked !== 'undefined');
+  console.log('📝 Input Preview:', text.substring(0, 300));
   
-  // Clean And Prepare Text First
-  let cleanText = text.trim();
-  
-  // Configure Marked Options For Better Rendering
+  // Use Marked.js If Available, Otherwise Clean Fallback
   if (typeof marked !== 'undefined' && marked.parse) {
     try {
+      console.log('✅ Using marked.js For Parsing');
+      
+      // PRE-PROCESS: Ensure Nested Bullets Have Proper Indentation
+      // Many LLMs Output Bullets Without Proper 4-Space Indentation
+      text = EnsureNestedIndentation(text);
+      console.log('🔧 After Indentation Fix:', text.substring(0, 300));
+      
+      // Configure Marked For Agricultural Content
       marked.setOptions({
-        breaks: true,
-        gfm: true,
-        headerIds: false,
-        mangle: false,
-        sanitize: false,
-        smartLists: true,
-        smartypants: false,
-        pedantic: false
+        breaks: true,          // Preserve line Breaks
+        gfm: true,             // GitHub Flavored Markdown
+        smartLists: true,      // Better list Rendering
+        headerIds: false,      // No Auto IDs
+        mangle: false,         // Don't Escape Emails
+        pedantic: false        // Relaxed Parsing
       });
       
-      console.log('Using Marked.js For Parsing');
+      // Parse Directly - let Marked Handle The Markdown
+      const html = marked.parse(text);
       
-      // Pre-Process Text To Handle Common Formatting Issues
-      cleanText = PreProcessMarkdown(cleanText);
-      console.log('After PreProcessing:', cleanText.substring(0, 200) + '...');
+      console.log('📄 Marked Output Review:', html.substring(0, 400));
+      console.log('🔢 Has Nested <ul>:', /<ul>[\s\S]*<ul>/.test(html));
+      console.log('🔢 Total <ul> Count:', (html.match(/<ul>/g) || []).length);
       
-      const html = marked.parse(cleanText);
-      console.log('Marked.js Output:', html.substring(0, 200) + '...');
+      // Basic Security Cleanup Only - No Aggressive Transformations
+      const cleaned = CleanHtml(html);
+      console.log('✨ Final Output Preview:', cleaned.substring(0, 400));
       
-      const sanitized = SanitizeHtml(html);
-      console.log('Final Sanitized:', sanitized.substring(0, 200) + '...');
+      return cleaned;
       
-      return sanitized;
-    } catch (e) {
-      console.error('Markdown Parsing Error:', e);
-      console.log('Falling back to manual formatting for:', cleanText.substring(0, 100));
-      return FallbackTextFormat(cleanText);
+    } catch (error) {
+      console.error('❌ Marked.js Error:', error);
+      console.log('⚠️ Falling Back To SimpleFallback');
+      return SimpleFallback(text);
     }
   }
   
-  console.log('Marked.js Not Available, Using Fallback');
-  // Enhanced Fallback If Marked Is Not Loaded
-  const fallbackResult = FallbackTextFormat(cleanText);
-  console.log('Fallback Result:', fallbackResult.substring(0, 200) + '...');
-  return fallbackResult;
+  console.log('⚠️ marked.js Not Available, Using SimpleFallback');
+  // Fallback When Marked.js Not Loaded
+  return SimpleFallback(text);
 }
 
-// ===== MARKDOWN PRE-PROCESSING =====
-function PreProcessMarkdown(Text) {
-  // Remove Leading Whitespace From Email Templates And Indented Content
-  Text = Text.replace(/^\s+/gm, '');
+// ===== ENSURE NESTED INDENTATION =====
+function EnsureNestedIndentation(text) {
+  const lines = text.split('\n');
+  const result = [];
+  let inNestedContext = false;
   
-  // Fix Common Bullet Point Issues
-  Text = Text.replace(/^•\s+/gm, '* ');
-  Text = Text.replace(/^-\s+/gm, '* ');
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmed = line.trim();
+    
+    if (/^[\*\-•]\s+/.test(trimmed)) {
+      if (i > 0) {
+        const prevTrimmed = lines[i - 1].trim();
+        if (/^[\*\-•]\s+.*:$/.test(prevTrimmed)) {
+          if (!line.startsWith('    ')) {
+            result.push('    ' + trimmed);
+            inNestedContext = true;
+            continue;
+          }
+        }
+      }
+      
+      if (inNestedContext && !line.startsWith('    ') && !line.startsWith('*')) {
+        result.push('    ' + trimmed);
+        continue;
+      }
+      
+      if (/^[\*\-•]\s+.*:$/.test(trimmed)) {
+        inNestedContext = true;
+        result.push(line);
+        continue;
+      }
+      
+      if (!line.startsWith('    ')) {
+        inNestedContext = false;
+      }
+    } else if (trimmed === '') {
+      inNestedContext = false;
+    }
+    
+    result.push(line);
+  }
   
-  // Normalize Excessive Bullet Spacing (E.g., '*   Item' -> '* Item')
-  Text = Text.replace(/^\*\s{2,}/gm, '* ');
-  
-  // Convert Email-Style Section Headers With Emojis And Colons
-  // E.g., "🚨 PRIORITY 1 - CRITICAL (Next 24-48 Hours):" -> "## 🚨 PRIORITY 1 - CRITICAL (Next 24-48 Hours)"
-  Text = Text.replace(/^([🚨⚠️📋📌]+)\s*([A-Z][A-Z\s0-9\-–—]+)\s*[:\-–—]?\s*\(([^)]+)\)\s*:?$/gm, '## $1 $2 ($3)');
-  Text = Text.replace(/^([🚨⚠️📋📌]+)?\s*([A-Z][A-Z\s0-9\-–—]+)\s*[:\-–—]\s*$/gm, '## $1 $2');
-  
-  // Convert General Colon Headers
-  Text = Text.replace(/^([A-Z][A-Z\s]+):$/gm, '### $1');
-  Text = Text.replace(/^\*\*([^*]+):\*\*$/gm, '### $1');
-  
-  // Fix Nested Bullet Points (Common In Agricultural Content)
-  Text = Text.replace(/^\s+([•\-*])\s+/gm, '  * ');
-  
-  // Fix Line Breaks And Spacing - Remove Excessive Blank Lines
-  Text = Text.replace(/\n\s*\n\s*\n+/g, '\n\n');
-  
-  // Ensure Proper Spacing Around Headers
-  Text = Text.replace(/(#{1,6}\s[^\n]+)\n(?!\n)/g, '$1\n\n');
-  
-  // Fix Bold Text Formatting
-  Text = Text.replace(/\*\*([^*\n]+)\*\*/g, '**$1**');
-  
-  // Fix Italic Text Formatting  
-  Text = Text.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '*$1*');
-  
-  // Ensure Proper List Formatting
-  Text = Text.replace(/^(\d+)[.):]?\s+/gm, '$1. ');
-  
-  // Fix Spacing Around Lists - Ensure Lists Are Separated From Non-List Content
-  Text = Text.replace(/(\n\* [^\n]+)\n(?!\* |\n|##)/g, '$1\n\n');
-  
-  // Clean Up Multiple Sequential Line Breaks After Processing
-  Text = Text.replace(/\n{3,}/g, '\n\n');
-  
-  return Text;
+  return result.join('\n');
 }
 
-// ===== HTML SANITIZATION =====
-function SanitizeHtml(html) {
-  // Remove Dangerous Attributes And Scripts While Preserving Formatting
-  html = html.replace(/<script[^>]*>.*?<\/script>/gi, '');
+// ===== MINIMAL HTML CLEANUP =====
+function CleanHtml(html) {
+  // Remove Only Dangerous Content
+  html = html.replace(/<script[^>]*>.*?<\/script>/gis, '');
+  html = html.replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
   html = html.replace(/javascript:/gi, '');
-  html = html.replace(/on\w+=\"[^\"]*\"/gi, '');
   
-  // Fix Common Rendering Issues
-  html = html.replace(/<p><\/p>/g, ''); // Remove Empty Paragraphs
-  html = html.replace(/(<li[^>]*>)\s*<p>/gi, '$1'); // Remove P Tags Inside Li
-  html = html.replace(/<\/p>\s*(<\/li>)/gi, '$1'); // Remove P Closing Tags Before Li Closing
+  // Remove Empty Paragraphs
+  html = html.replace(/<p>\s*<\/p>/gi, '');
   
-  // Preserve Line Breaks In Agricultural Content
-  html = html.replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '<br>'); // Normalize Multiple Breaks
-  
-  // Clean Up Extra Whitespace But Preserve Structure
-  html = html.replace(/\\n\\s*\\n/g, '\\n'); // Remove Excessive Newlines
-  html = html.replace(/\\s{2,}/g, ' '); // Normalize Spaces
+  // Clean Up Nested <p> Inside <li>
+  html = html.replace(/(<li[^>]*>)\s*<p>/gi, '$1');
+  html = html.replace(/<\/p>\s*(<\/li>)/gi, '$1');
   
   return html.trim();
 }
 
-// ===== FALLBACK TEXT FORMATTING =====
-function FallbackTextFormat(text) {
-  // Convert Basic Markdown To HTML
-  let html = text;
+// ===== SIMPLE FALLBACK RENDERER =====
+function SimpleFallback(text) {
+  // STEP 1: Process Inline Formatting FIRST (Before Line Splitting)
+  let processed = text;
   
-  // Convert section headers (like "IMMEDIATE ACTION:")
-  html = html.replace(/^([A-Z][A-Z\s]+):$/gm, '<h3>$1</h3>');
-  html = html.replace(/^\*\*([^*]+):\*\*$/gm, '<h3>$1</h3>');
-  
-  // Bold Text
-  html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
-  
-  // Italic Text
-  html = html.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>');
+  // Bold Text - Must Happen Before List Processing
+  processed = processed.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
   
   // Headers
-  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+  processed = processed.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  processed = processed.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  processed = processed.replace(/^# (.+)$/gm, '<h1>$1</h1>');
   
-  // Handle bullet points and nested lists
-  const lines = html.split('\n');
-  let inList = false;
-  let processedLines = [];
+  // STEP 2: Process Lists Line By Line
+  const lines = processed.split('\n');
+  const result = [];
+  let listStack = []; // Track Nesting Levels
   
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    const trimmed = line.trim();
     
-    // Check if this is a bullet point
-    if (/^\s*[•\-*]\s+/.test(line)) {
-      if (!inList) {
-        processedLines.push('<ul>');
-        inList = true;
+    // Skip Empty Lines Within Lists
+    if (trimmed === '') {
+      if (listStack.length === 0) {
+        result.push('');
       }
-      const content = line.replace(/^\s*[•\-*]\s+/, '');
-      processedLines.push(`<li>${content}</li>`);
-    } else if (/^\s*\d+[.):]?\s+/.test(line)) {
-      if (!inList) {
-        processedLines.push('<ol>');
-        inList = true;
+      continue;
+    }
+    
+    // Check If This Is A Bullet Point (After Bold Has Been Converted)
+    const bulletMatch = line.match(/^(\s*)[\*\-•]\s+(.+)$/);
+    
+    if (bulletMatch) {
+      const indent = bulletMatch[1].length;
+      const content = bulletMatch[2];
+      
+      // Determine Nesting Level (Every 4 Spaces = 1 Level)
+      const level = Math.floor(indent / 4);
+      
+      // Close Deeper Lists If We're Going Back Up
+      while (listStack.length > level + 1) {
+        result.push('</ul>');
+        listStack.pop();
       }
-      const content = line.replace(/^\s*\d+[.):]?\s+/, '');
-      processedLines.push(`<li>${content}</li>`);
+      
+      // Open New List If We're Going Deeper
+      if (listStack.length === level) {
+        result.push('<ul>');
+        listStack.push(level);
+      }
+      
+      // Add The List Item
+      result.push(`<li>${content}</li>`);
     } else {
-      if (inList && line.trim() === '') {
-        // Keep list open for next item
-        processedLines.push('');
-      } else if (inList && line.trim() !== '') {
-        processedLines.push('</ul>');
-        inList = false;
-        processedLines.push(line);
+      // Not A Bullet - Close All Lists
+      while (listStack.length > 0) {
+        result.push('</ul>');
+        listStack.pop();
+      }
+      
+      // Regular Paragraph (Skip If It's Already A Header)
+      if (!trimmed.startsWith('<h')) {
+        result.push(`<p>${line}</p>`);
       } else {
-        processedLines.push(line);
+        result.push(line);
       }
     }
   }
   
-  // Close any open list
-  if (inList) {
-    processedLines.push('</ul>');
+  // Close Any Remaining Open Lists
+  while (listStack.length > 0) {
+    result.push('</ul>');
+    listStack.pop();
   }
   
-  html = processedLines.join('\n');
-  
-  // Convert line breaks to <br> for non-HTML content
-  html = html.replace(/\n(?![\s]*<[^\/])/g, '<br>');
-  
-  return html;
+  return result.join('\n');
 }
 
 // ===== QUESTION & ANSWER SECTION =====

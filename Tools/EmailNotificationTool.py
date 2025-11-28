@@ -9,6 +9,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from typing import Any, Dict
 from google.adk.tools.tool_context import ToolContext
+import markdown
 
 settings = get_settings()
 
@@ -95,6 +96,13 @@ async def EmailNotificationTool(
         # Plain Text Version
         TextPart = MIMEText(MessageContent, 'plain', 'utf-8')
         
+        # Convert Markdown To HTML For Rich Email Rendering
+        MarkdownHtml = markdown.markdown(
+            MessageContent,
+            extensions=['extra', 'nl2br', 'sane_lists'],
+            output_format='html'
+        )
+        
         # HTML Version (Enhanced Formatting With Modern Design)
         HtmlContent = f"""
         <!DOCTYPE html>
@@ -105,6 +113,42 @@ async def EmailNotificationTool(
             <meta name="color-scheme" content="light">
             <meta name="supported-color-schemes" content="light">
             <title>{Subject}</title>
+            <style>
+                /* Email-Specific Markdown Styling */
+                h2 {{
+                    color: #2E7D32;
+                    font-size: 18px;
+                    font-weight: 700;
+                    margin: 20px 0 12px 0;
+                    padding-bottom: 8px;
+                    border-bottom: 2px solid #4CAF50;
+                }}
+                ul {{
+                    list-style-type: none;
+                    padding-left: 0;
+                    margin: 10px 0;
+                }}
+                ul li {{
+                    padding: 8px 0 8px 24px;
+                    position: relative;
+                    line-height: 1.6;
+                }}
+                ul li:before {{
+                    content: "●";
+                    color: #4CAF50;
+                    font-weight: bold;
+                    position: absolute;
+                    left: 0;
+                }}
+                strong {{
+                    color: #1B5E20;
+                    font-weight: 600;
+                }}
+                p {{
+                    margin: 10px 0;
+                    line-height: 1.6;
+                }}
+            </style>
         </head>
         <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f0f4f8; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f0f4f8; padding: 20px 0;">
@@ -134,11 +178,11 @@ async def EmailNotificationTool(
                                 </td>
                             </tr>
                             
-                            <!-- Message Content -->
+                            <!-- Message Content (Markdown Converted To HTML) -->
                             <tr>
                                 <td style="padding: 30px;">
-                                    <div style="background: #fafafa; border-left: 4px solid #4CAF50; border-radius: 8px; padding: 25px; margin-bottom: 20px;">
-                                        <pre style="white-space: pre-wrap; word-wrap: break-word; font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace; font-size: 14px; line-height: 1.7; color: #333333; margin: 0; overflow-x: auto;">{MessageContent}</pre>
+                                    <div style="background: #fafafa; border-left: 4px solid #4CAF50; border-radius: 8px; padding: 25px; margin-bottom: 20px; font-size: 14px; line-height: 1.7; color: #333333;">
+                                        {MarkdownHtml}
                                     </div>
                                 </td>
                             </tr>

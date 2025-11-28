@@ -330,7 +330,7 @@ Respond ONLY with a JSON object:
                         
                         # Search For Growing Information
                         if needs_growing_info:
-                            grow_query = f"How To Grow {crop_name} In {Location} India Cultivation Guide"
+                            grow_query = f"How To Grow {crop_name} In {Location} Cultivation Guide"
                             print(f"[PlannerAgent] Searching Growing Info: {grow_query}")
                             grow_results = await GoogleSearchTool(grow_query, num=3)
                             if grow_results.get('Status') == 'Success':
@@ -387,13 +387,13 @@ Use bullet points, **bold text** for emphasis, and clear structure for better re
                     this_week_action = m_week.group(1).strip()
                 if not immediate_action:
                     immediate_action = llm_answer[:220]
-                # Light sanitization while preserving markdown structure
+                # Light Sanitization While Preserving Markdown Structure
                 def _clean_preserve_markdown(txt: str) -> str:
                     if not txt:
                         return txt
-                    # Only remove excessive whitespace and normalize line breaks
-                    cleaned = re.sub(r'\n\s*\n\s*\n+', '\n\n', txt)  # Collapse multiple newlines
-                    cleaned = re.sub(r'[ \t]+', ' ', cleaned)  # Collapse multiple spaces/tabs
+                    # Only Remove Excessive Whitespace And Normalize Line Breaks
+                    cleaned = re.sub(r'\n\s*\n\s*\n+', '\n\n', txt)  # Collapse Multiple Newlines
+                    cleaned = re.sub(r'[ \t]+', ' ', cleaned)  # Collapse Multiple Spaces/Tabs
                     cleaned = cleaned.strip()
                     return cleaned
                     
