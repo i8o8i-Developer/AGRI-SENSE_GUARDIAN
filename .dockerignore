@@ -1,0 +1,146 @@
+# ==============================================================================
+# 🐳 AgriSenseGuardian Docker Build Optimization
+# Excludes Unnecessary Files From Docker Build Context For Faster Builds
+# ==============================================================================
+
+# 🔐 Security - Never Include Secrets In Container Image
+.env
+.env.*
+*.key
+*.pem
+*.crt
+secrets/
+credentials/
+
+# 📁 Version Control
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# 🐍 Python Cache And Build Artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# 🧪 Testing And Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# 📊 Jupyter Notebooks
+.ipynb_checkpoints
+*.ipynb
+
+# 🔧 IDE And Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# 📝 Documentation Build Artifacts
+docs/_build/
+site/
+.mkdocs/
+
+# 📋 Logs And Runtime Data
+*.log
+logs/
+Logs/
+Temp/
+temp/
+tmp/
+
+# 🎯 Node.js (If Any Frontend Dependencies)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 🛠️ Development Tools
+.mypy_cache/
+.pytype/
+.pyre/
+.pylint.d/
+
+# 📦 Package Management
+pip-log.txt
+pip-delete-this-directory.txt
+
+# 🏗️ Build Tools
+Makefile
+*.mk
+docker-compose*.yml
+
+# 📸 Screenshots And Demo Assets (Exclude Large Image Files)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+Images/
+screenshots/
+
+# 📚 Documentation That Doesn't Need To Be In Container
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE
+*.md
+Docs/
+
+# 🔍 Reference Materials (Not Needed In Production)
+Reference/
+
+# 🧩 Development Configuration
+.editorconfig
+.flake8
+.pre-commit-config.yaml
+setup.cfg
+tox.ini
+
+# 🚀 Deployment Files (Not Needed Inside Container)
+Dockerfile
+DEPLOYMENT.md
+kubernetes/
+helm/
+
+# 🎬 Media Files
+*.mp4
+*.avi
+*.mov
+*.wmv
+
+# 📊 Data Files (Should Be Mounted As Volumes Instead)
+*.csv
+*.json
+*.xml
+*.xlsx
+Data/
+data/
