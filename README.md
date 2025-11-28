@@ -688,6 +688,69 @@ You Should See The AgriSenseGuardian Web Interface!
 
 ---
 
+## 🐳 Docker Deployment
+
+### **Quick Container Deployment**
+
+For Easy Deployment And Scalability, AgriSenseGuardian Includes A Production-Ready Dockerfile With Multi-Stage Builds, Security Best Practices, And Health Checks.
+
+#### **Build And Run Container**
+
+```powershell
+# Build Docker Image
+docker build -t agrisense-guardian:latest .
+
+# Run Development Container (Single Port)
+docker run -d --name agrisense-dev -p 8000:8000 --env-file .env agrisense-guardian:latest
+
+# Run Production Container (All Ports Exposed)
+docker run -d --name agrisense-production -p 8000:8000 -p 9000:9000 -p 9001:9001 -p 9002:9002 --env-file .env --restart unless-stopped agrisense-guardian:latest
+```
+
+#### **Container Features**
+- **🔒 Security**: Non-root user execution, minimal attack surface
+- **📊 Monitoring**: Built-in health checks and metrics endpoints
+- **⚡ Performance**: Multi-stage build with optimized Python 3.11 slim base
+- **🔄 Scalability**: Ready for Kubernetes, Cloud Run, and container orchestration
+
+#### **Health Check Verification**
+
+```powershell
+# Check Container Status
+docker ps
+
+# Verify Health Endpoint
+curl http://localhost:8000/health
+
+# View Container Logs
+docker logs -f agrisense-production
+```
+
+### **Cloud Deployment Options**
+
+#### **Google Cloud Run (Recommended)**
+```bash
+# Build And Deploy To Cloud Run
+gcloud builds submit --tag gcr.io/PROJECT_ID/agrisense-guardian
+gcloud run deploy agrisense-guardian --image gcr.io/PROJECT_ID/agrisense-guardian --platform managed --region us-central1 --allow-unauthenticated --set-env-vars GOOGLE_API_KEY=your_key --port 8000 --memory 2Gi --cpu 2
+```
+
+#### **AWS Fargate**
+```bash
+# Deploy To AWS Fargate Using ECS Task Definition
+aws ecs run-task --cluster agrisense-cluster --task-definition agrisense-guardian:1 --network-configuration "awsvpcConfiguration={subnets=[subnet-12345],securityGroups=[sg-12345],assignPublicIp=ENABLED}"
+```
+
+#### **Azure Container Instances**
+```bash
+# Deploy To Azure Container Instances
+az container create --resource-group agrisense-rg --name agrisense-guardian --image agrisense-guardian:latest --dns-name-label agrisense-guardian --ports 8000 --environment-variables GOOGLE_API_KEY=your_key --cpu 2 --memory 4
+```
+
+**📋 For Complete Deployment Guide**: See [DEPLOYMENT.md](DEPLOYMENT.md) For Detailed Instructions, Production Configuration, Monitoring Setup, And Troubleshooting.
+
+---
+
 ## 📊 Multi-Agent System Deep Dive
 
 ### **Agent Architecture Philosophy**
