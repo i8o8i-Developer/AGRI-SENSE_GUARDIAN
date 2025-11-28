@@ -1642,11 +1642,14 @@ Limitations Under The License.
 - **[DEVELOPMENT_RATIONALE.md](Docs/DEVELOPMENT_RATIONALE.md)** — Why We Made Each Design Decision
 - **[CHANGELOG.md](CHANGELOG.md)** — Version History & Release Notes
 
+### **Deployment & Operations**
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** — Docker, Cloud Run, AWS, Azure Deployment Guide
+- **[Docs/DEPLOYMENT_GUIDE.md](Docs/DEPLOYMENT_GUIDE.md)** — Production Deployment (GCP, AWS, Azure)
+
 ### **Advanced Topics**
 - **[Docs/INNOVATION_HIGHLIGHTS.md](Docs/INNOVATION_HIGHLIGHTS.md)** — 6 Novel Innovations Explained
 - **[Docs/TECHNICAL_DEEP_DIVE.md](Docs/TECHNICAL_DEEP_DIVE.md)** — Advanced Architecture & Algorithms
 - **[Docs/SOCIAL_IMPACT_ASSESSMENT.md](Docs/SOCIAL_IMPACT_ASSESSMENT.md)** — UN SDG Alignment & Impact Metrics
-- **[Docs/DEPLOYMENT_GUIDE.md](Docs/DEPLOYMENT_GUIDE.md)** — Production Deployment (GCP, AWS, Azure)
 - **[Docs/WEB_UI_ARCHITECTURE.md](Docs/WEB_UI_ARCHITECTURE.md)** — Markdown Rendering & Frontend Architecture (v2.1.1)
 - **[Docs/JUDGE_EVALUATION_GUIDE.md](Docs/JUDGE_EVALUATION_GUIDE.md)** — Hackathon Evaluation Reference
 - **[Docs/INDEX.md](Docs/INDEX.md)** — Complete Documentation Index

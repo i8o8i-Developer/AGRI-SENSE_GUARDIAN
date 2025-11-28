@@ -81,10 +81,11 @@ class Settings(BaseSettings):
     sender_name: Optional[str] = Field(default="AgriSenseGuardian", env="SENDER_NAME")
 
     model_config = SettingsConfigDict(
-        env_file=os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env")),
+        env_file=os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env")) if os.path.exists(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))) else None,
         env_file_encoding='utf-8',
         case_sensitive=False,
-        extra='ignore'
+        extra='ignore',
+        env_ignore_empty=True
     )
 
 

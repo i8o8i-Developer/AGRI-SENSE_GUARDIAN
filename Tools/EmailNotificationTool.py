@@ -70,20 +70,32 @@ async def EmailNotificationTool(
         
         # Get SMTP Configuration From Application Settings (Fallback to Env)
         settings = get_settings()
-        SmtpProvider = settings.smtp_provider or os.getenv('SMTP_PROVIDER', 'gmail') 
-        SmtpHost = settings.smtp_host or os.getenv('SMTP_HOST', 'smtp.gmail.com')
-        SmtpPort = int(settings.smtp_port or os.getenv('SMTP_PORT', '587'))
-        SmtpUser = settings.smtp_user or os.getenv('SMTP_USER', '')
-        SmtpPassword = settings.smtp_password or os.getenv('SMTP_PASSWORD', '')
-        SenderEmail = settings.sender_email or os.getenv('SENDER_EMAIL', SmtpUser)
-        SenderName = settings.sender_name or os.getenv('SENDER_NAME', 'AgriSenseGuardian')
         
-        # Validate Configuration
+        # Try Settings First, Then Environment Variables, Then Defaults
+        SmtpProvider = settings.smtp_provider or os.getenv('SMTP_PROVIDER') or 'gmail'
+        SmtpHost = settings.smtp_host or os.getenv('SMTP_HOST') or 'smtp.gmail.com'
+        SmtpPort = int(settings.smtp_port or os.getenv('SMTP_PORT') or '587')
+        SmtpUser = settings.smtp_user or os.getenv('SMTP_USER') or ''
+        SmtpPassword = settings.smtp_password or os.getenv('SMTP_PASSWORD') or ''
+        SenderEmail = settings.sender_email or os.getenv('SENDER_EMAIL') or SmtpUser
+        SenderName = settings.sender_name or os.getenv('SENDER_NAME') or 'AgriSenseGuardian'
+        
+        # Validate Configuration With Detailed Debugging
         if not SmtpUser or not SmtpPassword:
+            # Provide Detailed Error Information For Debugging
+            debug_info = {
+                'settings.smtp_user': bool(settings.smtp_user),
+                'os.getenv(SMTP_USER)': bool(os.getenv('SMTP_USER')),
+                'settings.smtp_password': bool(settings.smtp_password),
+                'os.getenv(SMTP_PASSWORD)': bool(os.getenv('SMTP_PASSWORD')),
+                'env_file_path': settings.model_config.get('env_file') if hasattr(settings, 'model_config') else 'N/A'
+            }
+            
             return {
                 'Status': 'Error',
-                'Message': 'SMTP credentials Not Configured. Set SMTP_USER and SMTP_PASSWORD Environment Variables.',
-                'Recipient': RecipientEmail
+                'Message': f'SMTP Credentials Not Configured. Set SMTP_USER And SMTP_PASSWORD Environment Variables. Debug: {debug_info}',
+                'Recipient': RecipientEmail,
+                'DebugInfo': debug_info
             }
         
         # Create Email Message
