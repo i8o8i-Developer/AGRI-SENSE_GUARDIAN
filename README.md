@@ -271,15 +271,17 @@ async def WeatherTool(Location: str, DaysAhead: int, ToolContext: ToolContext) -
 
 #### **Custom Tools** (7 Specialized Agricultural Tools)
 
-| Tool Name | Purpose | Data Source | Output |
-|-----------|---------|-------------|--------|
-| **WeatherTool** | 30-90 Day Weather Forecasts | OpenWeatherMap API | Temperature, Precipitation, Humidity, Wind |
-| **SatelliteTool** | Agroclimatology From Space | NASA POWER API | Solar Radiation, Evapotranspiration, Rainfall |
-| **CopernicusTool** | European Satellite Climate Data | ESA Copernicus CDS | Soil Moisture, NDVI, Land Surface Temp |
-| **SoilTestTool** | Soil Profile Analysis | ISRIC SoilGrids | pH, Texture, Clay/Sand %, Nitrogen |
-| **GoogleSearchTool** | Web Intelligence | Google Custom Search API | Recent Agricultural News, Local Advisories |
-| **EmailNotificationTool** | Farmer Communication | SMTP (Gmail/Outlook) | HTML Email With Risk Reports |
-| **CodeExecutionTool** | Dynamic Calculations | Python Sandbox | Custom Risk Formulas, Data Processing |
+| Tool Name | Purpose | Data Source | Free APIs Used | Output |
+|-----------|---------|-------------|----------------|--------|
+| **WeatherTool** | 30-90 Day Weather Forecasts | Open-Meteo (Primary) + OpenWeatherMap (Fallback) | ✅ Open-Meteo, ⭐ OpenWeatherMap | Temperature, Precipitation, Humidity, Wind |
+| **SatelliteTool** | Agroclimatology From Space | NASA POWER API | ✅ NASA POWER (Free) | Solar Radiation, Evapotranspiration, Rainfall |
+| **CopernicusTool** | European Satellite Climate Data | ESA Copernicus CDS + NASA POWER Fallback | ✅ NASA POWER, ⭐ Copernicus | Soil Moisture, NDVI, Land Surface Temp |
+| **SoilTestTool** | Soil Profile Analysis | NASA POWER + ISRIC SoilGrids | ✅ NASA POWER, ✅ SoilGrids | pH, Texture, Clay/Sand %, Nitrogen |
+| **GoogleSearchTool** | Web Intelligence | Google CSE + SerpAPI | ⭐ Google CSE, ⭐ SerpAPI | Recent Agricultural News, Local Advisories |
+| **EmailNotificationTool** | Farmer Communication | SMTP (Gmail/Outlook/SendGrid) | ⭐ SMTP Providers | HTML Email With Risk Reports |
+| **CodeExecutionTool** | Dynamic Calculations | Python Sandbox | ✅ Built-in (Free) | Custom Risk Formulas, Data Processing |
+
+**Legend**: ✅ = No API Key Required | ⭐ = Optional API Key Enhancement
 
 #### **Built-In ADK Tools**
 
@@ -616,46 +618,135 @@ pip install -r Requirements.txt
 Create A `.env` File In The Project Root:
 
 ```env
-# Google Gemini AI
-GOOGLE_API_KEY=Your_Gemini_Api_Key_Here
+# ══════════════════════════════════════════════════════════════════════════════
+# 🔑 CORE API CREDENTIALS (REQUIRED)
+# ══════════════════════════════════════════════════════════════════════════════
 
-# Weather Data
-OPENWEATHER_API_KEY=Your_OpenWeather_Api_Key_Here
+# Google Gemini AI (Required For Multi-Agent System)
+GOOGLE_API_KEY=Your_Google_Api_Key_Here
 
-# Copernicus Climate Data (Optional)
-COPERNICUS_API_KEY=Your_UID:Your_API_Key
+# ══════════════════════════════════════════════════════════════════════════════
+# 🌦️ WEATHER & CLIMATE DATA APIs (ENHANCED FORECASTING)
+# ══════════════════════════════════════════════════════════════════════════════
 
-# Email Notifications (Optional)
+# OpenWeatherMap API (Optional - Enhanced Geocoding & Weather Fallback)
+# Free Tier: 1,000 Calls/Day | Sign Up: https://openweathermap.org/api
+OPENWEATHER_API_KEY=Your_Openweather_Key_Here
+
+# NASA POWER API (FREE - No Key Required)
+# Used Automatically For Satellite Data, Solar Radiation, Agricultural Parameters
+
+# Open-Meteo API (FREE - No Key Required)
+# Used Automatically For Primary Weather Forecasts
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 🛰️ SATELLITE & SOIL DATA APIs (PRECISION AGRICULTURE)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Copernicus Climate Data Store (Optional - Professional Satellite Analytics)
+# Format: uid:api_key | Free Registration Required
+# Sign Up: https://cds.climate.copernicus.eu/api-how-to
+COPERNICUS_API_KEY=Your_Copernicus_Uid:Api_Key
+
+# ISRIC SoilGrids API (FREE - No Key Required)
+# Used Automatically For Global Soil Property Data
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 🔍 SEARCH & INFORMATION RETRIEVAL APIs (INTELLIGENT WEB SEARCH)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Google Custom Search Engine (Optional - Agricultural Content Search)
+# Requires: Both GOOGLE_API_KEY + GOOGLE_SEARCH_ENGINE_ID
+# Setup: https://developers.google.com/custom-search/v1/overview
+GOOGLE_SEARCH_ENGINE_ID=Your_Search_Engine_Id_Here
+
+# SerpAPI (Optional - Enhanced Search Results)
+# Free Tier: 100 Searches/Month | Sign Up: https://serpapi.com/
+SERPAPI_API_KEY=Your_SerpApi_Key_Here
+
+# OpenStreetMap Nominatim (FREE - No API Key Required)
+# Used Automatically For Geocoding Services
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 📧 EMAIL NOTIFICATION SYSTEM (FARMER COMMUNICATIONS)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# SMTP Configuration (Email Delivery)
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=Your_Email@gmail.com
-SMTP_PASSWORD=Your_App_Password
-SENDER_EMAIL=Your_Email@gmail.com
+SMTP_USER=your_email@gmail.com
+SMTP_PASSWORD=your_app_password
+SENDER_EMAIL=your_email@gmail.com
+SENDER_NAME=AgriSenseGuardian
 
-# Google Search (Optional)
-GOOGLE_SEARCH_API_KEY=Your_Google_Search_Api_Key
-GOOGLE_SEARCH_ENGINE_ID=Your_Search_Engine_ID
+# ══════════════════════════════════════════════════════════════════════════════
+# 🔧 APPLICATION CONFIGURATION (SERVER SETTINGS)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Server Configuration
+API_HOST=127.0.0.1
+API_PORT=8000
+START_A2A_ON_STARTUP=true
+LOG_LEVEL=INFO
 ```
 
-**How To Get API Keys:**
+### **📊 Complete API Reference**
 
-1. **Google Gemini API Key** (Required)
-   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
-   - Click "Create API Key"
-   - Copy The Key To `.env`
+| API Service | Purpose | Free Tier | Setup Required |
+|-------------|---------|-----------|----------------|
+| **Google Gemini** | Multi-Agent AI Engine | 15 RPM | Required ✅ |
+| **Open-Meteo** | Primary Weather Data | Unlimited | None ✅ |
+| **NASA POWER** | Satellite Agriculture Data | Unlimited | None ✅ |
+| **OpenStreetMap** | Geocoding Services | Unlimited | None ✅ |
+| **OpenWeatherMap** | Enhanced Weather & Geocoding | 1,000/Day | Optional ⭐ |
+| **Copernicus CDS** | Professional Satellite Analytics | Unlimited | Optional ⭐ |
+| **Google CSE** | Agricultural Content Search | 100/Day | Optional ⭐ |
+| **SerpAPI** | Enhanced Web Search | 100/Month | Optional ⭐ |
+| **SMTP Providers** | Email Notifications | Varies | Optional ⭐ |
 
-2. **OpenWeatherMap API Key** (Required)
-   - Sign Up At [OpenWeatherMap](https://openweathermap.org/api)
-   - Get Free API Key (1000 Calls/Day)
+**Legend:** ✅ = No Setup Required | ⭐ = Optional Enhancement
 
-3. **Copernicus CDS API** (Optional, Improves Data Quality)
-   - Register At [Copernicus CDS](https://cds.climate.copernicus.eu/)
-   - Get UID And API Key From Account Settings
-   - Format: `UID:APIKEY` (E.g., `12345:abcd-efgh-ijkl`)
+### **🔑 How To Get API Keys**
 
-4. **Email SMTP** (Optional, For Farmer Notifications)
-   - Gmail: Enable 2FA, Generate App Password
-   - Outlook: Use Regular Password
+#### **Required APIs**
+
+**1. Google Gemini API Key** (Required - Powers Multi-Agent System)
+- Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+- Click "Create API Key" → Copy To `.env`
+- **Cost**: Free Tier (15 Requests/Minute)
+
+#### **Optional Enhancement APIs**
+
+**2. OpenWeatherMap API Key** (Enhanced Weather + Geocoding)
+- Sign Up: [OpenWeatherMap](https://openweathermap.org/api)
+- **Free Tier**: 1,000 Calls/Day
+- **Benefits**: Enhanced geocoding accuracy, backup weather source
+
+**3. Copernicus CDS API** (Professional Satellite Analytics)
+- Register: [Copernicus CDS](https://cds.climate.copernicus.eu/user/register)
+- Format: `UID:API_KEY` (E.g., `12345:abcd-efgh-ijkl`)
+- **Benefits**: Soil moisture, NDVI, evapotranspiration data
+
+**4. Google Custom Search Engine** (Agricultural Web Search)
+- Create CSE: [Programmable Search](https://programmablesearchengine.google.com/)
+- Requires: Both `GOOGLE_API_KEY` + `GOOGLE_SEARCH_ENGINE_ID`
+- **Benefits**: Targeted agricultural content search
+
+**5. SerpAPI** (Enhanced Search Results)
+- Sign Up: [SerpAPI](https://serpapi.com/users/sign_up)
+- **Free Tier**: 100 Searches/Month
+- **Benefits**: Comprehensive web search fallback
+
+**6. Email SMTP** (Farmer Notifications)
+- **Gmail**: Enable 2FA → Generate App Password
+- **Outlook**: Use regular password
+- **SendGrid/Mailgun**: Commercial SMTP providers
+
+### **🎯 Recommendation**
+
+**Minimum Setup**: Only `GOOGLE_API_KEY` required. All other APIs are optional enhancements.
+
+**Recommended Setup**: Add `OPENWEATHER_API_KEY` + `SMTP` for enhanced features.
 
 #### **Step 5: Run The Application**
 
@@ -694,7 +785,7 @@ You Should See The AgriSenseGuardian Web Interface!
 
 For Easy Deployment And Scalability, AgriSenseGuardian Includes A Production-Ready Dockerfile With Multi-Stage Builds, Security Best Practices, And Health Checks.
 
-#### **Build And Run Container**
+#### **Quick Container Deployment**
 
 ```powershell
 # Build Docker Image
@@ -703,15 +794,23 @@ docker build -t agrisense-guardian:latest .
 # Run Development Container (Single Port)
 docker run -d --name agrisense-dev -p 8000:8000 --env-file .env agrisense-guardian:latest
 
-# Run Production Container (All Ports Exposed)
-docker run -d --name agrisense-production -p 8000:8000 -p 9000:9000 -p 9001:9001 -p 9002:9002 --env-file .env --restart unless-stopped agrisense-guardian:latest
+# Run Production Container (All Ports + Metrics)
+docker run -d \
+  --name agrisense-production \
+  -p 8000:8000 \
+  -p 9000:9000 -p 9001:9001 -p 9002:9002 \
+  -p 8001:8001 \
+  --env-file .env \
+  --restart unless-stopped \
+  agrisense-guardian:latest
 ```
 
 #### **Container Features**
 - **🔒 Security**: Non-root user execution, minimal attack surface
-- **📊 Monitoring**: Built-in health checks and metrics endpoints
+- **📊 Monitoring**: Built-in health checks and Prometheus metrics
 - **⚡ Performance**: Multi-stage build with optimized Python 3.11 slim base
 - **🔄 Scalability**: Ready for Kubernetes, Cloud Run, and container orchestration
+- **🌐 Multi-Port**: Web UI (8000) + A2A Agents (9000-9002) + Metrics (8001)
 
 #### **Health Check Verification**
 
@@ -719,35 +818,78 @@ docker run -d --name agrisense-production -p 8000:8000 -p 9000:9000 -p 9001:9001
 # Check Container Status
 docker ps
 
-# Verify Health Endpoint
-curl http://localhost:8000/health
+# Verify Health Endpoints
+curl http://localhost:8000/health      # Basic health
+curl http://localhost:8000/readiness   # Detailed readiness
+curl http://localhost:8001/metrics     # Prometheus metrics
 
 # View Container Logs
 docker logs -f agrisense-production
 ```
 
-### **Cloud Deployment Options**
+### **☁️ Cloud Deployment Options**
 
 #### **Google Cloud Run (Recommended)**
 ```bash
 # Build And Deploy To Cloud Run
 gcloud builds submit --tag gcr.io/PROJECT_ID/agrisense-guardian
-gcloud run deploy agrisense-guardian --image gcr.io/PROJECT_ID/agrisense-guardian --platform managed --region us-central1 --allow-unauthenticated --set-env-vars GOOGLE_API_KEY=your_key --port 8000 --memory 2Gi --cpu 2
+
+gcloud run deploy agrisense-guardian \
+  --image gcr.io/PROJECT_ID/agrisense-guardian \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars GOOGLE_API_KEY=your_key,START_A2A_ON_STARTUP=true \
+  --port 8000 \
+  --memory 2Gi \
+  --cpu 2 \
+  --max-instances 10
 ```
 
-#### **AWS Fargate**
+#### **AWS Fargate (Production Scale)**
 ```bash
 # Deploy To AWS Fargate Using ECS Task Definition
-aws ecs run-task --cluster agrisense-cluster --task-definition agrisense-guardian:1 --network-configuration "awsvpcConfiguration={subnets=[subnet-12345],securityGroups=[sg-12345],assignPublicIp=ENABLED}"
+aws ecs run-task \
+  --cluster agrisense-cluster \
+  --task-definition agrisense-guardian:1 \
+  --network-configuration "awsvpcConfiguration={subnets=[subnet-12345],securityGroups=[sg-12345],assignPublicIp=ENABLED}"
 ```
 
-#### **Azure Container Instances**
+#### **Azure Container Instances (Quick Deploy)**
 ```bash
 # Deploy To Azure Container Instances
-az container create --resource-group agrisense-rg --name agrisense-guardian --image agrisense-guardian:latest --dns-name-label agrisense-guardian --ports 8000 --environment-variables GOOGLE_API_KEY=your_key --cpu 2 --memory 4
+az container create \
+  --resource-group agrisense-rg \
+  --name agrisense-guardian \
+  --image agrisense-guardian:latest \
+  --dns-name-label agrisense-guardian \
+  --ports 8000 \
+  --environment-variables GOOGLE_API_KEY=your_key START_A2A_ON_STARTUP=true \
+  --cpu 2 \
+  --memory 4
 ```
 
-**📋 For Complete Deployment Guide**: See [DEPLOYMENT.md](DEPLOYMENT.md) For Detailed Instructions, Production Configuration, Monitoring Setup, And Troubleshooting.
+### **📊 Production Monitoring**
+
+```bash
+# Prometheus Metrics Integration
+docker run -d \
+  --name prometheus \
+  -p 9090:9090 \
+  -v prometheus.yml:/etc/prometheus/prometheus.yml \
+  prom/prometheus
+
+# Grafana Dashboard
+docker run -d \
+  --name grafana \
+  -p 3000:3000 \
+  grafana/grafana
+```
+
+**📋 Complete Documentation**: 
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** — Comprehensive deployment guide with all APIs, monitoring setup, and troubleshooting
+- **13+ API Configurations** — Complete environment variable reference
+- **Production Best Practices** — Security, scaling, and observability patterns
 
 ---
 
