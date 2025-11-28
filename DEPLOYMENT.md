@@ -44,7 +44,15 @@ docker build -t agrisense-guardian:latest .
 
 ### **2. Environment Configuration**
 
-Create A `.env` File With Required API Keys:
+**Step-by-Step Environment Setup:**
+
+1. **Copy Environment Template**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Edit The `.env` File With Your Actual API Keys:**
+   Replace the placeholder values in `.env` with your real credentials:
 
 ```env
 # ══════════════════════════════════════════════════════════════════════════════
@@ -162,6 +170,13 @@ API_KEY_REQUIRED=false
 CORS_ORIGINS=*
 ```
 
+**⚠️ Important Environment Notes:**
+- **Never Commit `.env`** - The `.env` file contains sensitive API keys and should never be committed to version control
+- **Use `.env.example` as Template** - The `.env.example` file shows all available configuration options with placeholder values
+- **Cloud Deployments** - All cloud deployment commands reference your local `.env` file or use environment variable substitution
+- **Docker Integration** - The Dockerfile and docker-compose configurations are designed to work with your `.env` file automatically
+- **Local Development** - The application automatically loads environment variables from `.env` using python-dotenv
+
 ### **3. Run Container**
 
 #### **Development Mode (Single Port)**
@@ -210,12 +225,57 @@ open http://localhost:8000
 
 ## 🌐 Cloud Deployment Options
 
+### **📋 General Prerequisites (All Cloud Platforms)**
+
+**Source Code Acquisition:**
+- **GitHub Repository**: https://github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN
+- **Method 1**: Clone repository locally → Build → Push to cloud
+- **Method 2**: Direct build from GitHub (Cloud Build integration)
+- **Method 3**: Fork repository → Deploy from your fork
+
+**Required Files:**
+- `Dockerfile` (Multi-stage production build) ✅ Included
+- `.dockerignore` (Build optimization) ✅ Included  
+- `Requirements.txt` (Python dependencies) ✅ Included
+- `.env.example` (Environment template) ✅ Included
+
+**Build Process:**
+1. **Clone** → `git clone https://github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN.git`
+2. **Configure** → Copy `.env.example` to `.env` and add your API keys
+3. **Build** → `docker build -t agrisense-guardian .`
+4. **Deploy** → Push to cloud container registry and deploy
+
+---
+
 ### **Google Cloud Run (Recommended)**
+
+#### **Prerequisites & Source Setup**
+```bash
+# 1. Clone The Repository (Source Code)
+git clone https://github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN.git
+cd AGRI-SENSE_GUARDIAN
+
+# 2. Set Up Google Cloud Project
+gcloud config set project YOUR_PROJECT_ID
+gcloud auth login
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com
+
+# 3. Create .env File With Your API Keys
+cp .env.example .env
+# Edit .env file and replace placeholder values with your actual API keys:
+# - GOOGLE_API_KEY=your_actual_google_api_key
+# - OPENWEATHER_API_KEY=your_actual_openweather_key
+# - COPERNICUS_API_KEY=your_uid:your_api_key
+# - SMTP_USER=your_email@gmail.com
+# - SMTP_PASSWORD=your_app_password
+# (See .env.example for complete list of configurable variables)
+```
 
 #### **Deploy To Cloud Run**
 ```bash
-# Build And Push To Container Registry
-gcloud builds submit --tag gcr.io/PROJECT_ID/agrisense-guardian
+# Direct Build From Source (Recommended)
+# This builds from your local source code directory
+gcloud builds submit --tag gcr.io/PROJECT_ID/agrisense-guardian .
 
 # Deploy To Cloud Run
 gcloud run deploy agrisense-guardian \
@@ -223,7 +283,7 @@ gcloud run deploy agrisense-guardian \
   --platform managed \
   --region us-central1 \
   --allow-unauthenticated \
-  --set-env-vars GOOGLE_API_KEY=Your_API_Key_Here \
+  --set-env-vars GOOGLE_API_KEY=Your_Api_Key \
   --port 8000 \
   --memory 2Gi \
   --cpu 2 \
@@ -231,24 +291,67 @@ gcloud run deploy agrisense-guardian \
 ```
 
 #### **Environment Variables Setup**
+
+**Method 1: Deploy With Environment File (Recommended)**
 ```bash
-# Set Required Environment Variables (Core APIs)
+# Deploy Cloud Run With Environment Variables From .env File
+# Note: Ensure your .env file is configured locally first
+gcloud run deploy agrisense-guardian \
+  --image gcr.io/PROJECT_ID/agrisense-guardian \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --env-vars-file .env \
+  --port 8000 \
+  --memory 6Gi \
+  --cpu 2 \
+  --max-instances 10
+```
+
+**Method 2: Manual Environment Variables Setup**
+```bash
+# Set Core Environment Variables (Use Your Actual Values From .env File)
 gcloud run services update agrisense-guardian \
-  --set-env-vars GOOGLE_API_KEY=your_api_key,START_A2A_ON_STARTUP=true,LOG_LEVEL=INFO \
+  --set-env-vars GOOGLE_API_KEY="$(grep GOOGLE_API_KEY .env | cut -d '=' -f2)",START_A2A_ON_STARTUP=true,LOG_LEVEL=INFO \
   --region us-central1
 
-# Set Optional Environment Variables (Enhanced APIs)
+# Set Optional Environment Variables (If Configured In .env)
 gcloud run services update agrisense-guardian \
-  --set-env-vars OPENWEATHER_API_KEY=your_openweather_key,COPERNICUS_API_KEY=your_copernicus_key,GOOGLE_SEARCH_ENGINE_ID=your_search_id,SERPAPI_API_KEY=your_serpapi_key \
+  --set-env-vars OPENWEATHER_API_KEY="$(grep OPENWEATHER_API_KEY .env | cut -d '=' -f2)",COPERNICUS_API_KEY="$(grep COPERNICUS_API_KEY .env | cut -d '=' -f2)",GOOGLE_SEARCH_ENGINE_ID="$(grep GOOGLE_SEARCH_ENGINE_ID .env | cut -d '=' -f2)",SERPAPI_API_KEY="$(grep SERPAPI_API_KEY .env | cut -d '=' -f2)" \
   --region us-central1
 
 # Set Email Configuration (If Email Notifications Required)
 gcloud run services update agrisense-guardian \
-  --set-env-vars SMTP_HOST=smtp.gmail.com,SMTP_PORT=587,SMTP_USER=your_email@gmail.com,SMTP_PASSWORD=your_app_password,SENDER_EMAIL=your_email@gmail.com,SENDER_NAME=AgriSenseGuardian \
+  --set-env-vars SMTP_HOST=smtp.gmail.com,SMTP_PORT=587,SMTP_USER="$(grep SMTP_USER .env | cut -d '=' -f2)",SMTP_PASSWORD="$(grep SMTP_PASSWORD .env | cut -d '=' -f2)",SENDER_EMAIL="$(grep SENDER_EMAIL .env | cut -d '=' -f2)",SENDER_NAME=AgriSenseGuardian \
   --region us-central1
 ```
 
 ### **AWS Fargate**
+
+#### **Prerequisites & Source Setup**
+```bash
+# 1. Clone The Repository (Source Code)
+git clone https://github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN.git
+cd AGRI-SENSE_GUARDIAN
+
+# 2. Set Up AWS CLI
+aws configure
+# Enter your AWS Access Key ID, Secret Access Key, Region
+
+# 3. Create ECR Repository For Container Images
+aws ecr create-repository --repository-name agrisense-guardian --region us-east-1
+
+# 4. Build And Push Docker Image To ECR
+# Get ECR login token
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+
+# Build image from source
+docker build -t agrisense-guardian .
+
+# Tag and push to ECR
+docker tag agrisense-guardian:latest ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/agrisense-guardian:latest
+docker push ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/agrisense-guardian:latest
+```
 
 #### **Task Definition**
 ```json
@@ -267,19 +370,29 @@ gcloud run services update agrisense-guardian \
         {"containerPort": 8000, "protocol": "tcp"}
       ],
       "environment": [
-        {"name": "GOOGLE_API_KEY", "value": "your_key"},
+        {"name": "GOOGLE_API_KEY", "value": "${GOOGLE_API_KEY}"},
         {"name": "START_A2A_ON_STARTUP", "value": "true"},
         {"name": "LOG_LEVEL", "value": "INFO"},
-        {"name": "OPENWEATHER_API_KEY", "value": "Your_Openweather_Key_Here"},
-        {"name": "COPERNICUS_API_KEY", "value": "Your_Copernicus_Uid:Api_Key"},
-        {"name": "GOOGLE_SEARCH_ENGINE_ID", "value": "Your_Search_Engine_Id_Here"},
-        {"name": "SERPAPI_API_KEY", "value": "Your_SerpApi_Key_Here"},
+        {"name": "OPENWEATHER_API_KEY", "value": "${OPENWEATHER_API_KEY}"},
+        {"name": "COPERNICUS_API_KEY", "value": "${COPERNICUS_API_KEY}"},
+        {"name": "GOOGLE_SEARCH_ENGINE_ID", "value": "${GOOGLE_SEARCH_ENGINE_ID}"},
+        {"name": "SERPAPI_API_KEY", "value": "${SERPAPI_API_KEY}"},
         {"name": "SMTP_HOST", "value": "smtp.gmail.com"},
         {"name": "SMTP_PORT", "value": "587"},
-        {"name": "SMTP_USER", "value": "Your_Email@gmail.com"},
-        {"name": "SMTP_PASSWORD", "value": "Your_App_Password"},
-        {"name": "SENDER_EMAIL", "value": "Your_Email@gmail.com"},
+        {"name": "SMTP_USER", "value": "${SMTP_USER}"},
+        {"name": "SMTP_PASSWORD", "value": "${SMTP_PASSWORD}"},
+        {"name": "SENDER_EMAIL", "value": "${SENDER_EMAIL}"},
         {"name": "SENDER_NAME", "value": "AgriSenseGuardian"}
+      ],
+      "secrets": [
+        {"name": "GOOGLE_API_KEY", "valueFrom": "arn:aws:ssm:region:account:parameter/agrisense/google-api-key"},
+        {"name": "OPENWEATHER_API_KEY", "valueFrom": "arn:aws:ssm:region:account:parameter/agrisense/openweather-api-key"},
+        {"name": "COPERNICUS_API_KEY", "valueFrom": "arn:aws:ssm:region:account:parameter/agrisense/copernicus-api-key"},
+        {"name": "GOOGLE_SEARCH_ENGINE_ID", "valueFrom": "arn:aws:ssm:region:account:parameter/agrisense/google-search-id"},
+        {"name": "SERPAPI_API_KEY", "valueFrom": "arn:aws:ssm:region:account:parameter/agrisense/serpapi-key"},
+        {"name": "SMTP_USER", "valueFrom": "arn:aws:ssm:region:account:parameter/agrisense/smtp-user"},
+        {"name": "SMTP_PASSWORD", "valueFrom": "arn:aws:ssm:region:account:parameter/agrisense/smtp-password"},
+        {"name": "SENDER_EMAIL", "valueFrom": "arn:aws:ssm:region:account:parameter/agrisense/sender-email"}
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
@@ -294,28 +407,114 @@ gcloud run services update agrisense-guardian \
 }
 ```
 
+**AWS Parameter Store Setup (Required For Secret Management):**
+```bash
+# Store API Keys Securely In AWS Systems Manager Parameter Store
+# Run These Commands With Your .env File Configured Locally
+
+aws ssm put-parameter \
+  --name "/agrisense/google-api-key" \
+  --value "$(grep GOOGLE_API_KEY .env | cut -d '=' -f2)" \
+  --type "SecureString" \
+  --description "Google Gemini API Key for AgriSense Guardian"
+
+aws ssm put-parameter \
+  --name "/agrisense/openweather-api-key" \
+  --value "$(grep OPENWEATHER_API_KEY .env | cut -d '=' -f2)" \
+  --type "SecureString" \
+  --description "OpenWeatherMap API Key"
+
+aws ssm put-parameter \
+  --name "/agrisense/copernicus-api-key" \
+  --value "$(grep COPERNICUS_API_KEY .env | cut -d '=' -f2)" \
+  --type "SecureString" \
+  --description "Copernicus Climate Data Store API Key"
+
+aws ssm put-parameter \
+  --name "/agrisense/google-search-id" \
+  --value "$(grep GOOGLE_SEARCH_ENGINE_ID .env | cut -d '=' -f2)" \
+  --type "SecureString" \
+  --description "Google Custom Search Engine ID"
+
+aws ssm put-parameter \
+  --name "/agrisense/serpapi-key" \
+  --value "$(grep SERPAPI_API_KEY .env | cut -d '=' -f2)" \
+  --type "SecureString" \
+  --description "SerpAPI Key for Enhanced Search"
+
+aws ssm put-parameter \
+  --name "/agrisense/smtp-user" \
+  --value "$(grep SMTP_USER .env | cut -d '=' -f2)" \
+  --type "SecureString" \
+  --description "SMTP Username for Email Notifications"
+
+aws ssm put-parameter \
+  --name "/agrisense/smtp-password" \
+  --value "$(grep SMTP_PASSWORD .env | cut -d '=' -f2)" \
+  --type "SecureString" \
+  --description "SMTP Password for Email Notifications"
+
+aws ssm put-parameter \
+  --name "/agrisense/sender-email" \
+  --value "$(grep SENDER_EMAIL .env | cut -d '=' -f2)" \
+  --type "SecureString" \
+  --description "Sender Email Address"
+```
+
+**Note:** Replace `region` and `account` with your actual AWS region and account ID in the task definition ARNs above.
+
 ### **Azure Container Instances**
 
+#### **Prerequisites & Source Setup**
+```bash
+# 1. Clone The Repository (Source Code)
+git clone https://github.com/i8o8i-Developer/AGRI-SENSE_GUARDIAN.git
+cd AGRI-SENSE_GUARDIAN
+
+# 2. Set Up Azure CLI
+az login
+az account set --subscription YOUR_SUBSCRIPTION_ID
+
+# 3. Create Resource Group
+az group create --name agrisense-rg --location eastus
+
+# 4. Create Azure Container Registry (ACR)
+az acr create --resource-group agrisense-rg --name agrisenseregistry --sku Basic --admin-enabled true
+
+# 5. Build And Push Image To ACR
+# Login to ACR
+az acr login --name agrisenseregistry
+
+# Build and push from source
+az acr build --registry agrisenseregistry --image agrisense-guardian:latest .
+
+# Or build locally and push
+# docker build -t agrisense-guardian .
+# docker tag agrisense-guardian agrisenseregistry.azurecr.io/agrisense-guardian:latest
+# docker push agrisenseregistry.azurecr.io/agrisense-guardian:latest
+```
+
+#### **Deploy To Azure Container Instances**
 ```bash
 az container create \
   --resource-group agrisense-rg \
   --name agrisense-guardian \
-  --image your-registry.azurecr.io/agrisense-guardian:latest \
+  --image agrisenseregistry.azurecr.io/agrisense-guardian:latest \
   --dns-name-label agrisense-guardian \
   --ports 8000 \
   --environment-variables \
-    GOOGLE_API_KEY=your_key \
+    GOOGLE_API_KEY="$(grep GOOGLE_API_KEY .env | cut -d '=' -f2)" \
     START_A2A_ON_STARTUP=true \
     LOG_LEVEL=INFO \
-    OPENWEATHER_API_KEY=Your_Openweather_Key_Here \
-    COPERNICUS_API_KEY=Your_Copernicus_Uid:Api_Key \
-    GOOGLE_SEARCH_ENGINE_ID=Your_Search_Engine_Id_Here \
-    SERPAPI_API_KEY=Your_SerpApi_Key_Here \
+    OPENWEATHER_API_KEY="$(grep OPENWEATHER_API_KEY .env | cut -d '=' -f2)" \
+    COPERNICUS_API_KEY="$(grep COPERNICUS_API_KEY .env | cut -d '=' -f2)" \
+    GOOGLE_SEARCH_ENGINE_ID="$(grep GOOGLE_SEARCH_ENGINE_ID .env | cut -d '=' -f2)" \
+    SERPAPI_API_KEY="$(grep SERPAPI_API_KEY .env | cut -d '=' -f2)" \
     SMTP_HOST=smtp.gmail.com \
     SMTP_PORT=587 \
-    SMTP_USER=Your_Email@gmail.com \
-    SMTP_PASSWORD=Your_App_Password \
-    SENDER_EMAIL=Your_Email@gmail.com \
+    SMTP_USER="$(grep SMTP_USER .env | cut -d '=' -f2)" \
+    SMTP_PASSWORD="$(grep SMTP_PASSWORD .env | cut -d '=' -f2)" \
+    SENDER_EMAIL="$(grep SENDER_EMAIL .env | cut -d '=' -f2)" \
     SENDER_NAME=AgriSenseGuardian \
   --cpu 2 \
   --memory 4

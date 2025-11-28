@@ -9,6 +9,9 @@
 # ==============================
 FROM python:3.11-slim AS BaseStage
 
+# ⚠️ FIX: Prevent debconf Interactive Prompts (Cloud Build Has No TTY)
+ENV DEBIAN_FRONTEND=noninteractive
+
 # 🏷️ Container Metadata Following Best Practices
 LABEL maintainer="Anubhav Chaurasia <i8o8iworkstation@outlook.com>"
 LABEL version="2.0.0"
@@ -26,8 +29,8 @@ RUN apt-get update && apt-get install -y \
     libhdf5-dev \
     libnetcdf-dev \
     pkg-config \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # 👤 Create Non-Root User For Security Best Practices
 RUN groupadd --gid 1000 agrisense \
