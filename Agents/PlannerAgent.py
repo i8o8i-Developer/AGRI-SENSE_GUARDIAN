@@ -532,27 +532,30 @@ Use bullet points, **bold text** for emphasis, and clear structure for better re
             recipient = FarmerEmail.strip() if FarmerEmail else ''
             if recipient:
                 subject = f"🌾 AgriSenseGuardian Action Plan — {Location}"
-                p1_text = "\n".join([f"• {a['Action'] if isinstance(a, dict) else str(a)}" for a in P1Actions])
-                p2_text = "\n".join([f"• {a['Action'] if isinstance(a, dict) else str(a)}" for a in P2Actions])
-                p3_text = "\n".join([f"• {a['Action'] if isinstance(a, dict) else str(a)}" for a in P3Actions])
+                p1_text = "\n".join([f"* {a['Action'] if isinstance(a, dict) else str(a)}" for a in P1Actions])
+                p2_text = "\n".join([f"* {a['Action'] if isinstance(a, dict) else str(a)}" for a in P2Actions])
+                p3_text = "\n".join([f"* {a['Action'] if isinstance(a, dict) else str(a)}" for a in P3Actions])
 
                 email_body = f"""Hello Farmer,
 
-                Here Is Your Prioritized Action Plan For {Location}:
+Here Is Your Prioritized Action Plan For {Location}:
 
-                📌 PRIORITY 1 - CRITICAL (Next 24-48 Hours):
-                {p1_text}
+## 🚨 PRIORITY 1 - CRITICAL (Next 24-48 Hours)
 
-                ⚠️ PRIORITY 2 - IMPORTANT (This Week):
-                {p2_text}
+{p1_text}
 
-                📋 PRIORITY 3 - ROUTINE (Ongoing):
-                {p3_text}
+## ⚠️ PRIORITY 2 - IMPORTANT (This Week)
 
-                Stay Informed And Protect Your Farm!
+{p2_text}
 
-                Best Regards,
-                AgriSense Guardian Team
+## 📋 PRIORITY 3 - ROUTINE (Ongoing)
+
+{p3_text}
+
+Stay Informed And Protect Your Farm!
+
+Best Regards,
+AgriSense Guardian Team
                 """
                 email_result = await EmailNotificationTool(recipient, subject, email_body, None)
                 email_status = {
@@ -582,70 +585,93 @@ Use bullet points, **bold text** for emphasis, and clear structure for better re
         }
     
     async def _generate_dynamic_action_description(self, risk_name: str, level: str, drivers: list, location: str) -> str:
-        """Generate User-Friendly, Dynamic Action Descriptions Using LLM"""
+        """Generate User-Friendly, Dynamic Action Descriptions Using LLM With Safe Fallback."""
+        urgency_emoji = "🚨" if level in ['High', 'Critical'] else ("⚠️" if level == 'Medium' else "📋")
+        drivers_text = ', '.join(drivers) if drivers else 'general conditions'
+
+        def _humanize(name: str) -> str:
+            if not name:
+                return ''
+            mapping = {
+                'DroughtRisk': 'Drought Risk',
+                'FloodRisk': 'Flood Risk',
+                'PestOutbreakRisk': 'Pest Risk',
+                'DiseaseRisk': 'Disease Risk',
+                'HeatStressRisk': 'Heat Stress',
+                'SoilErosionRisk': 'Soil Erosion',
+                'NutrientLeachingRisk': 'Nutrient Leaching',
+                'ColdStressRisk': 'Cold Stress',
+                'VegetationStressRisk': 'Vegetation Stress'
+            }
+            if name in mapping:
+                return mapping[name]
+            import re
+            spaced = re.sub(r'(?<![A-Z])([A-Z])', r' \1', name).replace('_', ' ').strip()
+            words = [w if w.isupper() else w.capitalize() for w in spaced.split()]
+            return ' '.join(words)
+
+        human_risk = _humanize(risk_name)
+
         try:
             import google.generativeai as genai
-            from Config.Settings import Settings
-            
-            # Configure The API Key If Available
-            if hasattr(Settings, 'google_gemini_api_key') and Settings.google_gemini_api_key:
-                genai.configure(api_key=Settings.google_gemini_api_key)
-            
-            drivers_text = ', '.join(drivers) if drivers else 'general conditions'
-            urgency_emoji = "🚨" if level in ['High', 'Critical'] else ("⚠️" if level == 'Medium' else "📋")
-            
-            prompt = f"""
-            Generate A Single, Clear, Farmer-Friendly Action Description For This Agricultural Risk:
-
-            Risk: {risk_name}
-            Severity: {level} 
-            Causes: {drivers_text}
-            Location: {location}
-
-            Requirements :
-            - Start With Appropriate Emoji ({urgency_emoji})
-            - Use **bold** For Key Action Words
-            - Write In Simple, Clear Language Farmers Can Understand
-            - Be Specific And Actionable
-            - Maximum 60 Words
-            - Focus On WHAT To Do, Not Technical Explanations
-
-            Example Format: "🚨 **Protect Crops From Cold** - Cover Sensitive Plants With Cloth Or Plastic Sheets Tonight To Prevent Frost Damage"
-
-            Generate ONE Action Description Only :"""
-
-            # Use The Correct API Structure
-            model = genai.GenerativeModel('gemini-pro')
-            response = model.generate_content(
+            import os
+            from Config.Settings import get_settings
+            settings = get_settings()
+            api_key = settings.google_api_key or os.getenv("GOOGLE_API_KEY")
+            if api_key:
+                genai.configure(api_key=api_key)
+            else:
+                raise RuntimeError("Missing GOOGLE_API_KEY")
+            if not hasattr(self, "_gemini_model") or self._gemini_model is None:
+                self._gemini_model = genai.GenerativeModel('gemini-2.0-flash')
+            prompt = (
+                "Generate ONE Clear, Farmer-Friendly Action For This Agricultural Risk.\n"
+                f"Risk: {human_risk}\n"
+                f"Severity: {level}\n"
+                f"Causes: {drivers_text}\n"
+                f"Location: {location}\n"
+                "Requirements:\n"
+                f"- Start With Emoji {urgency_emoji}\n"
+                "- Bold Key Action Phrase\n"
+                "- Simple, Specific, Actionable Language\n"
+                "- Max 55 Words\n"
+                "- Focus On WHAT To Do Now\n"
+                "Format Example: 🚨 **Protect Crops From Cold** - Cover Sensitive Plants Tonight With Cloth To Prevent Frost Damage"
+            )
+            response = self._gemini_model.generate_content(
                 prompt,
                 generation_config=genai.types.GenerationConfig(
-                    temperature=0.3,
-                    max_output_tokens=150
+                    temperature=0.6,
+                    max_output_tokens=140,
+                    top_p=0.9,
                 )
             )
-            
-            result = response.text.strip()
-            # Clean Up Any Extra Formatting
-            result = result.replace('"', '').replace("'", "").strip()
-            return result if result else f"{urgency_emoji} **Monitor {risk_name.lower()}** - Take Appropriate Action Based On Current Conditions"
-            
+            text = (response.text or "").strip().replace('"', '').replace("'", "")
+            if text:
+                return text
         except Exception as e:
             print(f"[Dynamic Action Generation Error] {e}")
-            # Enhanced Fallback With Better Risk-Specific Descriptions
-            urgency_emoji = "🚨" if level in ['High', 'Critical'] else ("⚠️" if level == 'Medium' else "📋")
-            
-            # Create Better Fallback Descriptions Based On Risk Type
-            risk_actions = {
-            'Cold Stress': f"{urgency_emoji} **Protect Crops From Cold Stress** - Cover Sensitive Plants With Blankets Or Plastic Sheets, Especially During Night Hours",
-            'Heat Stress': f"{urgency_emoji} **Shield Crops From Excessive Heat** - Increase Irrigation Frequency And Provide Shade Cover During Peak Sun Hours", 
-            'Drought': f"{urgency_emoji} **Conserve Water Effectively** - Apply Organic Mulch Around Plants And Switch To Drip Irrigation To Reduce Water Loss",
-            'Flood': f"{urgency_emoji} **Improve Field Drainage** - Create Temporary Drainage Channels And Raise Crop Beds To Prevent Waterlogging Damage",
-            'Pest Risk': f"{urgency_emoji} **Monitor For Pest Activity** - Inspect Crops Daily For Signs Of Insects And Apply Neem Oil Or Organic Pesticides",
-            'Disease Risk': f"{urgency_emoji} **Prevent Disease Spread** - Remove Any Infected Plant Material And Ensure Proper Air Circulation Between Crops",
-            'Nutrient Deficiency': f"{urgency_emoji} **Address Soil Nutrition** - Apply Balanced Fertilizer And Consider Soil Testing To Identify Specific Nutrient Needs",
-            'Wind Damage': f"{urgency_emoji} **Protect From Strong Winds** - Install Windbreaks Using Cloth Or Natural Barriers To Shield Young Plants"
-            }
-            return risk_actions.get(risk_name, f"{urgency_emoji} **Address {risk_name.lower()}** - Take Appropriate Preventive Measures")
+
+        fallback_actions = {
+            'Cold Stress': f"{urgency_emoji} **Protect Crops From Cold** - Cover Vulnerable Plants At Sunset Using Cloth Or Plastic To Retain Warmth",
+            'Heat Stress': f"{urgency_emoji} **Reduce Heat Stress** - Add Shade Netting And Irrigate Early Morning To Cool Root Zones",
+            'Drought Risk': f"{urgency_emoji} **Conserve Soil Moisture** - Apply 5–7 Cm Organic Mulch And Shift To Drip Irrigation If Possible",
+            'Flood Risk': f"{urgency_emoji} **Improve Excess Water Drainage** - Open Shallow Channels And Elevate Seedling Beds To Prevent Root Rot",
+            'Pest Risk': f"{urgency_emoji} **Monitor And Suppress Pests** - Inspect Leaves Daily; Apply Neem Extract On Early Infestation Spots",
+            'Disease Risk': f"{urgency_emoji} **Limit Disease Spread** - Remove Infected Foliage And Improve Spacing For Air Circulation",
+            'Nutrient Leaching': f"{urgency_emoji} **Reduce Nutrient Loss** - Avoid Over-Irrigation; Apply Slow-Release Fertilizers Based On Soil Test",
+            'Soil Erosion': f"{urgency_emoji} **Reduce Erosion** - Maintain Residue Cover And Install Contour Bunds On Slopes",
+            'Vegetation Stress': f"{urgency_emoji} **Relieve Vegetation Stress** - Check Soil Moisture And Adjust Irrigation Scheduling",
+            'Wind Damage': f"{urgency_emoji} **Shield Against Wind** - Install Temporary Windbreaks (Cloth, Hedges) For Young Or Fragile Crops"
+        }
+        base = fallback_actions.get(human_risk, f"{urgency_emoji} **Manage {human_risk.lower()}** - Implement Appropriate Protective Field Measures Promptly")
+        if drivers:
+            d_low = drivers_text.lower()
+            if 'temperature' in d_low:
+                return base + f" (Triggered By {drivers_text.lower()})"
+            if 'moisture' in d_low or 'water' in d_low:
+                return base + f" (Related To {drivers_text.lower()})"
+        return base
 
 
 def _generate_expected_outcome(level: str, risk_name: str, drivers: list) -> str:

@@ -707,37 +707,51 @@ function RenderMarkdown(text) {
 }
 
 // ===== MARKDOWN PRE-PROCESSING =====
-function PreProcessMarkdown(text) {
-  // Fix Common Bullet Point Issues
-  text = text.replace(/^•\s+/gm, '* ');
-  text = text.replace(/^-\s+/gm, '* ');
+function PreProcessMarkdown(Text) {
+  // Remove Leading Whitespace From Email Templates And Indented Content
+  Text = Text.replace(/^\s+/gm, '');
   
-  // Convert Colons To Proper Headers
-  text = text.replace(/^([A-Z][A-Z\s]+):$/gm, '### $1');
-  text = text.replace(/^\*\*([^*]+):\*\*$/gm, '### $1');
+  // Fix Common Bullet Point Issues
+  Text = Text.replace(/^•\s+/gm, '* ');
+  Text = Text.replace(/^-\s+/gm, '* ');
+  
+  // Normalize Excessive Bullet Spacing (E.g., '*   Item' -> '* Item')
+  Text = Text.replace(/^\*\s{2,}/gm, '* ');
+  
+  // Convert Email-Style Section Headers With Emojis And Colons
+  // E.g., "🚨 PRIORITY 1 - CRITICAL (Next 24-48 Hours):" -> "## 🚨 PRIORITY 1 - CRITICAL (Next 24-48 Hours)"
+  Text = Text.replace(/^([🚨⚠️📋📌]+)\s*([A-Z][A-Z\s0-9\-–—]+)\s*[:\-–—]?\s*\(([^)]+)\)\s*:?$/gm, '## $1 $2 ($3)');
+  Text = Text.replace(/^([🚨⚠️📋📌]+)?\s*([A-Z][A-Z\s0-9\-–—]+)\s*[:\-–—]\s*$/gm, '## $1 $2');
+  
+  // Convert General Colon Headers
+  Text = Text.replace(/^([A-Z][A-Z\s]+):$/gm, '### $1');
+  Text = Text.replace(/^\*\*([^*]+):\*\*$/gm, '### $1');
   
   // Fix Nested Bullet Points (Common In Agricultural Content)
-  text = text.replace(/^\s+([•\-*])\s+/gm, '  * ');
+  Text = Text.replace(/^\s+([•\-*])\s+/gm, '  * ');
   
-  // Fix Line Breaks And Spacing
-  text = text.replace(/\n\s*\n\s*\n/g, '\n\n');
+  // Fix Line Breaks And Spacing - Remove Excessive Blank Lines
+  Text = Text.replace(/\n\s*\n\s*\n+/g, '\n\n');
   
   // Ensure Proper Spacing Around Headers
-  text = text.replace(/(#{1,6}\s[^\n]+)\n(?!\n)/g, '$1\n\n');
+  Text = Text.replace(/(#{1,6}\s[^\n]+)\n(?!\n)/g, '$1\n\n');
   
   // Fix Bold Text Formatting
-  text = text.replace(/\*\*([^*\n]+)\*\*/g, '**$1**');
+  Text = Text.replace(/\*\*([^*\n]+)\*\*/g, '**$1**');
   
   // Fix Italic Text Formatting  
-  text = text.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '*$1*');
+  Text = Text.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '*$1*');
   
   // Ensure Proper List Formatting
-  text = text.replace(/^(\d+)[.):]?\s+/gm, '$1. ');
+  Text = Text.replace(/^(\d+)[.):]?\s+/gm, '$1. ');
   
-  // Fix Spacing Around Lists
-  text = text.replace(/(\n\* [^\n]+)\n(?!\* |\n)/g, '$1\n\n');
+  // Fix Spacing Around Lists - Ensure Lists Are Separated From Non-List Content
+  Text = Text.replace(/(\n\* [^\n]+)\n(?!\* |\n|##)/g, '$1\n\n');
   
-  return text;
+  // Clean Up Multiple Sequential Line Breaks After Processing
+  Text = Text.replace(/\n{3,}/g, '\n\n');
+  
+  return Text;
 }
 
 // ===== HTML SANITIZATION =====
